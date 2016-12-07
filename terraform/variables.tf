@@ -42,6 +42,9 @@ variable ami {
     stability_pd = "ami-fd528690"
     stability_tidb = "ami-fd528690"
     stability_tikv = "ami-fd528690"
+    region_test_pd = "ami-fd528690"
+    region_test_tidb = "ami-fd528690"
+    region_test_tikv = "ami-fd528690"
     jenkins_master = "ami-fd52869"
     jenkins_node = "ami-fd52869"
     binlog_pump = "ami-0220b23b"
@@ -56,6 +59,9 @@ variable instance_type {
     stability_pd = "t2.micro"
     stability_tidb = "t2.micro"
     stability_tikv = "t2.micro"
+    region_test_pd = "t2.micro"
+    region_test_tidb = "t2.micro"
+    region_test_tikv = "t2.micro"
     jenkins_master = "t2.micro"
     jenkins_node = "t2.micro"
     binlog_pump = "m3.medium"
@@ -74,5 +80,8 @@ variable count {
     jenkins_node = 4
     binlog_pump = 10
     binlog_drainer = 1
+    region_test_pd = 1
+    region_test_tidb = 1
+    region_test_tikv = 3
   }
 }

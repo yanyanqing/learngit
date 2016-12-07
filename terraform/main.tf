@@ -274,6 +274,72 @@ resource "aws_instance" "stability_tikv" {
   }
 }
 
+resource "aws_instance" "region_test_pd" {
+  ami = "${var.ami["region_test_pd"]}"
+  instance_type = "${var.instance_type["region_test_pd"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["region_test_pd"]}"
+  subnet_id = "${var.subnet["stability"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}", "${aws_security_group.pd.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "region-test-pd-${count.index}"
+    Creator = "shuning"
+  }
+}
+
+
+resource "aws_instance" "region_test_tidb" {
+  ami = "${var.ami["region_test_tidb"]}"
+  instance_type = "${var.instance_type["region_test_tidb"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["region_test_tidb"]}"
+  subnet_id = "${var.subnet["stability"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}", "${aws_security_group.tidb.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "region-test-tidb-${count.index}"
+    Creator = "shuning"
+  }
+}
+
+
+resource "aws_instance" "region_test_tikv" {
+  ami = "${var.ami["region_test_tikv"]}"
+  instance_type = "${var.instance_type["region_test_tikv"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["region_test_tikv"]}"
+  subnet_id = "${var.subnet["stability"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}", "${aws_security_group.tikv.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "region-test-tikv-${count.index}"
+    Creator = "shuning"
+  }
+}
+
+
 
 # resource "aws_instance" "jenkins_master" {
 #   ami = "${var.ami["jenkins_master"]}"
