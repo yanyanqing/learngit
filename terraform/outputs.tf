@@ -37,3 +37,18 @@ output "binlog_pump_private_ip" {
 output "binlog_drainer_private_ip" {
   value = "${join(",", aws_instance.binlog_drainer.*.private_ip)}"
 }
+
+
+output "region_test_tidb_private_ip" {
+  value = "${join(",", aws_instance.region_test_tidb.*.private_ip)}"
+}
+
+
+output "region_test_pd_private_ip" {
+  value = "${join(",", aws_instance.region_test_pd.*.private_ip)}"
+}
+
+
+output "region_test_tikv_private_ip" {
+  value = "${join(",", aws_instance.region_test_tikv.*.private_ip)}"
+}
