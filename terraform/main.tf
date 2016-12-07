@@ -312,7 +312,7 @@ resource "aws_instance" "region_test_tidb" {
     bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
   }
   tags {
-    Name = "region-tidb-${count.index}"
+    Name = "region-test-tidb-${count.index}"
     Creator = "shuning"
   }
 }
