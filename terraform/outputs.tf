@@ -8,7 +8,6 @@ output "nginx_private_ip" {
   value = "${join(",", aws_instance.nginx.*.private_ip)}"
 }
 
-
 output "prometheus_private_ip" {
   value = "${join(",", aws_instance.prometheus.*.private_ip)}"
 }
@@ -51,4 +50,8 @@ output "region_test_pd_private_ip" {
 
 output "region_test_tikv_private_ip" {
   value = "${join(",", aws_instance.region_test_tikv.*.private_ip)}"
+}
+
+output "bench_test_private_ip" {
+  value = "${join(",", aws_instance.bench_test.*.private_ip)}"
 }

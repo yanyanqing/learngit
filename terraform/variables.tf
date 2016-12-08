@@ -45,6 +45,7 @@ variable ami {
     region_test_pd = "ami-fd528690"
     region_test_tidb = "ami-fd528690"
     region_test_tikv = "ami-fd528690"
+    bench_test = "ami-fd528690"
     jenkins_master = "ami-fd52869"
     jenkins_node = "ami-fd52869"
     binlog_pump = "ami-0220b23b"
@@ -55,6 +56,7 @@ variable ami {
 variable instance_type {
   default = {
     nginx = "t2.small"
+    bench_test = "c3.xlarge"
     prometheus = "t2.xlarge"
     stability_pd = "t2.micro"
     stability_tidb = "t2.micro"
@@ -83,5 +85,6 @@ variable count {
     region_test_pd = 1
     region_test_tidb = 1
     region_test_tikv = 3
+    bench_test = 0
   }
 }

@@ -66,6 +66,12 @@ resource "aws_security_group" "nginx" {
     protocol = "tcp"
     cidr_blocks = ["${var.cidr_blocks["all"]}"]
   }
+  ingress {
+    from_port = 9093
+    to_port = 9093
+    protocol = "tcp"
+    cidr_blocks = ["${var.cidr_blocks["all"]}"]
+  }
 }
 
 resource "aws_security_group" "prometheus" {
@@ -339,6 +345,40 @@ resource "aws_instance" "region_test_tikv" {
   }
 }
 
+resource "aws_instance" "bench_test"{
+  ami = "${var.ami["bench_test"]}"
+  instance_type = "${var.instance_type["bench_test"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["bench_test"]}"
+  subnet_id = "${var.subnet["stability"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "bench-test-${count.index}"
+    Creator = "shuning"
+  }
+  ephemeral_block_device {
+    device_name = "xvdb"
+    virtual_name = "ephemeral0"
+  }
+  provisioner "file" {
+    source = "scripts/mount-data-disk.sh"
+    destination = "/tmp/mount-data-disk.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/mount-data-disk.sh",
+      "/tmp/mount-data-disk.sh"
+    ]
+  }
+}
 
 
 # resource "aws_instance" "jenkins_master" {
