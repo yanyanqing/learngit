@@ -46,8 +46,8 @@ variable ami {
     region_test_tidb = "ami-fd528690"
     region_test_tikv = "ami-fd528690"
     bench_test = "ami-fd528690"
-    jenkins_master = "ami-fd52869"
-    jenkins_node = "ami-fd52869"
+    jenkins_master = "ami-f052869d"
+    jenkins_node = "ami-f052869d"
     binlog_pump = "ami-0220b23b"
     binlog_drainer = "ami-0220b23b"
   }
@@ -64,8 +64,8 @@ variable instance_type {
     region_test_pd = "t2.micro"
     region_test_tidb = "t2.micro"
     region_test_tikv = "t2.micro"
-    jenkins_master = "t2.micro"
-    jenkins_node = "t2.micro"
+    jenkins_master = "t2.xlarge"
+    jenkins_node = "t2.xlarge"
     binlog_pump = "m3.medium"
     binlog_drainer = "m3.large"
   }
@@ -86,5 +86,12 @@ variable count {
     region_test_tidb = 1
     region_test_tikv = 3
     bench_test = 0
+  }
+}
+
+variable root_size {
+  default = {
+    jenkins_master = 500
+    jenkins_node = 100
   }
 }

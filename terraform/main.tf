@@ -86,7 +86,6 @@ resource "aws_security_group" "prometheus" {
   }
 }
 
-
 resource "aws_security_group" "grafana" {
   name_prefix = "pingcap_grafana"
   description = "grafana traffic"
@@ -98,7 +97,6 @@ resource "aws_security_group" "grafana" {
     cidr_blocks = ["${var.cidr_blocks["vpc"]}"]
   }
 }
-
 
 resource "aws_security_group" "tidb" {
   name_prefix = "pingcap_tidb"
@@ -112,7 +110,6 @@ resource "aws_security_group" "tidb" {
   }
 }
 
-
 resource "aws_security_group" "pd" {
   name_prefix = "pingcap_pd"
   description = "pd traffic"
@@ -124,7 +121,6 @@ resource "aws_security_group" "pd" {
     cidr_blocks = ["${var.cidr_blocks["vpc"]}"]
   }
 }
-
 
 resource "aws_security_group" "tikv" {
   name_prefix = "pingcap_tikv"
@@ -138,7 +134,6 @@ resource "aws_security_group" "tikv" {
   }
 }
 
-
 # resource "aws_security_group" "jenkins" {
 #   name_prefix = "pingcap_jenkins"
 #   description = "jenkins traffic"
@@ -151,7 +146,6 @@ resource "aws_security_group" "tikv" {
 #   }
 # }
 
-
 resource "aws_security_group" "binlog" {
   name_prefix = "pingcap_binlog"
   description = "binlog traffic"
@@ -163,7 +157,6 @@ resource "aws_security_group" "binlog" {
     cidr_blocks = ["${var.cidr_blocks["vpc"]}"]
   }
 }
-
 
 resource "aws_instance" "nginx" {
   ami = "${var.ami["nginx"]}"
@@ -236,7 +229,6 @@ resource "aws_instance" "stability_pd" {
   }
 }
 
-
 resource "aws_instance" "stability_tidb" {
   ami = "${var.ami["stability_tidb"]}"
   instance_type = "${var.instance_type["stability_tidb"]}"
@@ -257,7 +249,6 @@ resource "aws_instance" "stability_tidb" {
     Creator = "dengshuan"
   }
 }
-
 
 resource "aws_instance" "stability_tikv" {
   ami = "${var.ami["stability_tikv"]}"
@@ -301,7 +292,6 @@ resource "aws_instance" "region_test_pd" {
   }
 }
 
-
 resource "aws_instance" "region_test_tidb" {
   ami = "${var.ami["region_test_tidb"]}"
   instance_type = "${var.instance_type["region_test_tidb"]}"
@@ -322,7 +312,6 @@ resource "aws_instance" "region_test_tidb" {
     Creator = "shuning"
   }
 }
-
 
 resource "aws_instance" "region_test_tikv" {
   ami = "${var.ami["region_test_tikv"]}"
@@ -380,50 +369,57 @@ resource "aws_instance" "bench_test"{
   }
 }
 
+resource "aws_instance" "jenkins_master" {
+  ami = "${var.ami["jenkins_master"]}"
+  instance_type = "${var.instance_type["jenkins_master"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["jenkins_master"]}"
+  subnet_id = "${var.subnet["jenkins"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "jenkins-master-${count.index}"
+    Creator = "liuyin"
+  }
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "${var.root_size["jenkins_master"]}"
+    delete_on_termination = false
+  }
+}
 
-# resource "aws_instance" "jenkins_master" {
-#   ami = "${var.ami["jenkins_master"]}"
-#   instance_type = "${var.instance_type["jenkins_master"]}"
-#   key_name = "${var.ssh_key_name["internal"]}"
-#   count = "${var.count["jenkins_master"]}"
-#   subnet_id = "${var.subnet["jenkins"]}"
-#   vpc_security_group_ids = ["${aws_security_group.base.id}", "${aws_security_group.jenkins.id}"]
-#   connection {
-#     user = "ubuntu"
-#     agent = false
-#     private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
-#     bastion_host = "${var.bastion_host}"
-#     bastion_user = "ec2-user"
-#     bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
-#   }
-#   tags {
-#     Name = "jenkins-master-${count.index}"
-#     Creator = "dengshuan"
-#   }
-# }
-
-
-# resource "aws_instance" "jenkins_node" {
-#   ami = "${var.ami["jenkins_node"]}"
-#   instance_type = "${var.instance_type["jenkins_node"]}"
-#   key_name = "${var.ssh_key_name["internal"]}"
-#   count = "${var.count["jenkins_node"]}"
-#   subnet_id = "${var.subnet["jenkins"]}"
-#   vpc_security_group_ids = ["${aws_security_group.base.id}", "${aws_security_group.jenkins.id}"]
-#   connection {
-#     user = "ubuntu"
-#     agent = false
-#     private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
-#     bastion_host = "${var.bastion_host}"
-#     bastion_user = "ec2-user"
-#     bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
-#   }
-#   tags {
-#     Name = "jenkins-node-${count.index}"
-#     Creator = "dengshuan"
-#   }
-# }
-
+resource "aws_instance" "jenkins_node" {
+  ami = "${var.ami["jenkins_node"]}"
+  instance_type = "${var.instance_type["jenkins_node"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["jenkins_node"]}"
+  subnet_id = "${var.subnet["jenkins"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "jenkins-node-${count.index}"
+    Creator = "liuyin"
+  }
+  root_block_device {
+    volume_type = "gp2"
+    volume_size = "${var.root_size["jenkins_node"]}"
+    delete_on_termination = true 
+  }
+}
 
 resource "aws_instance" "binlog_pump" {
   ami = "${var.ami["binlog_pump"]}"
@@ -445,7 +441,6 @@ resource "aws_instance" "binlog_pump" {
     Creator = "dengshuan"
   }
 }
-
 
 resource "aws_instance" "binlog_drainer" {
   ami = "${var.ami["binlog_drainer"]}"
