@@ -12,6 +12,7 @@ variable cidr_blocks {
     stability = "10.0.1.0/24"
     jenkins = "10.0.2.0/24"
     binlog = "10.0.3.0/24"
+    zone_b = "10.0.3.0/24"   # this subnet cidr is in availability zone cn-north-1b
   }
 }
 
@@ -21,6 +22,7 @@ variable subnet {
     stability = "subnet-4bf1c72e"
     jenkins = "subnet-2fe7d14a"
     binlog = "subnet-8dba8ce8"
+    zone_b = "subnet-d878c8af" # Availability zone cn-north-1b, above are all in cn-north-1a availability zone
   }
 }
 
