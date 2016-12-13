@@ -82,13 +82,13 @@ resource "aws_security_group" "proxy" {
     from_port = 8123
     to_port = 8123
     protocol = "tcp"
-    cidr_blocks = ["${var.cidr_blocks["vpc"]}"]
+    cidr_blocks = ["${var.cidr_blocks["all"]}"]
   }
   ingress {
     from_port = 1111
     to_port = 1111
     protocol = "tcp"
-    cidr_blocks = ["${var.cidr_blocks["vpc"]}"]
+    cidr_blocks = ["${var.cidr_blocks["all"]}"]
   }
 }
 
