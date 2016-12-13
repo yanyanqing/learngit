@@ -74,6 +74,24 @@ resource "aws_security_group" "nginx" {
   }
 }
 
+resource "aws_security_group" "proxy" {
+  name_prefix = "pingcap_proxy"
+  description = "proxy traffic"
+  vpc_id = "${var.pingcap_vpc}"
+  ingress {
+    from_port = 8123
+    to_port = 8123
+    protocol = "tcp"
+    cidr_blocks = ["${var.cidr_blocks["vpc"]}"]
+  }
+  ingress {
+    from_port = 1111
+    to_port = 1111
+    protocol = "tcp"
+    cidr_blocks = ["${var.cidr_blocks["vpc"]}"]
+  }
+}
+
 resource "aws_security_group" "prometheus" {
   name_prefix = "pingcap_prometheus"
   description = "prometheus traffic"
@@ -164,7 +182,7 @@ resource "aws_instance" "nginx" {
   key_name = "${var.ssh_key_name["internal"]}"
   count = "${var.count["nginx"]}"
   subnet_id = "${var.subnet["public"]}"
-  vpc_security_group_ids = ["${aws_security_group.base.id}", "${aws_security_group.nginx.id}"]
+  vpc_security_group_ids = ["${aws_security_group.base.id}", "${aws_security_group.nginx.id}", "${aws_security_group.proxy.id}"]
   private_ip = "10.0.0.10"
   connection {
     user = "ubuntu"
@@ -376,6 +394,7 @@ resource "aws_instance" "jenkins_master" {
   count = "${var.count["jenkins_master"]}"
   subnet_id = "${var.subnet["jenkins"]}"
   vpc_security_group_ids = ["${aws_security_group.base.id}"]
+  private_ip = "10.0.2.167"
   connection {
     user = "ubuntu"
     agent = false
