@@ -84,9 +84,9 @@ variable count {
     jenkins_node = 4
     binlog_pump = 10
     binlog_drainer = 1
-    region_test_pd = 1
-    region_test_tidb = 1
-    region_test_tikv = 3
+    region_test_pd = 0
+    region_test_tidb = 0
+    region_test_tikv = 0
     bench_test = 0
   }
 }
