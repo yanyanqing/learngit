@@ -85,6 +85,12 @@ resource "aws_security_group" "proxy" {
     cidr_blocks = ["${var.cidr_blocks["all"]}"]
   }
   ingress {
+    from_port = 8233
+    to_port = 8233
+    protocol = "tcp"
+    cidr_blocks = ["${var.cidr_blocks["office"]}"]
+  }
+  ingress {
     from_port = 1111
     to_port = 1111
     protocol = "tcp"

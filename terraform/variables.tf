@@ -7,6 +7,7 @@ variable pingcap_vpc {
 variable cidr_blocks {
   default = {
     all = "0.0.0.0/0"
+    office = "103.250.227.80/32"
     vpc = "10.0.0.0/16"
     public = "10.0.0.0/24"
     stability = "10.0.1.0/24"
