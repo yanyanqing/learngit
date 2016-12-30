@@ -82,7 +82,7 @@ variable count {
     stability_tidb = 1
     stability_tikv = 15
     jenkins_master = 1
-    jenkins_node = 4
+    jenkins_node = 7
     binlog_pump = 10
     binlog_drainer = 1
     region_test_pd = 0
