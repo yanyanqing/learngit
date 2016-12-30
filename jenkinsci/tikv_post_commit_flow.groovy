@@ -454,11 +454,16 @@ node('material') {
     }
 
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#tikv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
+        slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
                 "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${currentBuild.duration}, " +
                 "${currentBuild.changeSets}" +
                 "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
     } else {
+        slackSend channel: '#kv', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
+                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${currentBuild.duration}, " +
+                "${currentBuild.changeSets}" +
+                "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+
         build job: 'TIDB_LATEST_PUBLISH', wait: false
     }
 }
