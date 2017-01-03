@@ -442,16 +442,27 @@ node('material') {
         currentBuild.result = "SUCCESS"
     }
 
+    def changeLogSets = currentBuild.changeSets
+    def changeLogText = ""
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length; j++) {
+            def entry = entries[j]
+            changeLogText += "\n${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+        }
+    }
+
+    def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
 
     if (currentBuild.result != "SUCCESS") {
         slackSend channel: '#pd', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
-                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${currentBuild.duration}, " +
-                "${currentBuild.changeSets}" +
+                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
+                "${changeLogText}" + "\n"
                 "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
     } else {
         slackSend channel: '#pd', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
-                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${currentBuild.duration}, " +
-                "${currentBuild.changeSets}" +
+                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
+                "${changeLogText}" + "\n"
                 "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
 
         build job: 'TIDB_LATEST_PUBLISH', wait: false
