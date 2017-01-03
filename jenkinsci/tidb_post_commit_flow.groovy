@@ -853,12 +853,12 @@ node('material') {
     if (currentBuild.result != "SUCCESS") {
         slackSend channel: '#tidb', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
                 "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
-                "${changeLogText}" + "\n"
+                "${changeLogText}" + "\n" +
                 "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
     } else {
         slackSend channel: '#tidb', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
                 "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
-                "${changeLogText}" + "\n"
+                "${changeLogText}" + "\n" +
                 "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
 
         build job: 'TIDB_LATEST_PUBLISH', wait: false
