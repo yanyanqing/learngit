@@ -855,15 +855,18 @@ node('material') {
             "${changeLogText}" + "\n" +
             "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
 
+    sh "echo '${slackMsg}' > slackmsg"
+    def slackmsg = sh(returnStdout: true, script: "cat slackmsg").trim()
+
     if (currentBuild.result != "SUCCESS") {
         try {
-            slackSend channel: '#tidb', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+            slackSend channel: '#tidb', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackmsg}"
         } catch (err) {
             // fixme: panic in slackSend
         }
     } else {
         try {
-            slackSend channel: '#tidb', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+            slackSend channel: '#tidb', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackmsg}"
         } catch (err) {
             // fixme: panic in slackSend
         }
