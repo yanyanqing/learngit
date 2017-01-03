@@ -363,7 +363,7 @@ resource "aws_instance" "bench_test"{
   instance_type = "${var.instance_type["bench_test"]}"
   key_name = "${var.ssh_key_name["internal"]}"
   count = "${var.count["bench_test"]}"
-  subnet_id = "${var.subnet["stability"]}"
+  subnet_id = "${var.subnet["jenkins"]}"
   vpc_security_group_ids = ["${aws_security_group.base.id}"]
   connection {
     user = "ubuntu"
