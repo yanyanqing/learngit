@@ -109,15 +109,14 @@ node('material') {
 
     def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
 
+    def slackMsg = "" +
+            "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
+            "${changeLogText}" + "\n" +
+            "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#tidb-tools', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
-                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
-                "${changeLogText}" + "\n" +
-                "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+        slackSend channel: '#tidb-tools', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
     } else {
-        slackSend channel: '#tidb-tools', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
-                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
-                "${changeLogText}" + "\n" +
-                "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+        slackSend channel: '#tidb-tools', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
     }
 }

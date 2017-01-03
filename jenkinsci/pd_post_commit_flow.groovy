@@ -46,7 +46,7 @@ node('material') {
             branches["linux-amd64-centos6"] = {
                 node('material-centos6') {
                     // pd
-                    dir ("${pd_path}") {
+                    dir("${pd_path}") {
                         git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/pd.git'
                     }
 
@@ -454,16 +454,15 @@ node('material') {
 
     def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
 
+    def slackMsg = "" +
+            "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
+            "${changeLogText}" + "\n" +
+            "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#pd', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
-                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
-                "${changeLogText}" + "\n" +
-                "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+        slackSend channel: '#pd', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
     } else {
-        slackSend channel: '#pd', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
-                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
-                "${changeLogText}" + "\n" +
-                "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+        slackSend channel: '#pd', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
 
         build job: 'TIDB_LATEST_PUBLISH', wait: false
     }

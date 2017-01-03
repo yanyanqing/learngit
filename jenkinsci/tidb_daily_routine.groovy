@@ -75,9 +75,11 @@ node('master') {
 
     def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
 
+    def slackMsg = "" +
+            "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
+            "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#dt', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "" +
-                "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
-                "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
+        slackSend channel: '#dt', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
     }
 }
