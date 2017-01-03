@@ -80,6 +80,10 @@ node('master') {
             "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
 
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#dt', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        try {
+            slackSend channel: '#dt', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        } catch (err) {
+            // fixme: panic in slackSend
+        }
     }
 }

@@ -472,9 +472,17 @@ node('material') {
 
 
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        try {
+            slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        } catch (err) {
+            // fixme: panic in slackSend
+        }
     } else {
-        slackSend channel: '#kv', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        try {
+            slackSend channel: '#kv', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        } catch (err) {
+            // fixme: panic in slackSend
+        }
 
         build job: 'TIDB_LATEST_PUBLISH', wait: false
     }

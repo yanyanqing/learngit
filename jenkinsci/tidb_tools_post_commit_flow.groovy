@@ -115,8 +115,16 @@ node('material') {
             "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
 
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#tidb-tools', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        try {
+            slackSend channel: '#tidb-tools', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        } catch (err) {
+            // fixme: panic in slackSend
+        }
     } else {
-        slackSend channel: '#tidb-tools', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        try {
+            slackSend channel: '#tidb-tools', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        } catch (err) {
+            // fixme: panic in slackSend
+        }
     }
 }

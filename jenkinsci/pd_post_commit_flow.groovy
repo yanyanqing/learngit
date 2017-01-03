@@ -460,9 +460,18 @@ node('material') {
             "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
 
     if (currentBuild.result != "SUCCESS") {
-        slackSend channel: '#pd', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        try {
+            slackSend channel: '#pd', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        } catch (err) {
+            // fixme: panic in slackSend
+        }
     } else {
-        slackSend channel: '#pd', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        try {
+            slackSend channel: '#pd', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+        } catch (err) {
+            // fixme: panic in slackSend
+        }
+
         build job: 'TIDB_LATEST_PUBLISH', wait: false
     }
 }
