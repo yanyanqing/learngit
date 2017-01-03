@@ -23,18 +23,24 @@ node('material') {
         stage('SCM Checkout') {
             // tikv
             dir("${tikv_path}") {
-                git credentialsId: 'github-liuyin', url: 'git@github.com:pingcap/tikv.git'
+                retry(3) {
+                    git credentialsId: 'github-liuyin', url: 'git@github.com:pingcap/tikv.git'
+                }
                 githash_tikv = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             }
 
             // tidb
             dir("${tidb_path}") {
-                git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git'
+                retry(3) {
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git'
+                }
             }
 
             // tidb_test
             dir("${tidb_test_path}") {
-                git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb-test.git'
+                retry(3) {
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb-test.git'
+                }
             }
         }
 
@@ -58,7 +64,9 @@ node('material') {
                 node('material-centos6') {
                     // tikv
                     dir("$tikv_path") {
-                        git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git'
+                        retry(3) {
+                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git'
+                        }
                     }
 
                     sh """

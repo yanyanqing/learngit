@@ -16,18 +16,24 @@ node('material') {
         stage('SCM Checkout') {
             // tidb-binlog
             dir("${binlog_path}") {
-                git credentialsId: 'github-liuyin', url: 'git@github.com:pingcap/tidb-binlog.git'
+                retry(3) {
+                    git credentialsId: 'github-liuyin', url: 'git@github.com:pingcap/tidb-binlog.git'
+                }
                 githash_binlog = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             }
 
             // tidb
             dir("${tidb_path}") {
-                git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git'
+                retry(3) {
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git'
+                }
             }
 
             // goleveldb
             dir("go/src/github.com/pingcap/goleveldb") {
-                git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'https://github.com/pingcap/goleveldb.git'
+                retry(3) {
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'https://github.com/pingcap/goleveldb.git'
+                }
             }
 
             withEnv(["http_proxy=${proxy}", "https_proxy=${proxy}"]) {

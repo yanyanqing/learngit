@@ -15,7 +15,9 @@ node('material') {
         stage('SCM Checkout') {
             // tidb-tools
             dir("${tools_path}") {
-                git credentialsId: 'github-liuyin', url: 'git@github.com:pingcap/tidb-tools.git'
+                retry(3) {
+                    git credentialsId: 'github-liuyin', url: 'git@github.com:pingcap/tidb-tools.git'
+                }
                 githash_tools = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             }
         }

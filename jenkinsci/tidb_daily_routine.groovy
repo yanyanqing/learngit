@@ -14,12 +14,16 @@ node('master') {
         stage('SCM Checkout') {
             // tidb_test
             dir("${tidb_test_path}") {
-                git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb-test.git'
+                retry(3) {
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb-test.git'
+                }
             }
 
             // tidb_tools
             dir("${tidb_tools_path}") {
-                git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb-tools.git'
+                retry(3) {
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb-tools.git'
+                }
             }
 
             withEnv(["http_proxy=${proxy}", "https_proxy=${proxy}"]) {
