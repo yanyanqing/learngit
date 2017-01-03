@@ -453,13 +453,10 @@ node('material') {
         currentBuild.result = "SUCCESS"
     }
 
-    def changeLogSets = currentBuild.changeSets
     def changeLogText = ""
-    for (int i = 0; i < changeLogSets.size(); i++) {
-        def entries = changeLogSets[i].items
-        for (int j = 0; j < entries.length; j++) {
-            def entry = entries[j]
-            changeLogText += "\n${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+    for (int i = 0; i < currentBuild.changeSets.size(); i++) {
+        for (int j = 0; j < currentBuild.changeSets[i].items.length; j++) {
+            changeLogText += "\n${currentBuild.changeSets[i].items[j].commitId}: ${currentBuild.changeSets[i].items[j].msg}"
         }
     }
 
@@ -470,20 +467,10 @@ node('material') {
             "${changeLogText}" + "\n" +
             "${env.JENKINS_URL}blue/organizations/jenkins/${env.JOB_NAME}/detail/${env.JOB_NAME}/${env.BUILD_NUMBER}/pipeline"
 
-
     if (currentBuild.result != "SUCCESS") {
-        try {
-            slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
-        } catch (err) {
-            // fixme: panic in slackSend
-        }
+        slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
     } else {
-        try {
-            slackSend channel: '#kv', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
-        } catch (err) {
-            // fixme: panic in slackSend
-        }
-
+        slackSend channel: '#kv', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
         build job: 'TIDB_LATEST_PUBLISH', wait: false
     }
 }
