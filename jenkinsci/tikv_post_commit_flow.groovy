@@ -49,6 +49,7 @@ node('material') {
             branches["linux-amd64"] = {
                 // tikv
                 sh """
+                rustup default nightly-2016-12-19
                 cd ${tikv_path}
                 make static_release
                 """
@@ -70,6 +71,7 @@ node('material') {
                     }
 
                     sh """
+                    rustup default nightly-2016-12-19
                     cd ${tikv_path}
                     git checkout ${githash_tikv}
                     scl enable devtoolset-4 python27 "make static_release"
@@ -110,11 +112,11 @@ node('material') {
             def branches = [:]
 
             branches["TiKV Test"] = {
-                node('worker-tikvtest') {
+                node('worker') {
                     deleteDir()
                     unstash 'source-pingcap'
                     sh """
-                    rustup default nightly-2016-10-06
+                    rustup default nightly-2016-12-19
                     cd ${tikv_path}
                     make test
                     """
