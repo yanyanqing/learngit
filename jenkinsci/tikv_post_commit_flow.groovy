@@ -112,7 +112,7 @@ node('material') {
             def branches = [:]
 
             branches["TiKV Test"] = {
-                node('worker') {
+                node('worker-tikvtest') {
                     deleteDir()
                     unstash 'source-pingcap'
                     sh """
