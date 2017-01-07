@@ -112,15 +112,11 @@ node('material') {
             def branches = [:]
 
             branches["TiKV Test"] = {
-                node('worker-tikvtest') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    sh """
-                    rustup default nightly-2016-12-19
-                    cd ${tikv_path}
-                    make test
-                    """
-                }
+                sh """
+                rustup default nightly-2016-12-19
+                cd ${tikv_path}
+                make test
+                """
             }
             branches["Integration DDL Insert Test"] = {
                 node('worker') {
