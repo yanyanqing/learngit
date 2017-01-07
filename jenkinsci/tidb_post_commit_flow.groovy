@@ -849,7 +849,9 @@ node('material') {
     def changeLogText = ""
     for (int i = 0; i < currentBuild.changeSets.size(); i++) {
         for (int j = 0; j < currentBuild.changeSets[i].items.length; j++) {
-            changeLogText += "\n${currentBuild.changeSets[i].items[j].commitId}: ${currentBuild.changeSets[i].items[j].msg}"
+            def commitId = "${currentBuild.changeSets[i].items[j].commitId}"
+            def commitMsg = "${currentBuild.changeSets[i].items[j].msg}"
+            changeLogText += "\n" + commitId.substring(0, 7) + " " + commitMsg
         }
     }
 

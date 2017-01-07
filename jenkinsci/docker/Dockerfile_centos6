@@ -49,8 +49,6 @@ RUN sed -i 's|session    required     pam_loginuid.so|session    optional     pa
 
 COPY .gitcookies /home/jenkins/.gitcookies
 
-COPY upload.py /usr/bin/upload.py
-
 COPY sqllogictest /home/pingcap/sqllogictest
 
 COPY .m2/ /home/jenkins/.m2
@@ -59,15 +57,11 @@ COPY config /home/jenkins/.ssh/config
 
 COPY nc /usr/bin/nc
 
-RUN pip install qiniu
-
 RUN chown jenkins:jenkins /home/jenkins/.gitcookies \
 	&& chmod 0600 /home/jenkins/.gitcookies \
 	&& su jenkins -c "git config --global http.cookiefile /home/jenkins/.gitcookies" \
 	&& su jenkins -c "git config --global http.proxy http://10.0.0.10:8123" \
 	&& su jenkins -c "git config --global https.proxy http://10.0.0.10:8123" \
-	&& chown jenkins:jenkins /usr/bin/upload.py \
-	&& chmod a+x /usr/bin/upload.py \
 	&& chown jenkins:jenkins /home/jenkins/.ssh/config \
 	&& chmod 0755 /home/jenkins/.ssh/config
 

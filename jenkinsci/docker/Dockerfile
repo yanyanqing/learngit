@@ -23,11 +23,11 @@ RUN curl -L https://github.com/gflags/gflags/archive/v2.1.2.tar.gz -o gflags.tar
 	&& make install \
 	&& rm -rf /gflags.tar.gz /gflags-2.1.2
 
-RUN curl -L https://github.com/facebook/rocksdb/archive/4.12.fb.tar.gz -o rocksdb.tar.gz \
+RUN curl -L https://github.com/facebook/rocksdb/archive/v4.13.5.tar.gz -o rocksdb.tar.gz \
 	&& tar xf rocksdb.tar.gz \
-	&& cd rocksdb-4.12.fb \
+	&& cd rocksdb-4.13.5 \
 	&& make -j install-shared \
-	&& rm -rf /rocksdb.tar.gz /rocksdb-4.12.fb
+	&& rm -rf /rocksdb.tar.gz /rocksdb-4.13.5
 
 ENV GOLANG_VERSION 1.7.3
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
@@ -72,8 +72,6 @@ COPY config.json /home/jenkins/.docker/config.json
 
 COPY .gitcookies /home/jenkins/.gitcookies
 
-COPY upload.py /usr/bin/upload.py
-
 COPY sqllogictest /home/pingcap/sqllogictest
 
 COPY .m2/ /home/jenkins/.m2
@@ -82,16 +80,12 @@ COPY config /home/jenkins/.ssh/config
 
 COPY nc /usr/bin/nc
 
-RUN pip install qiniu
-
 RUN chown -R jenkins:jenkins /home/jenkins/.docker \
 	&& chown jenkins:jenkins /home/jenkins/.gitcookies \
 	&& chmod 0600 /home/jenkins/.gitcookies \
 	&& su jenkins -c "git config --global http.cookiefile /home/jenkins/.gitcookies" \
 	&& su jenkins -c "git config --global http.proxy http://10.0.0.10:8123" \
 	&& su jenkins -c "git config --global https.proxy http://10.0.0.10:8123" \
-	&& chown jenkins:jenkins /usr/bin/upload.py \
-	&& chmod a+x /usr/bin/upload.py \
 	&& chown jenkins:jenkins /home/jenkins/.ssh/config \
 	&& chmod 0755 /home/jenkins/.ssh/config
 
