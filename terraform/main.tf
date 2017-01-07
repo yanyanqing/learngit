@@ -268,6 +268,20 @@ resource "aws_instance" "stability_tidb" {
     bastion_user = "ec2-user"
     bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
   }
+  ephemeral_block_device {
+    device_name = "xvdb"
+    virtual_name = "ephemeral0"
+  }
+  provisioner "file" {
+    source = "scripts/mount-data-disk.sh"
+    destination = "/tmp/mount-data-disk.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/mount-data-disk.sh",
+      "/tmp/mount-data-disk.sh"
+    ]
+  }
   tags {
     Name = "stability-tidb-${count.index}"
     Creator = "dengshuan"
