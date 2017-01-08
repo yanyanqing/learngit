@@ -1,4 +1,4 @@
-def call(branches) {
+def call(branches, pingcap, tidb_path, tidb_test_path) {
     branches["Unit Test"] = {
         node('worker') {
             deleteDir()
@@ -57,7 +57,7 @@ def call(branches) {
             """
 
             try {
-                sh "mvn -B -f ${workspace}/mybatis3/pom.xml clean test"
+                sh "mvn -B -f mybatis3/pom.xml clean test"
             } catch (err) {
                 throw err
             } finally {

@@ -107,8 +107,8 @@ node('material') {
 
         stage('Test') {
             def branches = [:]
-            genTiDBTest(branches)
-            genIntegrationTest(branches)
+            genTiDBTest(branches, pingcap, tidb_path, tidb_test_path)
+            genIntegrationTest(branches, platform, tidb_path, tidb_test_path)
             parallel branches
         }
 

@@ -1,4 +1,4 @@
-def call(branches) {
+def call(branches, platform, tidb_path, tidb_test_path) {
     branches["Integration DDL Insert Test"] = {
         node('worker') {
             deleteDir()
