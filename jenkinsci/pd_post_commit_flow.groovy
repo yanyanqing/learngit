@@ -469,7 +469,7 @@ node('material') {
     if (currentBuild.result != "SUCCESS") {
         slackSend channel: '#pd', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
     } else {
-        slackSend channel: '#pd', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+//        slackSend channel: '#pd', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
         build job: 'TIDB_LATEST_PUBLISH', wait: false
     }
 }
