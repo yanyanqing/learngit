@@ -12,7 +12,7 @@ node('material') {
     def platform_centos6 = "linux-amd64-centos6"
     def binary = "/binary_registry"
     def githash_tidb
-    def genTiDBTest, genIntegrationTest
+    def genTiDBTest, genIntegrationTest, getChangeLogText, getBuildDuration
 
     catchError {
         stage('SCM Checkout') {
@@ -42,6 +42,8 @@ node('material') {
             fileLoader.withGit('git@github.com:pingcap/SRE.git', 'master', 'github-liuyin', '') {
                 genTiDBTest = fileLoader.load('jenkinsci/common/gen_tidb_test.groovy')
                 genIntegrationTest = fileLoader.load('jenkinsci/common/gen_integration_test.groovy')
+                getChangeLogText = fileLoader.load('jenkinsci/common/get_changelog_text.groovy')
+                getBuildDuration = fileLoader.load('jenkinsci/common/get_build_duration.groovy')
             }
         }
 
@@ -107,8 +109,11 @@ node('material') {
 
         stage('Test') {
             def branches = [:]
+
             genTiDBTest(branches, pingcap, tidb_path, tidb_test_path)
+
             genIntegrationTest(branches, platform, tidb_path, tidb_test_path)
+
             parallel branches
         }
 
@@ -124,16 +129,9 @@ node('material') {
         currentBuild.result = "SUCCESS"
     }
 
-    def changeLogText = ""
-    for (int i = 0; i < currentBuild.changeSets.size(); i++) {
-        for (int j = 0; j < currentBuild.changeSets[i].items.length; j++) {
-            def commitId = "${currentBuild.changeSets[i].items[j].commitId}"
-            def commitMsg = "${currentBuild.changeSets[i].items[j].msg}"
-            changeLogText += "\n" + commitId.substring(0, 7) + " " + commitMsg
-        }
-    }
+    def changeLogText = getChangeLogText()
 
-    def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
+    def duration = getBuildDuration()
 
     def slackMsg = "" +
             "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +

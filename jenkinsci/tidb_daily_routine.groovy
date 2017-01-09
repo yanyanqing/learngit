@@ -9,6 +9,7 @@ node('master') {
     def tidb_test_path = "${pingcap}/tidb-test"
     def cluster_test_path = "${tidb_test_path}/cluster_test"
     def tidb_tools_path = "${pingcap}/tidb-tools"
+    def getBuildDuration
 
     catchError {
         stage('SCM Checkout') {
@@ -35,6 +36,11 @@ node('master') {
                     go get -d -u github.com/satori/go.uuid
                     """
                 }
+            }
+
+            // common
+            fileLoader.withGit('git@github.com:pingcap/SRE.git', 'master', 'github-liuyin', '') {
+                getBuildDuration = fileLoader.load('jenkinsci/common/get_build_duration.groovy')
             }
         }
 
@@ -77,7 +83,7 @@ node('master') {
         currentBuild.result = "SUCCESS"
     }
 
-    def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
+    def duration = getBuildDuration()
 
     def slackMsg = "" +
             "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +

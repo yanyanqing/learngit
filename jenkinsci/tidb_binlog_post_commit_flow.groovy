@@ -11,6 +11,8 @@ node('material') {
     def platform = "linux-amd64"
     def binary = "/binary_registry"
     def githash_binlog
+    def getChangeLogText, getBuildDuration
+
 
     catchError {
         stage('SCM Checkout') {
@@ -48,6 +50,12 @@ node('material') {
                     go get -d -u golang.org/x/text
                     """
                 }
+            }
+
+            // common
+            fileLoader.withGit('git@github.com:pingcap/SRE.git', 'master', 'github-liuyin', '') {
+                getChangeLogText = fileLoader.load('jenkinsci/common/get_changelog_text.groovy')
+                getBuildDuration = fileLoader.load('jenkinsci/common/get_build_duration.groovy')
             }
         }
 
@@ -92,15 +100,15 @@ node('material') {
         }
 
         stage('Test') {
-            node('worker') {
-                deleteDir()
-                unstash 'source-pingcap'
-                sh "cd ${binlog_path} && make test"
-            }
-        }
-
-        stage('Integration Test') {
             def branches = [:]
+
+            branches["Unit Test"] = {
+                node('worker') {
+                    deleteDir()
+                    unstash 'source-pingcap'
+                    sh "cd ${binlog_path} && make test"
+                }
+            }
 
             branches["Mixed DDL & DML Test"] = {
                 node('worker') {
@@ -205,16 +213,9 @@ node('material') {
         currentBuild.result = "SUCCESS"
     }
 
-    def changeLogText = ""
-    for (int i = 0; i < currentBuild.changeSets.size(); i++) {
-        for (int j = 0; j < currentBuild.changeSets[i].items.length; j++) {
-            def commitId = "${currentBuild.changeSets[i].items[j].commitId}"
-            def commitMsg = "${currentBuild.changeSets[i].items[j].msg}"
-            changeLogText += "\n" + commitId.substring(0, 7) + " " + commitMsg
-        }
-    }
+    def changeLogText = getChangeLogText()
 
-    def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
+    def duration = getBuildDuration()
 
     def slackMsg = "" +
             "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +

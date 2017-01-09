@@ -13,6 +13,7 @@ node('material') {
     def platform_centos6 = "linux-amd64-centos6"
     def binary = "/binary_registry"
     def githash_pd
+    def genIntegrationTest, getChangeLogText, getBuildDuration
 
     catchError {
         stage('SCM Checkout') {
@@ -36,6 +37,13 @@ node('material') {
                 retry(3) {
                     git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb-test.git'
                 }
+            }
+
+            // common
+            fileLoader.withGit('git@github.com:pingcap/SRE.git', 'master', 'github-liuyin', '') {
+                genIntegrationTest = fileLoader.load('jenkinsci/common/gen_integration_test.groovy')
+                getChangeLogText = fileLoader.load('jenkinsci/common/get_changelog_text.groovy')
+                getBuildDuration = fileLoader.load('jenkinsci/common/get_build_duration.groovy')
             }
         }
 
@@ -109,331 +117,8 @@ node('material') {
                     """
                 }
             }
-            branches["Integration DDL Insert Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
 
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        #sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        #sleep 5
-                        """
-
-                        timeout(10) {
-                            sh """
-                            cp ${tidb_path}/bin/tidb-server ${tidb_test_path}/ddl_test/ddltest_tidb-server
-                            cd ${tidb_test_path}/ddl_test && ./run-tests.sh -check.f='TestDDLSuite.TestSimple.*Insert'
-                            """
-                        }
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration DDL Update Test"] = {
-                node('worker-high') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        #sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        #sleep 5
-                        """
-
-                        timeout(10) {
-                            sh """
-                            cp ${tidb_path}/bin/tidb-server ${tidb_test_path}/ddl_test/ddltest_tidb-server
-                            cd ${tidb_test_path}/ddl_test && ./run-tests.sh -check.f='TestDDLSuite.TestSimple.*Update'
-                            """
-                        }
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration DDL Delete Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        #sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        #sleep 5
-                        """
-
-                        timeout(10) {
-                            sh """
-                            cp ${tidb_path}/bin/tidb-server ${tidb_test_path}/ddl_test/ddltest_tidb-server
-                            cd ${tidb_test_path}/ddl_test && ./run-tests.sh -check.f='TestDDLSuite.TestSimple.*Delete'
-                            """
-                        }
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration DDL Other Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        #sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        #sleep 5
-                        """
-
-                        timeout(10) {
-                            sh """
-                            cp ${tidb_path}/bin/tidb-server ${tidb_test_path}/ddl_test/ddltest_tidb-server
-                            cd ${tidb_test_path}/ddl_test && ./run-tests.sh -check.f='TestDDLSuite.TestSimp(le\$|leMixed|leInc)'
-                            """
-                        }
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration DDL Column and Index Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        #sleep 5
-                        #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        #sleep 5
-                        """
-
-                        timeout(10) {
-                            sh """
-                            cp ${tidb_path}/bin/tidb-server ${tidb_test_path}/ddl_test/ddltest_tidb-server
-                            cd ${tidb_test_path}/ddl_test && ./run-tests.sh -check.f='TestDDLSuite.Test(Column|Index)'
-                            """
-                        }
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration Connection Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        sleep 5
-                        """
-
-                        sh "cd ${tidb_path} && go test --args with-tikv store/tikv/*.go"
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration TiDB Test"] = {
-                node('worker-high') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        sleep 5
-                        """
-
-                        sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make tidbtest"
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration MySQL Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        sleep 5
-                        """
-
-                        sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make mysqltest"
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration GORM Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        sleep 5
-                        """
-
-                        sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make gormtest"
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
-            branches["Integration Go SQL Test"] = {
-                node('worker') {
-                    deleteDir()
-                    unstash 'source-pingcap'
-                    unstash "release-pd-${platform}"
-                    unstash "release-tikv-${platform}"
-
-                    try {
-                        sh """
-                        killall -9 pd-server || true
-                        release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                        sleep 5
-                        killall -9 tikv-server || true
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                        sleep 5
-                        release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                        sleep 5
-                        """
-
-                        sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make gosqltest"
-                    } catch (err) {
-                        throw err
-                    } finally {
-                        sh "killall -9 tikv-server || true"
-                        sh "killall -9 pd-server || true"
-                    }
-                }
-            }
+            genIntegrationTest(branches, platform, tidb_path, tidb_test_path)
 
             parallel branches
         }
@@ -450,16 +135,9 @@ node('material') {
         currentBuild.result = "SUCCESS"
     }
 
-    def changeLogText = ""
-    for (int i = 0; i < currentBuild.changeSets.size(); i++) {
-        for (int j = 0; j < currentBuild.changeSets[i].items.length; j++) {
-            def commitId = "${currentBuild.changeSets[i].items[j].commitId}"
-            def commitMsg = "${currentBuild.changeSets[i].items[j].msg}"
-            changeLogText += "\n" + commitId.substring(0, 7) + " " + commitMsg
-        }
-    }
+    def changeLogText = getChangeLogText()
 
-    def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
+    def duration = getBuildDuration()
 
     def slackMsg = "" +
             "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}, " +
