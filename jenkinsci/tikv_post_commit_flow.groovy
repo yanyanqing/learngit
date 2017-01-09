@@ -57,7 +57,7 @@ node('material') {
             branches["linux-amd64"] = {
                 // tikv
                 sh """
-                rustup default nightly-2016-12-19
+                rustup default nightly-2016-08-06
                 cd ${tikv_path}
                 make static_release
                 """
@@ -79,7 +79,7 @@ node('material') {
                     }
 
                     sh """
-                    rustup default nightly-2016-12-19
+                    rustup default nightly-2016-08-06
                     cd ${tikv_path}
                     git checkout ${githash_tikv}
                     scl enable devtoolset-4 python27 "make static_release"
