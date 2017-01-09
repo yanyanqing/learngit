@@ -248,7 +248,7 @@ node('material-branch') {
     if (currentBuild.result != "SUCCESS") {
         slackSend channel: '#dt', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
     } else {
-        slackSend channel: '#dt', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
+//        slackSend channel: '#dt', color: 'good', teamDomain: 'pingcap', tokenCredentialId: 'slack-token', message: "${slackMsg}"
 
         if (publish_tag != "NOT_PUBLISH") {
             build job: 'TIDB_SPEC_PUBLISH', parameters: [
