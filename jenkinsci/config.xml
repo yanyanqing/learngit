@@ -57,6 +57,7 @@
                         <volumes>
                             <string>/etc/localtime:/etc/localtime:ro</string>
                             <string>/binary_registry:/binary_registry</string>
+                            <string>/jenkins_homes/material:/home/jenkins/workspace</string>
                         </volumes>
                         <volumesFrom2/>
                         <environment/>
@@ -147,6 +148,100 @@
                         <network></network>
                         <volumes>
                             <string>/etc/localtime:/etc/localtime:ro</string>
+                            <string>/jenkins_homes/material-centos6:/home/jenkins/workspace</string>
+                        </volumes>
+                        <volumesFrom2/>
+                        <environment/>
+                        <bindPorts></bindPorts>
+                        <bindAllPorts>false</bindAllPorts>
+                        <privileged>false</privileged>
+                        <tty>false</tty>
+                        <extraHosts class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+                            <c class="list"/>
+                            <list reference="../c"/>
+                        </extraHosts>
+                    </dockerTemplateBase>
+                    <removeVolumes>true</removeVolumes>
+                    <pullStrategy>PULL_LATEST</pullStrategy>
+                </com.nirima.jenkins.plugins.docker.DockerTemplate>
+                <com.nirima.jenkins.plugins.docker.DockerTemplate>
+                    <configVersion>2</configVersion>
+                    <labelString>material-branch</labelString>
+                    <launcher class="com.nirima.jenkins.plugins.docker.launcher.DockerComputerSSHLauncher">
+                        <sshConnector plugin="ssh-slaves@1.12">
+                            <port>22</port>
+                            <credentialsId>jenkins-slave</credentialsId>
+                            <jvmOptions></jvmOptions>
+                            <javaPath></javaPath>
+                            <maxNumRetries>0</maxNumRetries>
+                            <retryWaitTime>0</retryWaitTime>
+                        </sshConnector>
+                    </launcher>
+                    <remoteFsMapping>/var/lib/jenkins</remoteFsMapping>
+                    <remoteFs>/home/jenkins</remoteFs>
+                    <instanceCap>1</instanceCap>
+                    <mode>EXCLUSIVE</mode>
+                    <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+                    <numExecutors>1</numExecutors>
+                    <dockerTemplateBase>
+                        <image>pingcap/jenkins-slave-aws:branch</image>
+                        <dockerCommand></dockerCommand>
+                        <lxcConfString></lxcConfString>
+                        <hostname></hostname>
+                        <dnsHosts>
+                            <string>119.29.29.29</string>
+                        </dnsHosts>
+                        <network></network>
+                        <volumes>
+                            <string>/etc/localtime:/etc/localtime:ro</string>
+                            <string>/binary_registry:/binary_registry</string>
+                            <string>/jenkins_homes/material-branch:/home/jenkins/workspace</string>
+                        </volumes>
+                        <volumesFrom2/>
+                        <environment/>
+                        <bindPorts></bindPorts>
+                        <bindAllPorts>false</bindAllPorts>
+                        <privileged>false</privileged>
+                        <tty>false</tty>
+                        <extraHosts class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+                            <c class="list"/>
+                            <list reference="../c"/>
+                        </extraHosts>
+                    </dockerTemplateBase>
+                    <removeVolumes>true</removeVolumes>
+                    <pullStrategy>PULL_LATEST</pullStrategy>
+                </com.nirima.jenkins.plugins.docker.DockerTemplate>
+                <com.nirima.jenkins.plugins.docker.DockerTemplate>
+                    <configVersion>2</configVersion>
+                    <labelString>material-branch-centos6</labelString>
+                    <launcher class="com.nirima.jenkins.plugins.docker.launcher.DockerComputerSSHLauncher">
+                        <sshConnector plugin="ssh-slaves@1.12">
+                            <port>22</port>
+                            <credentialsId>jenkins-slave</credentialsId>
+                            <jvmOptions></jvmOptions>
+                            <javaPath></javaPath>
+                            <maxNumRetries>0</maxNumRetries>
+                            <retryWaitTime>0</retryWaitTime>
+                        </sshConnector>
+                    </launcher>
+                    <remoteFsMapping>/var/lib/jenkins</remoteFsMapping>
+                    <remoteFs>/home/jenkins</remoteFs>
+                    <instanceCap>1</instanceCap>
+                    <mode>EXCLUSIVE</mode>
+                    <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+                    <numExecutors>1</numExecutors>
+                    <dockerTemplateBase>
+                        <image>pingcap/jenkins-slave-centos6-aws:branch</image>
+                        <dockerCommand></dockerCommand>
+                        <lxcConfString></lxcConfString>
+                        <hostname></hostname>
+                        <dnsHosts>
+                            <string>119.29.29.29</string>
+                        </dnsHosts>
+                        <network></network>
+                        <volumes>
+                            <string>/etc/localtime:/etc/localtime:ro</string>
+                            <string>/jenkins_homes/material-branch-centos6:/home/jenkins/workspace</string>
                         </volumes>
                         <volumesFrom2/>
                         <environment/>
