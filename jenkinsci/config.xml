@@ -57,7 +57,6 @@
                         <volumes>
                             <string>/etc/localtime:/etc/localtime:ro</string>
                             <string>/binary_registry:/binary_registry</string>
-                            <string>/jenkins_homes/material:/home/jenkins/workspace</string>
                         </volumes>
                         <volumesFrom2/>
                         <environment/>
@@ -148,7 +147,6 @@
                         <network></network>
                         <volumes>
                             <string>/etc/localtime:/etc/localtime:ro</string>
-                            <string>/jenkins_homes/material-centos6:/home/jenkins/workspace</string>
                         </volumes>
                         <volumesFrom2/>
                         <environment/>
@@ -195,7 +193,6 @@
                         <volumes>
                             <string>/etc/localtime:/etc/localtime:ro</string>
                             <string>/binary_registry:/binary_registry</string>
-                            <string>/jenkins_homes/material-branch:/home/jenkins/workspace</string>
                         </volumes>
                         <volumesFrom2/>
                         <environment/>
@@ -241,7 +238,6 @@
                         <network></network>
                         <volumes>
                             <string>/etc/localtime:/etc/localtime:ro</string>
-                            <string>/jenkins_homes/material-branch-centos6:/home/jenkins/workspace</string>
                         </volumes>
                         <volumesFrom2/>
                         <environment/>

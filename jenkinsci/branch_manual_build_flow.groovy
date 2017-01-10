@@ -90,6 +90,25 @@ node('material-branch') {
             }
             branches["linux-amd64-centos6"] = {
                 node('material-branch-centos6') {
+                    // tikv
+                    dir("$tikv_path") {
+                        retry(3) {
+                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git'
+                        }
+                    }
+
+                    sh """
+                    rustup default nightly-2016-08-06
+                    cd ${tikv_path}
+                    git checkout ${githash_tikv}
+                    scl enable devtoolset-4 python27 "make static_release"
+                    rm -rf ${workspace}/release && mkdir -p ${workspace}/release/tikv/bin/${platform_centos6}
+                    mv bin/* ${workspace}/release/tikv/bin/${platform_centos6}/
+                    git checkout master
+                    """
+
+                    stash includes: "release/tikv/bin/${platform_centos6}/**", name: "release_tikv_${platform_centos6}"
+
                     // tidb
                     dir("${tidb_path}") {
                         retry(3) {
@@ -125,25 +144,6 @@ node('material-branch') {
                     """
 
                     stash includes: "release/pd/bin/${platform_centos6}/**", name: "release_pd_${platform_centos6}"
-
-                    // tikv
-                    dir("$tikv_path") {
-                        retry(3) {
-                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git'
-                        }
-                    }
-
-                    sh """
-                    rustup default nightly-2016-08-06
-                    cd ${tikv_path}
-                    git checkout ${githash_tikv}
-                    scl enable devtoolset-4 python27 "make static_release"
-                    rm -rf ${workspace}/release && mkdir -p ${workspace}/release/tikv/bin/${platform_centos6}
-                    mv bin/* ${workspace}/release/tikv/bin/${platform_centos6}/
-                    git checkout master
-                    """
-
-                    stash includes: "release/tikv/bin/${platform_centos6}/**", name: "release_tikv_${platform_centos6}"
                 }
             }
             parallel branches
