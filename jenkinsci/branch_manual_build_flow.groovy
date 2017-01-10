@@ -93,7 +93,7 @@ node('material-branch') {
                     // tikv
                     dir("$tikv_path") {
                         retry(3) {
-                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git'
+                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git', branch: "${tikv_branch}"
                         }
                     }
 
@@ -102,9 +102,9 @@ node('material-branch') {
                     cd ${tikv_path}
                     git checkout ${githash_tikv}
                     scl enable devtoolset-4 python27 "make static_release"
-                    rm -rf ${workspace}/release && mkdir -p ${workspace}/release/tikv/bin/${platform_centos6}
+                    rm -rf ${workspace}/release/tikv && mkdir -p ${workspace}/release/tikv/bin/${platform_centos6}
                     mv bin/* ${workspace}/release/tikv/bin/${platform_centos6}/
-                    git checkout master
+                    git checkout ${tikv_branch}
                     """
 
                     stash includes: "release/tikv/bin/${platform_centos6}/**", name: "release_tikv_${platform_centos6}"
@@ -112,7 +112,7 @@ node('material-branch') {
                     // tidb
                     dir("${tidb_path}") {
                         retry(3) {
-                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git'
+                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git', branch: "${tidb_branch}"
                         }
                     }
 
@@ -120,9 +120,9 @@ node('material-branch') {
                     cd ${tidb_path}
                     git checkout ${githash_tidb}
                     make
-                    rm -rf ${workspace}/release && mkdir -p ${workspace}/release/tidb/bin/${platform_centos6}
+                    rm -rf ${workspace}/release/tidb && mkdir -p ${workspace}/release/tidb/bin/${platform_centos6}
                     cp bin/tidb-server ${workspace}/release/tidb/bin/${platform_centos6}/
-                    git checkout master
+                    git checkout ${tidb_branch}
                     """
 
                     stash includes: "release/tidb/bin/${platform_centos6}/**", name: "release_tidb_${platform_centos6}"
@@ -130,7 +130,7 @@ node('material-branch') {
                     // pd
                     dir("${pd_path}") {
                         retry(3) {
-                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/pd.git'
+                            git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/pd.git', branch: "${pd_branch}"
                         }
                     }
 
@@ -138,9 +138,9 @@ node('material-branch') {
                     cd ${pd_path}
                     git checkout ${githash_pd}
                     make
-                    rm -rf ${workspace}/release && mkdir -p ${workspace}/release/pd/bin/${platform_centos6}
+                    rm -rf ${workspace}/release/pd && mkdir -p ${workspace}/release/pd/bin/${platform_centos6}
                     cp bin/pd-server ${workspace}/release/pd/bin/${platform_centos6}/
-                    git checkout master
+                    git checkout ${pd_branch}
                     """
 
                     stash includes: "release/pd/bin/${platform_centos6}/**", name: "release_pd_${platform_centos6}"
