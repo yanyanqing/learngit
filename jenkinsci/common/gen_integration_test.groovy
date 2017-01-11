@@ -8,6 +8,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
 
             try {
                 sh """
+                killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
                 sleep 5
@@ -31,6 +32,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
             } finally {
                 sh "killall -9 tikv-server || true"
                 sh "killall -9 pd-server || true"
+                sh "killall -9 ddltest_tidb-server || true"
             }
         }
     }
@@ -43,6 +45,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
 
             try {
                 sh """
+                killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
                 sleep 5
@@ -66,6 +69,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
             } finally {
                 sh "killall -9 tikv-server || true"
                 sh "killall -9 pd-server || true"
+                sh "killall -9 ddltest_tidb-server || true"
             }
         }
     }
@@ -78,6 +82,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
 
             try {
                 sh """
+                killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
                 sleep 5
@@ -101,6 +106,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
             } finally {
                 sh "killall -9 tikv-server || true"
                 sh "killall -9 pd-server || true"
+                sh "killall -9 ddltest_tidb-server || true"
             }
         }
     }
@@ -113,6 +119,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
 
             try {
                 sh """
+                killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
                 sleep 5
@@ -136,6 +143,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
             } finally {
                 sh "killall -9 tikv-server || true"
                 sh "killall -9 pd-server || true"
+                sh "killall -9 ddltest_tidb-server || true"
             }
         }
     }
@@ -148,6 +156,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
 
             try {
                 sh """
+                killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
                 sleep 5
@@ -171,6 +180,7 @@ def call(branches, platform, tidb_path, tidb_test_path) {
             } finally {
                 sh "killall -9 tikv-server || true"
                 sh "killall -9 pd-server || true"
+                sh "killall -9 ddltest_tidb-server || true"
             }
         }
     }
