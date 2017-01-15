@@ -53,6 +53,7 @@ variable ami {
     jenkins_node = "ami-f052869d"
     binlog_pump = "ami-0220b23b"
     binlog_drainer = "ami-0220b23b"
+    oltp_bank_test = "ami-fd528690"
   }
 }
 
@@ -71,6 +72,7 @@ variable instance_type {
     jenkins_node = "t2.xlarge"
     binlog_pump = "m3.medium"
     binlog_drainer = "m3.large"
+    oltp_bank_test = "c3.xlarge"
   }
 }
 
@@ -89,6 +91,7 @@ variable count {
     region_test_tidb = 0
     region_test_tikv = 0
     bench_test = 1
+    oltp_bank_test = 24
   }
 }
 

@@ -407,6 +407,27 @@ resource "aws_instance" "bench_test"{
   }
 }
 
+resource "aws_instance" "oltp_bank_test"{
+  ami = "${var.ami["oltp_bank_test"]}"
+  instance_type = "${var.instance_type["oltp_bank_test"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["oltp_bank_test"]}"
+  subnet_id = "${var.subnet["stability"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "oltp-bank-test-${count.index}"
+    Creator = "shuning"
+  }
+}
+
 resource "aws_instance" "jenkins_master" {
   ami = "${var.ami["jenkins_master"]}"
   instance_type = "${var.instance_type["jenkins_master"]}"

@@ -56,3 +56,7 @@ output "jenkins_node_private_ip" {
   value = "${join(",", aws_instance.jenkins_node.*.private_ip)}"
 }
 
+output "oltp_bank_private_ip" {
+  value = "${join(",", aws_instance.oltp_bank_test.*.private_ip)}"
+}
+
