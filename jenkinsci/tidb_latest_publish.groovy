@@ -93,12 +93,13 @@ __EOF__
                     // prepare
                     sh """
                     rm -rf pd_build && mkdir pd_build
-                    cp ${binary}/pd/${pd_githash}/bin/${platform}/pd-server pd_build/
+                    cp ${binary}/pd/${pd_githash}/bin/${platform}/* pd_build/
                     cp ${binary}/pd/${pd_githash}/conf/config.toml pd_build/
 
                     cat > pd_build/Dockerfile << __EOF__
 FROM pingcap/alpine-glibc
 COPY pd-server /pd-server
+COPY pd-ctl /pd-ctl
 COPY config.toml /config.toml
 EXPOSE 2379 2380
 ENTRYPOINT ["/pd-server"]
@@ -136,7 +137,7 @@ __EOF__
                 # TiDB
                 cp ${binary}/tidb/${tidb_githash}/bin/${target_platform}/tidb-server ${target_package}/bin
                 # PD
-                cp ${binary}/pd/${pd_githash}/bin/${target_platform}/pd-server ${target_package}/bin
+                cp ${binary}/pd/${pd_githash}/bin/${target_platform}/* ${target_package}/bin
                 cp ${binary}/pd/${pd_githash}/conf/config.toml ${target_package}/conf/pd.toml
                 # Package
                 tar czvf ${target_package}.tar.gz ${target_package}
@@ -161,7 +162,7 @@ __EOF__
                 # TiDB
                 cp ${binary}/tidb/${tidb_githash}/bin/${target_platform}/tidb-server ${target_package}/bin
                 # PD
-                cp ${binary}/pd/${pd_githash}/bin/${target_platform}/pd-server ${target_package}/bin
+                cp ${binary}/pd/${pd_githash}/bin/${target_platform}/* ${target_package}/bin
                 cp ${binary}/pd/${pd_githash}/conf/config.toml ${target_package}/conf/pd.toml
                 # Package
                 tar czvf ${target_package}.tar.gz ${target_package}

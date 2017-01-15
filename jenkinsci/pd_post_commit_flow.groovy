@@ -71,7 +71,7 @@ node('material') {
                     git checkout ${githash_pd}
                     make
                     rm -rf ${workspace}/release && mkdir -p ${workspace}/release/pd/bin/${platform_centos6}
-                    cp bin/pd-server ${workspace}/release/pd/bin/${platform_centos6}/
+                    cp bin/* ${workspace}/release/pd/bin/${platform_centos6}/
                     git checkout master
                     """
 
@@ -88,7 +88,7 @@ node('material') {
 
             # pd
             mkdir -p release/pd/bin/${platform} release/pd/conf release/pd/src
-            cp ${pd_path}/bin/pd-server release/pd/bin/${platform}/
+            cp ${pd_path}/bin/* release/pd/bin/${platform}/
             cp ${pd_path}/conf/config.toml release/pd/conf/
             echo '${githash_pd}' > release/pd/src/.githash
 
