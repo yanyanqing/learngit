@@ -75,6 +75,46 @@ node('material') {
             """
         }
 
+        stage('Publish Docker') {
+            node('master') {
+                def tools_githash = sh(returnStdout: true, script: "cat ${binary}/tools_latest/src/.githash").trim()
+                def tools_latest = ""
+                if (fileExists("tools_githash.latest")) {
+                    tools_latest = readFile "tools_githash.latest"
+                }
+                if (tools_githash != tools_latest) {
+                    // prepare
+                    sh """
+                    rm -rf tools_build && mkdir tools_build
+                    cp ${binary}/tools/${tools_githash}/bin/${platform}/* tools_build/
+                    cp ${binary}/tools/${tools_githash}/conf/syncer.toml tools_build/
+
+                    cat > tools_build/Dockerfile << __EOF__
+FROM pingcap/alpine-glibc
+COPY checker /checker
+COPY importer /importer
+COPY loader /loader
+COPY syncer /syncer
+COPY syncer.toml /syncer.toml
+CMD ["/syncer"]
+__EOF__
+                    """
+
+                    // build
+                    def tools_image = docker.build('pingcap/tidb-tools', "tools_build")
+
+                    // push
+                    retry(10) {
+                        timeout(time: 10, unit: 'MINUTES') {
+                            tools_image.push()
+                        }
+                    }
+
+                    writeFile file: 'tools_githash.latest', text: "${tools_githash}"
+                }
+            }
+        }
+
         stage('Publish Binary') {
             node('master') {
                 def branches = [:]
