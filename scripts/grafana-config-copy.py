@@ -39,7 +39,7 @@ class Cluster(object):
             print('done')
         return dashboards
 
-    def dumps(self, datasource, cluster='My Cluster'):
+    def dumps(self, datasource, cluster='TiDB Cluster'):
         dashboards = self.exports()
         for kind, dashboard in dashboards.items():
             print('Dumping {} dashboard as {}.json'.format(kind, kind), end='\t...... ')
@@ -48,7 +48,7 @@ class Cluster(object):
             dashboard['id'] = None
             for row in dashboard['rows']:
                 for panel in row['panels']:
-                    panel['datasource'] = self.datasource
+                    panel['datasource'] = '${DS_TiDB-Cluster}'
             if 'templating' in dashboard:
                 for templating in dashboard['templating']['list']:
                     if templating['type'] == 'query':
@@ -59,7 +59,7 @@ class Cluster(object):
                 for annotation in dashboard['annotations']['list']:
                     annotation['datasource'] = self.datasource
             dashboard['__inputs'] = [
-                {'name': 'DS_PROMETHEUS', 'label': cluster, 'description': '', 'type': 'datasource', 'pluginId': 'prometheus', 'pluginName': 'Prometheus'}
+                {'name': 'DS_TiDB-Cluster', 'label': cluster, 'description': '', 'type': 'datasource', 'pluginId': 'prometheus', 'pluginName': 'Prometheus'}
             ]
             with open('{}.json'.format(kind), 'w') as f:
                 json.dump(dashboard, f, indent=2)
