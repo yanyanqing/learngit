@@ -11,17 +11,24 @@ from urlparse import urljoin
 import time
 import re
 import calendar
-
-PROMETHEUS_URL = "http://54.223.214.251:9090/"
-PUSHGATEWAY_URL = "http://54.223.214.251:9091/"
-
-current_ts = time.time()
+import os
 
 SECOND = 1
 MINUTE = 60 * SECOND
 HOUR   = 60 * MINUTE
 DAY    = 24 * HOUR
 
+PROMETHEUS_URL = "http://127.0.0.1:9090/"
+PUSHGATEWAY_URL = "http://127.0.0.1:9091/"
+TIMEOUT = 5
+if os.getenv('PROMETHEUS_URL'):
+    PROMETHEUS_URL = os.getenv('PROMETHEUS_URL')
+if os.getenv('PUSHGATEWAY_URL'):
+    PUSHGATEWAY_URL = os.getenv('PUSHGATEWAY_URL')
+if os.getenv('TIMEOUT'):
+    TIMEOUT = os.getenv('TIMEOUT')
+
+current_ts = time.time()
 
 def query_metadata():
     url = urljoin(PROMETHEUS_URL, '/api/v1/series?match[]=up')
@@ -58,7 +65,7 @@ def delete_series_by_job_instance(job, instance):
     return True
 
 
-def query_out_dated_job_from_pushgateway(timeout=HOUR):
+def query_out_dated_job_from_pushgateway(timeout):
     html = urllib2.urlopen(PUSHGATEWAY_URL).read()
     pattern = re.compile(
         r'<span class="caret"></span>\s+'
@@ -87,7 +94,6 @@ def query_out_dated_job_from_pushgateway(timeout=HOUR):
         if diff > timeout:
             print("  MARKED as OUTDATED!")
             ret.append((job, instance))
-
     return ret
 
 
@@ -103,7 +109,9 @@ def delete_job_from_pushgateway(job, instance):
 if __name__ == '__main__':
     #query_metadata()
     #query_all_series()
-    for job, instance in query_out_dated_job_from_pushgateway():
+    print('prometheus url: {}'.format(PROMETHEUS_URL))
+    print('pushgateway url: {}'.format(PUSHGATEWAY_URL))
+    for job, instance in query_out_dated_job_from_pushgateway(timeout=TIMEOUT):
         print("deleting", job, instance)
         delete_job_from_pushgateway(job, instance)
         delete_series_by_job_instance(job, instance)

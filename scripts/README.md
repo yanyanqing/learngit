@@ -1,4 +1,4 @@
-# Grafana Dashboards Copy Scripts
+# Grafana Dashboards Copy Script
 
 ## Usage
 
@@ -44,3 +44,17 @@
 	You can either provide an editor api key, or user and password. If `url` is empty, json files will be dumped to current directory.
 
 ### Run `./grafana-config-copy.py src.json dst.json`
+
+
+# Prometheus & Pushgateway metrics cleaner script
+
+When metrics is behind pushgateway, prometheus could not determine whether a server is down or not, so would continue retrieving metrics from pushgateway cached data which are the last pushed metrics. These metrics would cause confusion when viewing dashboards and fire alerts to alertmanager continually. So these outdated metrics must be cleaned up. metrics-delete.py script does the job.
+
+```
+export PROMETHEUS_URL=http://127.0.0.1:9090
+export PUSHGATEWAY_URL=http://127.0.0.1:9091
+export TIMEOUT=5
+./metrics-delete.py
+```
+
+`TIMEOUT` environment variable is how long a metrics can be seen as outdated if not updating, its unit is minutes. Default timeout is 5 minutes. Be careful when setting this too small, because it will delete the outdated metrics from prometheus permanently.
