@@ -13,7 +13,6 @@ node('material') {
     def githash_binlog
     def getChangeLogText, getBuildDuration
 
-
     catchError {
         stage('SCM Checkout') {
             // tidb-binlog
@@ -34,7 +33,7 @@ node('material') {
             // goleveldb
             dir("go/src/github.com/pingcap/goleveldb") {
                 retry(3) {
-                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'https://github.com/pingcap/goleveldb.git'
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/goleveldb.git'
                 }
             }
 
@@ -182,9 +181,49 @@ node('material') {
             """
         }
 
-        stage('Publish Binary') {
+        stage('Publish') {
             node('master') {
                 def branches = [:]
+
+                branches['Docker'] = {
+                    def binlog_latest = ""
+                    if (fileExists("binlog_githash.latest")) {
+                        binlog_latest = readFile "binlog_githash.latest"
+                    }
+                    if (githash_binlog != binlog_latest) {
+                        // prepare
+                        sh """
+                    rm -rf binlog_build && mkdir binlog_build
+                    cp ${binary}/binlog/${githash_binlog}/bin/${platform}/* binlog_build/
+                    cp ${binary}/binlog/${githash_binlog}/conf/* binlog_build/
+
+                    cat > binlog_build/Dockerfile << __EOF__
+FROM pingcap/alpine-glibc
+COPY pump /pump
+COPY cistern /cistern
+COPY drainer /drainer
+COPY pump.toml /pump.toml
+COPY cistern.toml /cistern.toml
+COPY drainer.toml /drainer.toml
+EXPOSE 8249 8250
+CMD ["/pump"]
+__EOF__
+                    """
+
+                        // build
+                        def binlog_image = docker.build('pingcap/tidb-binlog', "binlog_build")
+
+                        // push
+                        retry(10) {
+                            timeout(time: 10, unit: 'MINUTES') {
+                                binlog_image.push()
+                            }
+                        }
+
+                        writeFile file: 'binlog_githash.latest', text: "${githash_binlog}"
+                    }
+                }
+
 
                 branches['linux-amd64'] = {
                     def target_platform = 'linux-amd64'

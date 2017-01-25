@@ -26,7 +26,7 @@ node('material-branch') {
             // tidb
             dir("${tidb_path}") {
                 retry(3) {
-                    git credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git', branch: "${tidb_branch}"
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tidb.git', branch: "${tidb_branch}"
                 }
                 githash_tidb = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             }
@@ -34,7 +34,7 @@ node('material-branch') {
             // tikv
             dir("${tikv_path}") {
                 retry(3) {
-                    git credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git', branch: "${tikv_branch}"
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/tikv.git', branch: "${tikv_branch}"
                 }
                 githash_tikv = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             }
@@ -42,7 +42,7 @@ node('material-branch') {
             // pd
             dir("${pd_path}") {
                 retry(3) {
-                    git credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/pd.git', branch: "${pd_branch}"
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, url: 'git@github.com:pingcap/pd.git', branch: "${pd_branch}"
                 }
                 githash_pd = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
             }
