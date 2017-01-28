@@ -60,3 +60,6 @@ output "oltp_bank_private_ip" {
   value = "${join(",", aws_instance.oltp_bank_test.*.private_ip)}"
 }
 
+output "async_apply_private_ip" {
+  value = "${join(",", aws_instance.async_apply_test.*.private_ip)}"
+}

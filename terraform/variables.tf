@@ -54,6 +54,7 @@ variable ami {
     binlog_pump = "ami-0220b23b"
     binlog_drainer = "ami-0220b23b"
     oltp_bank_test = "ami-fd528690"
+    async_apply_test = "ami-ae74a0c3" # newly built ami with essential packages installed
   }
 }
 
@@ -73,6 +74,7 @@ variable instance_type {
     binlog_pump = "m3.medium"
     binlog_drainer = "m3.large"
     oltp_bank_test = "c3.xlarge"
+    async_apply_test = "c3.xlarge"
   }
 }
 
@@ -92,6 +94,7 @@ variable count {
     region_test_tikv = 0
     bench_test = 1
     oltp_bank_test = 24
+    async_apply_test = 8
   }
 }
 

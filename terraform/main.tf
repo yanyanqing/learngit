@@ -428,6 +428,27 @@ resource "aws_instance" "oltp_bank_test"{
   }
 }
 
+resource "aws_instance" "async_apply_test"{
+  ami = "${var.ami["async_apply_test"]}"
+  instance_type = "${var.instance_type["async_apply_test"]}"
+  key_name = "${var.ssh_key_name["internal"]}"
+  count = "${var.count["async_apply_test"]}"
+  subnet_id = "${var.subnet["stability"]}"
+  vpc_security_group_ids = ["${aws_security_group.base.id}"]
+  connection {
+    user = "ubuntu"
+    agent = false
+    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+    bastion_host = "${var.bastion_host}"
+    bastion_user = "ec2-user"
+    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+  }
+  tags {
+    Name = "async-apply-test-${count.index}"
+    Creator = "dengshuan"
+  }
+}
+
 resource "aws_instance" "jenkins_master" {
   ami = "${var.ami["jenkins_master"]}"
   instance_type = "${var.instance_type["jenkins_master"]}"
@@ -477,7 +498,7 @@ resource "aws_instance" "jenkins_node" {
   root_block_device {
     volume_type = "gp2"
     volume_size = "${var.root_size["jenkins_node"]}"
-    delete_on_termination = true 
+    delete_on_termination = true
   }
 }
 
