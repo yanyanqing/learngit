@@ -210,6 +210,20 @@ resource "aws_eip" "nginx" {
   associate_with_private_ip = "10.0.0.10"
 }
 
+resource "aws_ebs_volume" "prometheus" {
+  availability_zone = "cn-north-1a"
+  size = 100
+  tags {
+    Name = "Prometheus"
+  }
+}
+
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/xvdb"
+  volume_id = "${aws_ebs_volume.prometheus.id}"
+  instance_id = "${aws_instance.prometheus.id}"
+}
+
 resource "aws_instance" "prometheus" {
   ami = "${var.ami["prometheus"]}"
   instance_type = "${var.instance_type["prometheus"]}"
