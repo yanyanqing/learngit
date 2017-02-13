@@ -74,7 +74,6 @@ node('material') {
             mkdir -p release/binlog/bin/${platform} release/binlog/conf release/binlog/src
             cp ${binlog_path}/bin/* release/binlog/bin/${platform}/
             cp ${binlog_path}/cmd/drainer/drainer.toml release/binlog/conf/drainer.toml
-            cp ${binlog_path}/cmd/cistern/cistern.toml release/binlog/conf/cistern.toml
             cp ${binlog_path}/cmd/pump/pump.toml release/binlog/conf/pump.toml
             echo '${githash_binlog}' > release/binlog/src/.githash
 
@@ -142,11 +141,6 @@ node('material') {
                         sleep 5
                         release/tidb/bin/${platform}/tidb-server -P 3306 -status=20080 &>target_tidb.log &
                         sleep 5
-
-                        # cistern
-                        killall -9 cistern || true
-                        release/binlog/bin/${platform}/cistern &>cistern_test.log &
-                        sleep 5
  
                         # drainer
                         killall -9 drainer || true
@@ -162,7 +156,6 @@ node('material') {
                         sh "killall -9 drainer || true"
                         sh "killall -9 tidb-server || true"
                         sh "killall -9 pump || true"
-                        sh "killall -9 cistern || true"
                         sh "killall -9 tikv-server || true"
                         sh "killall -9 pd-server || true"
                     }
@@ -200,10 +193,8 @@ node('material') {
                     cat > binlog_build/Dockerfile << __EOF__
 FROM pingcap/alpine-glibc
 COPY pump /pump
-COPY cistern /cistern
 COPY drainer /drainer
 COPY pump.toml /pump.toml
-COPY cistern.toml /cistern.toml
 COPY drainer.toml /drainer.toml
 EXPOSE 8249 8250
 CMD ["/pump"]
