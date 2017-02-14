@@ -33,8 +33,8 @@ RUN go get golang.org/x/tools/go/gcimporter15 \
 RUN adduser jenkins --uid 1000 \
 	&& echo "jenkins:jenkins" | chpasswd
 
-RUN su jenkins -c "curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2016-12-19 -y" \
-	&& su jenkins -c "/home/jenkins/.cargo/bin/rustup default nightly-2016-12-19"
+RUN su jenkins -c "curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2017-02-12 -y" \
+	&& su jenkins -c "/home/jenkins/.cargo/bin/rustup default nightly-2017-02-12"
 
 # cache dep package
 RUN su jenkins -c "curl -L https://github.com/pingcap/tikv/archive/master.tar.gz -o /home/jenkins/master.tar.gz" \
