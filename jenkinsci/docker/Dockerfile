@@ -23,11 +23,11 @@ RUN curl -L https://github.com/gflags/gflags/archive/v2.1.2.tar.gz -o gflags.tar
 	&& make install \
 	&& rm -rf /gflags.tar.gz /gflags-2.1.2
 
-RUN curl -L https://github.com/facebook/rocksdb/archive/v4.13.5.tar.gz -o rocksdb.tar.gz \
+RUN curl -L https://github.com/facebook/rocksdb/archive/v5.0.1.tar.gz -o rocksdb.tar.gz \
 	&& tar xf rocksdb.tar.gz \
-	&& cd rocksdb-4.13.5 \
+	&& cd rocksdb-5.0.1 \
 	&& make -j install-shared \
-	&& rm -rf /rocksdb.tar.gz /rocksdb-4.13.5
+	&& rm -rf /rocksdb.tar.gz /rocksdb-5.0.1
 
 ENV GOLANG_VERSION 1.7.3
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
@@ -57,9 +57,10 @@ RUN su jenkins -c "curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --
 
 # cache dep package
 RUN su jenkins -c "curl -L https://github.com/pingcap/tikv/archive/master.tar.gz -o /home/jenkins/master.tar.gz" \
+    && su jenkins -c "curl -L http://download.pingcap.org/rustfmt-v0.6.0-linux-amd64.tar.gz -o /home/jenkins/rustfmt-v0.6.0-linux-amd64.tar.gz" \
 	&& su jenkins -c "cd /home/jenkins && tar xf master.tar.gz && cd tikv-master && /home/jenkins/.cargo/bin/cargo fetch" \
-	&& su jenkins -c "cd /home/jenkins && rm -rf master.tar.gz tikv-master" \
-	&& su jenkins -c "/home/jenkins/.cargo/bin/cargo install --force --vers =0.6.0 rustfmt"
+	&& su jenkins -c "cd /home/jenkins && tar xzf rustfmt-v0.6.0-linux-amd64.tar.gz -C /home/jenkins/.cargo/bin --strip-components=1" \
+	&& su jenkins -c "cd /home/jenkins && rm -rf master.tar.gz tikv-master rustfmt-v0.6.0-linux-amd64.tar.gz"
 
 RUN sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd \
 	&& mkdir -p /var/run/sshd \
