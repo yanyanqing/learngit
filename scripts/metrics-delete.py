@@ -20,7 +20,7 @@ DAY    = 24 * HOUR
 
 PROMETHEUS_URL = "http://127.0.0.1:9090/"
 PUSHGATEWAY_URL = "http://127.0.0.1:9091/"
-TIMEOUT = 5
+TIMEOUT = 5 * MINUTE
 if os.getenv('PROMETHEUS_URL'):
     PROMETHEUS_URL = os.getenv('PROMETHEUS_URL')
 if os.getenv('PUSHGATEWAY_URL'):
