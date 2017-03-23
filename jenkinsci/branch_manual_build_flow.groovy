@@ -57,7 +57,7 @@ node('material-branch') {
             // mybatis
             dir("mybatis3") {
                 retry(3) {
-                    git changelog: false, credentialsId: 'github-liuyin', poll: false, branch: 'travis-tidb', url: 'git@github.com:qiuyesuifeng/mybatis-3.git'
+                    git changelog: false, credentialsId: 'github-liuyin', poll: false, branch: 'travis-tidb', url: 'git@github.com:pingcap/mybatis-3.git'
                 }
             }
 
