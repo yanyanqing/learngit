@@ -2,21 +2,27 @@ FROM centos:6.6
 
 MAINTAINER Liu Yin <liuy@pingcap.com>
 
-RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup \
-    && curl -sSf -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo \
-    && yum makecache
+RUN mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
 
-RUN curl -sSf -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo \
+COPY CentOS-Base-6.repo /etc/yum.repos.d/CentOS-Base.repo
+
+COPY epel-apache-maven.repo /etc/yum.repos.d/epel-apache-maven.repo
+
+RUN yum makecache \
 	&& yum update -y \
 	&& yum install -y tar wget git which file centos-release-scl \
 	&& yum install -y make cmake devtoolset-4-gcc-c++ python27 gcc gcc-c++ libstdc++-static \
-	&& yum install -y openssh-server \
-	&& yum install -y java-1.7.0-openjdk apache-maven \
+	&& yum install -y openssh-server openssl-devel \
+	&& yum install -y java-1.7.0-openjdk \
+	&& yum install -y apache-maven \
 	&& yum clean all
 
-ENV GOLANG_VERSION 1.7.3
+ENV http_proxy http://10.0.0.10:8123
+ENV https_proxy http://10.0.0.10:8123
+
+ENV GOLANG_VERSION 1.8
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
-ENV GOLANG_DOWNLOAD_SHA256 508028aac0654e993564b6e2014bf2d4a9751e3b286661b0b0040046cf18028e
+ENV GOLANG_DOWNLOAD_SHA256 53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca
 
 RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
 	&& echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
@@ -33,12 +39,12 @@ RUN go get golang.org/x/tools/go/gcimporter15 \
 RUN adduser jenkins --uid 1000 \
 	&& echo "jenkins:jenkins" | chpasswd
 
-RUN su jenkins -c "curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2017-02-12 -y" \
-	&& su jenkins -c "/home/jenkins/.cargo/bin/rustup default nightly-2017-02-12"
+RUN su jenkins -c "curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2017-03-27 -y" \
+	&& su jenkins -c "/home/jenkins/.cargo/bin/rustup default nightly-2017-03-27"
 
 # cache dep package
 RUN su jenkins -c "curl -L https://github.com/pingcap/tikv/archive/master.tar.gz -o /home/jenkins/master.tar.gz" \
-    && su jenkins -c "curl -L http://download.pingcap.org/rustfmt-v0.6.0-linux-amd64.tar.gz -o /home/jenkins/rustfmt-v0.6.0-linux-amd64.tar.gz" \
+	&& su jenkins -c "curl -L http://download.pingcap.org/rustfmt-v0.6.0-linux-amd64.tar.gz -o /home/jenkins/rustfmt-v0.6.0-linux-amd64.tar.gz" \
 	&& su jenkins -c "cd /home/jenkins && tar xf master.tar.gz && cd tikv-master && /home/jenkins/.cargo/bin/cargo fetch" \
 	&& su jenkins -c "cd /home/jenkins && tar xzf rustfmt-v0.6.0-linux-amd64.tar.gz -C /home/jenkins/.cargo/bin --strip-components=1" \
 	&& su jenkins -c "cd /home/jenkins && rm -rf master.tar.gz tikv-master rustfmt-v0.6.0-linux-amd64.tar.gz"
@@ -61,11 +67,12 @@ COPY nc /usr/bin/nc
 RUN chown jenkins:jenkins /home/jenkins/.gitcookies \
 	&& chmod 0600 /home/jenkins/.gitcookies \
 	&& su jenkins -c "git config --global http.cookiefile /home/jenkins/.gitcookies" \
-	&& su jenkins -c "git config --global http.proxy http://10.0.0.10:8123" \
-	&& su jenkins -c "git config --global https.proxy http://10.0.0.10:8123" \
+	&& su jenkins -c "git config --global http.proxy $http_proxy" \
+	&& su jenkins -c "git config --global https.proxy $https_proxy" \
 	&& chown jenkins:jenkins /home/jenkins/.ssh/config \
 	&& chmod 0755 /home/jenkins/.ssh/config
 
 EXPOSE 22
 
 CMD ["/usr/sbin/sshd", "-D"]
+

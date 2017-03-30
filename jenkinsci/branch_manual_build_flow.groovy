@@ -83,7 +83,7 @@ node('material-branch') {
 
                 // tikv
                 sh """
-                rustup default nightly-2017-02-12
+                rustup default nightly-2017-03-27
                 cd ${tikv_path}
                 make static_release
                 """
@@ -98,7 +98,7 @@ node('material-branch') {
                     }
 
                     sh """
-                    rustup default nightly-2017-02-12
+                    rustup default nightly-2017-03-27
                     cd ${tikv_path}
                     git checkout ${githash_tikv}
                     scl enable devtoolset-4 python27 "make static_release"
@@ -199,7 +199,7 @@ node('material-branch') {
 
             branches["TiKV Test"] = {
                 sh """
-                rustup default nightly-2017-02-12
+                rustup default nightly-2017-03-27
                 cd ${tikv_path}
                 make test
                 """
