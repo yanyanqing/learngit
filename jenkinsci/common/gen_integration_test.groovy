@@ -11,14 +11,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                #sleep 5
+                #sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                #sleep 5
+                #sleep 10
                 """
 
                 timeout(10) {
@@ -48,14 +48,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                #sleep 5
+                #sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                #sleep 5
+                #sleep 10
                 """
 
                 timeout(10) {
@@ -85,14 +85,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                #sleep 5
+                #sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                #sleep 5
+                #sleep 10
                 """
 
                 timeout(10) {
@@ -122,14 +122,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                #sleep 5
+                #sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                #sleep 5
+                #sleep 10
                 """
 
                 timeout(10) {
@@ -159,14 +159,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 killall -9 ddltest_tidb-server || true
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                #sleep 5
+                #sleep 10
                 #release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                #sleep 5
+                #sleep 10
                 """
 
                 timeout(10) {
@@ -195,14 +195,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 sh """
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                sleep 5
+                sleep 10
                 """
 
                 sh "cd ${tidb_path} && go test --args with-tikv store/tikv/*.go"
@@ -225,14 +225,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 sh """
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                sleep 5
+                sleep 10
                 """
 
                 sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make tidbtest"
@@ -255,14 +255,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 sh """
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                sleep 5
+                sleep 10
                 """
 
                 sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make mysqltest"
@@ -285,14 +285,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 sh """
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                sleep 5
+                sleep 10
                 """
 
                 sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make gormtest"
@@ -315,14 +315,14 @@ def call(branches, platform, tidb_path, tidb_test_path) {
                 sh """
                 killall -9 pd-server || true
                 release/pd/bin/${platform}/pd-server --name=pd --data-dir=pd &>pd_test.log &
-                sleep 5
+                sleep 10
                 killall -9 tikv-server || true
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data1 --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_1_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data2 --addr=0.0.0.0:20161 --advertise-addr=127.0.0.1:20161 &>tikv_2_test.log &
-                sleep 5
+                sleep 10
                 release/tikv/bin/${platform}/tikv-server --pd=127.0.0.1:2379 -s data3 --addr=0.0.0.0:20162 --advertise-addr=127.0.0.1:20162 &>tikv_3_test.log &
-                sleep 5
+                sleep 10
                 """
 
                 sh "cd ${tidb_test_path} && TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make gosqltest"
