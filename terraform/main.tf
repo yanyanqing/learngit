@@ -67,6 +67,12 @@ resource "aws_security_group" "nginx" {
     cidr_blocks = ["${var.cidr_blocks["all"]}"]
   }
   ingress {
+    from_port = 8081
+    to_port = 8081
+    protocol = "tcp"
+    cidr_blocks = ["${var.cidr_blocks["office"]}"]
+  }
+  ingress {
     from_port = 9093
     to_port = 9093
     protocol = "tcp"
