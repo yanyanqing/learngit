@@ -47,6 +47,7 @@ node('material') {
                     go get -d -u github.com/golang/snappy
                     go get -d -u github.com/petar/GoLLRB/llrb
                     go get -d -u golang.org/x/text
+                    go get -d -u golang.org/x/net/context
                     """
                 }
             }
