@@ -5,7 +5,7 @@ def call(branches, pingcap, tidb_path, tidb_test_path) {
             unstash 'source-pingcap'
             sh """
             rm -rf ${pingcap}/vendor
-            cd ${tidb_path} && make race
+            cd ${tidb_path} && make test
             """
         }
     }
