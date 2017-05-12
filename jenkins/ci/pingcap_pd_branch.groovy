@@ -244,3 +244,5 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
         }
     }
 }
+
+return this
