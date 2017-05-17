@@ -58,6 +58,18 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 }
             }
 
+            tests["Race Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+
+                    dir("go/src/github.com/pingcap/tidb") {
+                        sh "GOPATH=${ws}/go:$GOPATH make race"
+                    }
+                }
+            }
+
             tests["TiDB Test"] = {
                 node("test") {
                     def ws = pwd()
