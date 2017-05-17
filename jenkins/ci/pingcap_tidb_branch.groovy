@@ -1,15 +1,17 @@
 def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
+    def MYBATIS3_URL = "https://github.com/pingcap/mybatis-3/archive/travis-tidb.zip"
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
     env.PATH = "${env.GOROOT}/bin:/home/jenkins/bin:/bin:${env.PATH}"
 
     catchError {
         stage('Prepare') {
-            // tidb
             node('centos7_build') {
                 def ws = pwd()
+
+                // tidb
                 dir("go/src/github.com/pingcap/tidb") {
                     // checkout
                     checkout scm
@@ -17,18 +19,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     sh "GOPATH=${ws}/go:$GOPATH make"
                 }
                 stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
-            }
 
-            // tidb-test
-            dir("go/src/github.com/pingcap/tidb-test") {
-                // checkout
-                git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                // tidb-test
+                dir("go/src/github.com/pingcap/tidb-test") {
+                    // checkout
+                    git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                }
+                stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
             }
-            stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
 
             // mybatis
             dir("mybatis3") {
-                git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, branch: 'travis-tidb', url: 'git@github.com:pingcap/mybatis-3.git'
+                //git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, branch: 'travis-tidb', url: 'git@github.com:pingcap/mybatis-3.git'
+                sh "curl -L ${MYBATIS3_URL} -o travis-tidb.zip && unzip travis-tidb.zip && rm -rf travis-tidb.zip"
+                sh "cp -R mybatis-3-travis-tidb/* . && rm -rf mybatis-3-travis-tidb"
             }
             stash includes: "mybatis3/**", name: "mybatis"
 

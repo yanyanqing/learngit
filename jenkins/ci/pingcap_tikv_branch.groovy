@@ -9,9 +9,10 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
 
     catchError {
         stage('Prepare') {
-            // tikv
             node('centos7_build') {
                 def ws = pwd()
+
+                // tikv
                 dir("go/src/github.com/pingcap/tikv") {
                     // checkout
                     checkout scm
@@ -22,11 +23,8 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     """
                 }
                 stash includes: "go/src/github.com/pingcap/tikv/**", name: "tikv"
-            }
 
-            // tidb
-            node('centos7_build') {
-                def ws = pwd()
+                // tidb
                 dir("go/src/github.com/pingcap/tidb") {
                     // checkout
                     git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb.git', branch: "${TIDB_BRANCH}"
@@ -35,14 +33,14 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb/${tidb_sha1}/centos7/tidb-server.tar.gz | tar xz"
                 }
                 stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
-            }
 
-            // tidb-test
-            dir("go/src/github.com/pingcap/tidb-test") {
-                // checkout
-                git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                // tidb-test
+                dir("go/src/github.com/pingcap/tidb-test") {
+                    // checkout
+                    git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                }
+                stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
             }
-            stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
 
             // pd
             def pd_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/pd/${PD_BRANCH}/centos7/sha1").trim()
@@ -59,7 +57,6 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
 
             tests["TiKV Test"] = {
                 node("test") {
-                    def ws = pwd()
                     deleteDir()
                     unstash 'tikv'
 
