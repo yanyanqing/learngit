@@ -248,9 +248,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
         }
         def changelog = getChangeLogText()
         def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60
-        def slackmsg = "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Elapsed Time: ${duration} Mins"
-        + "${changelog}"
-        + "\n" + "${env.RUN_DISPLAY_URL}"
+        def slackmsg = "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Elapsed Time: ${duration} Mins" + "${changelog}" + "\n" + "${env.RUN_DISPLAY_URL}"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
