@@ -1,15 +1,17 @@
 def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
+    def MYBATIS3_URL = "https://github.com/pingcap/mybatis-3/archive/travis-tidb.zip"
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
     env.PATH = "${env.GOROOT}/bin:/home/jenkins/bin:/bin:${env.PATH}"
 
     catchError {
         stage('Prepare') {
-            // tidb
             node('centos7_build') {
                 def ws = pwd()
+
+                // tidb
                 dir("go/src/github.com/pingcap/tidb") {
                     // checkout
                     checkout scm
@@ -17,18 +19,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     sh "GOPATH=${ws}/go:$GOPATH make"
                 }
                 stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
-            }
 
-            // tidb-test
-            dir("go/src/github.com/pingcap/tidb-test") {
-                // checkout
-                git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                // tidb-test
+                dir("go/src/github.com/pingcap/tidb-test") {
+                    // checkout
+                    git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                }
+                stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
             }
-            stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
 
             // mybatis
             dir("mybatis3") {
-                git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, branch: 'travis-tidb', url: 'git@github.com:pingcap/mybatis-3.git'
+                //git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, branch: 'travis-tidb', url: 'git@github.com:pingcap/mybatis-3.git'
+                sh "curl -L ${MYBATIS3_URL} -o travis-tidb.zip && unzip travis-tidb.zip && rm -rf travis-tidb.zip"
+                sh "cp -R mybatis-3-travis-tidb/* . && rm -rf mybatis-3-travis-tidb"
             }
             stash includes: "mybatis3/**", name: "mybatis"
 
@@ -54,6 +58,18 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb") {
                         sh "GOPATH=${ws}/go:$GOPATH make test"
+                    }
+                }
+            }
+
+            tests["Race Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+
+                    dir("go/src/github.com/pingcap/tidb") {
+                        sh "GOPATH=${ws}/go:$GOPATH make race"
                     }
                 }
             }
@@ -398,6 +414,12 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 }
             }
 
+            parallel tests
+        }
+
+        stage('Integration Test') {
+            def tests = [:]
+
             def run_integration_ddl_test = { ddltest ->
                 def ws = pwd()
                 deleteDir()
@@ -411,9 +433,9 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     killall -9 tikv-server || true
                     killall -9 pd-server || true
                     bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                    sleep 30
+                    sleep 20
                     bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                    sleep 10
+                    sleep 40
                     """
 
                     timeout(10) {
@@ -479,9 +501,9 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_conntest.log &
-                        sleep 30
+                        sleep 20
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_conntest.log &
-                        sleep 10
+                        sleep 40
                         """
 
                         dir("go/src/github.com/pingcap/tidb") {
@@ -512,9 +534,9 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     killall -9 tikv-server || true
                     killall -9 pd-server || true
                     bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                    sleep 30
+                    sleep 20
                     bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                    sleep 10
+                    sleep 40
                     """
 
                     dir("go/src/github.com/pingcap/tidb-test") {
@@ -576,8 +598,10 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             return changeLogText
         }
         def changelog = getChangeLogText()
-        def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
-        def slackmsg = "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}" + "${changelog}" + "\n" + "${env.RUN_DISPLAY_URL}"
+        def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60
+        def slackmsg = "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Elapsed Time: ${duration} Mins"
+        + "${changelog}"
+        + "\n" + "${env.RUN_DISPLAY_URL}"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#tidb', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"

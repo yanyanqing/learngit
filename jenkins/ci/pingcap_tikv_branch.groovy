@@ -9,9 +9,10 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
 
     catchError {
         stage('Prepare') {
-            // tikv
             node('centos7_build') {
                 def ws = pwd()
+
+                // tikv
                 dir("go/src/github.com/pingcap/tikv") {
                     // checkout
                     checkout scm
@@ -22,11 +23,8 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     """
                 }
                 stash includes: "go/src/github.com/pingcap/tikv/**", name: "tikv"
-            }
 
-            // tidb
-            node('centos7_build') {
-                def ws = pwd()
+                // tidb
                 dir("go/src/github.com/pingcap/tidb") {
                     // checkout
                     git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb.git', branch: "${TIDB_BRANCH}"
@@ -35,14 +33,14 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb/${tidb_sha1}/centos7/tidb-server.tar.gz | tar xz"
                 }
                 stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
-            }
 
-            // tidb-test
-            dir("go/src/github.com/pingcap/tidb-test") {
-                // checkout
-                git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                // tidb-test
+                dir("go/src/github.com/pingcap/tidb-test") {
+                    // checkout
+                    git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
+                }
+                stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
             }
-            stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
 
             // pd
             def pd_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/pd/${PD_BRANCH}/centos7/sha1").trim()
@@ -59,7 +57,6 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
 
             tests["TiKV Test"] = {
                 node("test") {
-                    def ws = pwd()
                     deleteDir()
                     unstash 'tikv'
 
@@ -85,9 +82,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     killall -9 tikv-server || true
                     killall -9 pd-server || true
                     bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                    sleep 30
+                    sleep 20
                     bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                    sleep 10
+                    sleep 40
                     """
 
                     timeout(10) {
@@ -153,9 +150,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_conntest.log &
-                        sleep 30
+                        sleep 20
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_conntest.log &
-                        sleep 10
+                        sleep 40
                         """
 
                         dir("go/src/github.com/pingcap/tidb") {
@@ -186,9 +183,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     killall -9 tikv-server || true
                     killall -9 pd-server || true
                     bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                    sleep 30
+                    sleep 20
                     bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                    sleep 10
+                    sleep 40
                     """
 
                     dir("go/src/github.com/pingcap/tidb-test") {
@@ -250,8 +247,10 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
             return changeLogText
         }
         def changelog = getChangeLogText()
-        def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000
-        def slackmsg = "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Duration: ${duration}" + "${changelog}" + "\n" + "${env.RUN_DISPLAY_URL}"
+        def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60
+        def slackmsg = "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Elapsed Time: ${duration} Mins"
+        + "${changelog}"
+        + "\n" + "${env.RUN_DISPLAY_URL}"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
