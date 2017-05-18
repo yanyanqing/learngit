@@ -2,12 +2,13 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
 
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
     env.PATH = "/home/jenkins/bin:/bin:${env.PATH}"
-    def nodename = "${env.NODE_NAME}"
-    def HOSTIP = nodename.getAt(7..(nodename.lastIndexOf('-') - 1))
     def tidb_sha1, tikv_sha1, pd_sha1
 
     catchError {
         node('delivery') {
+            def nodename = "${env.NODE_NAME}"
+            def HOSTIP = nodename.getAt(7..(nodename.lastIndexOf('-') - 1))
+
             stage('Prepare') {
                 deleteDir()
 
