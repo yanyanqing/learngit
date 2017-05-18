@@ -241,14 +241,17 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                 for (int j = 0; j < currentBuild.changeSets[i].items.length; j++) {
                     def commitId = "${currentBuild.changeSets[i].items[j].commitId}"
                     def commitMsg = "${currentBuild.changeSets[i].items[j].msg}"
-                    changeLogText += "\n" + commitId.take(7) + " - " + commitMsg
+                    changeLogText += "\n" + "`${commitId.take(7)}` ${commitMsg}"
                 }
             }
             return changeLogText
         }
         def changelog = getChangeLogText()
-        def duration = (System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60
-        def slackmsg = "${env.JOB_NAME}-${env.BUILD_NUMBER}: ${currentBuild.result}, Elapsed Time: ${duration} Mins" + "${changelog}" + "\n" + "${env.RUN_DISPLAY_URL}"
+        def duration = ((System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60).setScale(2, BigDecimal.ROUND_HALF_UP)
+        def slackmsg = "[${env.JOB_NAME}-${env.BUILD_NUMBER}] `${currentBuild.result}`" + "\n" +
+        "Elapsed Time: `${duration}` Mins" +
+        "${changelog}" + "\n" +
+        "${env.RUN_DISPLAY_URL}"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
