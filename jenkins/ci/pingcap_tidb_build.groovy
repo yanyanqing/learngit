@@ -16,7 +16,7 @@ def call(BUILD_BRANCH) {
                     dir("${ws}/go/src/github.com/pingcap/tidb") {
                         // checkout scm
                         git credentialsId: 'github-iamxy-ssh', url: "$BUILD_URL", branch: "${BUILD_BRANCH}"
-                        def githash_centos7 = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+                        githash_centos7 = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
 
                         // build
                         sh "export GOPATH=${ws}/go:$GOPATH && make"
