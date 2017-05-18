@@ -135,20 +135,20 @@ __EOF__
         def duration = ((System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60).setScale(2, BigDecimal.ROUND_HALF_UP)
         def slackmsg = "[${env.JOB_NAME}-${env.BUILD_NUMBER}] `${currentBuild.result}`" + "\n" +
         "Elapsed Time: `${duration}` Mins" + "\n" +
-        "tidb branch: `${TIDB_BRANCH}`, githash: `${tidb_sha1.take(7)}`" + "\n" +
-        "tikv branch: `${TIKV_BRANCH}`, githash: `${tikv_sha1.take(7)}`" + "\n" +
-        "pd   branch: `${PD_BRANCH}`, githash: `${pd_sha1.take(7)}`" + "\n" +
-        "TiDB Binary download URL:" + "\n" +
+        "tidb Branch: `${TIDB_BRANCH}`, Githash: `${tidb_sha1.take(7)}`" + "\n" +
+        "tikv Branch: `${TIKV_BRANCH}`, Githash: `${tikv_sha1.take(7)}`" + "\n" +
+        "pd   Branch: `${PD_BRANCH}`, Githash: `${pd_sha1.take(7)}`" + "\n" +
+        "TiDB Binary Download URL:" + "\n" +
         "http://download.pingcap.org/tidb-${RELEASE_TAG}-linux-amd64.tar.gz" + "\n" +
         "TiDB Binary sha256   URL:" + "\n" +
         "http://download.pingcap.org/tidb-${RELEASE_TAG}-linux-amd64.sha256" + "\n" +
-        "TiDB Binary (for Centos6) download URL:" + "\n" +
+        "TiDB Binary (for Centos6) Download URL:" + "\n" +
         "http://download.pingcap.org/tidb-${RELEASE_TAG}-linux-amd64-centos6.tar.gz" + "\n" +
-        "TiDB Binary (for Centos6) sha256   URL:" + "\n" +
+        "TiDB Binary (for Centos6) SHA256   URL:" + "\n" +
         "http://download.pingcap.org/tidb-${RELEASE_TAG}-linux-amd64-centos6.sha256" + "\n" +
-        "tidb docker image: `pingcap/tidb:${RELEASE_TAG}`" + "\n" +
-        "tikv docker image: `pingcap/tikv:${RELEASE_TAG}`" + "\n" +
-        "pd   docker image: `pingcap/pd:${RELEASE_TAG}`"
+        "tidb Docker Image: `pingcap/tidb:${RELEASE_TAG}`" + "\n" +
+        "tikv Docker Image: `pingcap/tikv:${RELEASE_TAG}`" + "\n" +
+        "pd   Docker Image: `pingcap/pd:${RELEASE_TAG}`"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#binary_publish', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
