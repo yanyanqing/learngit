@@ -73,9 +73,9 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 20
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_binlog_test.log &
                         sleep 40
-                        go/src/github.com/pingcap/tidb-binlog/bin/pump --addr=127.0.0.1:8250 --socket=${ws}/pump.sock &>pump_binlog_test.log &
+                        go/src/github.com/pingcap/tidb-binlog/bin/pump --addr=127.0.0.1:8250 &>pump_binlog_test.log &
                         sleep 10
-                        bin/tidb-server --store=tikv --path=127.0.0.1:2379 --binlog-socket=${ws}/pump.sock &>source_tidb_binlog_test.log &
+                        bin/tidb-server --store=tikv --path=127.0.0.1:2379 --binlog-socket=http://127.0.0.1:8250 &>source_tidb_binlog_test.log &
                         sleep 10
                         bin/tidb-server -P 3306 --status=20080 &>target_tidb_binlog_test.log &
                         sleep 10
