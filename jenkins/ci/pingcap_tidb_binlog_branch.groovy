@@ -9,23 +9,6 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             node('centos7_build') {
                 def ws = pwd()
 
-                // goleveldb
-                dir("go/src/github.com/pingcap/goleveldb") {
-                    git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/goleveldb.git'
-                }
-
-                // other deps
-                sh """
-                GOPATH=${ws}/go:$GOPATH go get -d -u github.com/BurntSushi/toml
-                GOPATH=${ws}/go:$GOPATH go get -d -u github.com/go-sql-driver/mysql
-                GOPATH=${ws}/go:$GOPATH go get -d -u github.com/juju/errors
-                GOPATH=${ws}/go:$GOPATH go get -d -u github.com/ngaut/log
-                GOPATH=${ws}/go:$GOPATH go get -d -u github.com/golang/snappy
-                GOPATH=${ws}/go:$GOPATH go get -d -u github.com/petar/GoLLRB/llrb
-                GOPATH=${ws}/go:$GOPATH go get -d -u golang.org/x/text
-                GOPATH=${ws}/go:$GOPATH go get -d -u golang.org/x/net/context
-                """
-
                 // tidb-binlog
                 dir("go/src/github.com/pingcap/tidb-binlog") {
                     // checkout
@@ -35,7 +18,7 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     sh "GOPATH=${ws}/go:$GOPATH make"
 
                     dir("test") {
-                        sh "GOPATH=${ws}/go:$GOPATH go build"
+                        sh "GOPATH=${ws}/go/src/github.com/pingcap/tidb-binlog/_vendor:${ws}/go:$GOPATH go build"
                     }
                 }
                 stash includes: "go/src/github.com/**", name: "tidb-binlog"
@@ -54,6 +37,75 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/pd/${pd_sha1}/centos7/pd-server.tar.gz | tar xz"
 
             stash includes: "bin/**", name: "binaries"
+        }
+
+        stage('Test') {
+            def tests = [:]
+
+            tests["Unit Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb-binlog'
+
+                    dir("go/src/github.com/pingcap/tidb-binlog") {
+                        sh "GOPATH=${ws}/go:$GOPATH make test"
+                    }
+                }
+            }
+
+            tests["Integration Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb-binlog'
+                    unstash 'binaries'
+
+                    try {
+                        sh """
+                        killall -9 drainer || true
+                        killall -9 tidb-server || true
+                        killall -9 pump || true
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_binlog_test.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_binlog_test.log &
+                        sleep 40
+                        go/src/github.com/pingcap/tidb-binlog/bin/pump --addr=127.0.0.1:8250 --socket=pump.sock &>pump_binlog_test.log &
+                        sleep 10
+                        bin/tidb-server --store=tikv --path=127.0.0.1:2379 --binlog-socket=pump.sock &>source_tidb_binlog_test.log &
+                        sleep 10
+                        bin/tidb-server -P 3306 --status=20080 &>target_tidb_binlog_test.log &
+                        sleep 10
+                        go/src/github.com/pingcap/tidb-binlog/bin/drainer --config=go/src/github.com/pingcap/tidb-binlog/cmd/drainer/drainer.toml &>drainer_binlog_test.log &
+                        sleep 10
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-binlog/test") {
+                            sh "GOPATH=${ws}/go:$GOPATH ./test --config=config.toml"
+                        }
+                    } catch (err) {
+                        sh "cat pd_binlog_test.log"
+                        sh "cat tikv_binlog_test.log"
+                        sh "cat pump_binlog_test.log"
+                        sh "cat source_tidb_binlog_test.log"
+                        sh "cat target_tidb_binlog_test.log"
+                        sh "cat drainer_binlog_test.log"
+                        throw err
+                    } finally {
+                        sh """
+                        killall -9 drainer || true
+                        killall -9 tidb-server || true
+                        killall -9 pump || true
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        """
+                    }
+                }
+            }
+
+            parallel tests
         }
 
         currentBuild.result = "SUCCESS"
