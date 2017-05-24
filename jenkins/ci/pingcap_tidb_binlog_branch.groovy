@@ -1,5 +1,6 @@
 def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
+    def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
     env.PATH = "${env.GOROOT}/bin:/home/jenkins/bin:/bin:${env.PATH}"
