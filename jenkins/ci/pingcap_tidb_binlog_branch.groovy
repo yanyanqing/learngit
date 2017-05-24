@@ -1,4 +1,4 @@
-def call(TIDB_BRANCH) {
+def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
