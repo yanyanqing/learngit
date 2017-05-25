@@ -48,13 +48,13 @@ output "prometheus_private_ip" {
 #   value = "${join(",", aws_instance.bench_test.*.private_ip)}"
 # }
 
-output "jenkins_master_private_ip" {
-  value = "${join(",", aws_instance.jenkins_master.*.private_ip)}"
-}
+# output "jenkins_master_private_ip" {
+#   value = "${join(",", aws_instance.jenkins_master.*.private_ip)}"
+# }
 
-output "jenkins_node_private_ip" {
-  value = "${join(",", aws_instance.jenkins_node.*.private_ip)}"
-}
+# output "jenkins_node_private_ip" {
+#   value = "${join(",", aws_instance.jenkins_node.*.private_ip)}"
+# }
 
 # output "oltp_bank_private_ip" {
 #   value = "${join(",", aws_instance.oltp_bank_test.*.private_ip)}"

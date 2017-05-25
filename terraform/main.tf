@@ -469,58 +469,58 @@ resource "aws_instance" "prometheus" {
 #   }
 # }
 
-resource "aws_instance" "jenkins_master" {
-  ami = "${var.ami["jenkins_master"]}"
-  instance_type = "${var.instance_type["jenkins_master"]}"
-  key_name = "${var.ssh_key_name["internal"]}"
-  count = "${var.count["jenkins_master"]}"
-  subnet_id = "${var.subnet["jenkins"]}"
-  vpc_security_group_ids = ["${aws_security_group.base.id}"]
-  private_ip = "10.0.2.167"
-  connection {
-    user = "ubuntu"
-    agent = false
-    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
-    bastion_host = "${var.bastion_host}"
-    bastion_user = "ec2-user"
-    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
-  }
-  tags {
-    Name = "jenkins-master-${count.index}"
-    Creator = "liuyin"
-  }
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = "${var.root_size["jenkins_master"]}"
-    delete_on_termination = false
-  }
-}
+# resource "aws_instance" "jenkins_master" {
+#   ami = "${var.ami["jenkins_master"]}"
+#   instance_type = "${var.instance_type["jenkins_master"]}"
+#   key_name = "${var.ssh_key_name["internal"]}"
+#   count = "${var.count["jenkins_master"]}"
+#   subnet_id = "${var.subnet["jenkins"]}"
+#   vpc_security_group_ids = ["${aws_security_group.base.id}"]
+#   private_ip = "10.0.2.167"
+#   connection {
+#     user = "ubuntu"
+#     agent = false
+#     private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+#     bastion_host = "${var.bastion_host}"
+#     bastion_user = "ec2-user"
+#     bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+#   }
+#   tags {
+#     Name = "jenkins-master-${count.index}"
+#     Creator = "liuyin"
+#   }
+#   root_block_device {
+#     volume_type = "gp2"
+#     volume_size = "${var.root_size["jenkins_master"]}"
+#     delete_on_termination = false
+#   }
+# }
 
-resource "aws_instance" "jenkins_node" {
-  ami = "${var.ami["jenkins_node"]}"
-  instance_type = "${var.instance_type["jenkins_node"]}"
-  key_name = "${var.ssh_key_name["internal"]}"
-  count = "${var.count["jenkins_node"]}"
-  subnet_id = "${var.subnet["jenkins"]}"
-  vpc_security_group_ids = ["${aws_security_group.base.id}"]
-  connection {
-    user = "ubuntu"
-    agent = false
-    private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
-    bastion_host = "${var.bastion_host}"
-    bastion_user = "ec2-user"
-    bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
-  }
-  tags {
-    Name = "jenkins-node-${count.index}"
-    Creator = "liuyin"
-  }
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = "${var.root_size["jenkins_node"]}"
-    delete_on_termination = true
-  }
-}
+# resource "aws_instance" "jenkins_node" {
+#   ami = "${var.ami["jenkins_node"]}"
+#   instance_type = "${var.instance_type["jenkins_node"]}"
+#   key_name = "${var.ssh_key_name["internal"]}"
+#   count = "${var.count["jenkins_node"]}"
+#   subnet_id = "${var.subnet["jenkins"]}"
+#   vpc_security_group_ids = ["${aws_security_group.base.id}"]
+#   connection {
+#     user = "ubuntu"
+#     agent = false
+#     private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["internal"]))}"
+#     bastion_host = "${var.bastion_host}"
+#     bastion_user = "ec2-user"
+#     bastion_private_key = "${file(format("~/.ssh/%s.pem", var.ssh_key_name["bastion"]))}"
+#   }
+#   tags {
+#     Name = "jenkins-node-${count.index}"
+#     Creator = "liuyin"
+#   }
+#   root_block_device {
+#     volume_type = "gp2"
+#     volume_size = "${var.root_size["jenkins_node"]}"
+#     delete_on_termination = true
+#   }
+# }
 
 # resource "aws_instance" "binlog_pump" {
 #   ami = "${var.ami["binlog_pump"]}"
