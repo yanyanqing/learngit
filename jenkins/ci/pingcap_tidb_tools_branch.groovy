@@ -28,12 +28,22 @@ def call() {
 
             tests["Unit Test"] = {
                 node("test") {
+                    def nodename = "${env.NODE_NAME}"
+                    def HOSTIP = nodename.getAt(7..(nodename.lastIndexOf('-') - 1))
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb-tools'
 
-                    dir("go/src/github.com/pingcap/tidb-tools") {
-                        sh "GOPATH=${ws}/go:$GOPATH make test"
+                    def getHostIP = { c ->
+                        sh(returnStdout: true, script: "docker inspect -f {{.Node.Ip}} ${c.id}").trim()
+                    }
+
+                    docker.withServer("tcp://${HOSTIP}:32376") {
+                        docker.image('mysql:5.6').withRun('-p 3306:3306') { c ->
+                            dir("go/src/github.com/pingcap/tidb-tools") {
+                                sh "GOPATH=${ws}/go:$GOPATH MYSQL_HOST=${getHostIP(c)} make test"
+                            }
+                        }
                     }
                 }
             }
