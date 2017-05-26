@@ -63,7 +63,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Race Test"] = {
-                node("test") {
+                node("test-large") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
@@ -123,7 +123,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Go SQL Test"] = {
-                node("test") {
+                node("test-large") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
@@ -489,7 +489,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Integration Connection Test"] = {
-                node("test") {
+                node("test-large") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
@@ -574,7 +574,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Integration Go SQL Test"] = {
-                node("test") {
+                node("test-large") {
                     run_integration_other_test('gosqltest')
                 }
             }

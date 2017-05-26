@@ -51,7 +51,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
             def tests = [:]
 
             tests["PD Test"] = {
-                node("test") {
+                node("test-large") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'pd'
@@ -216,7 +216,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
             }
 
             tests["Integration Go SQL Test"] = {
-                node("test") {
+                node("test-large") {
                     run_integration_other_test('gosqltest')
                 }
             }

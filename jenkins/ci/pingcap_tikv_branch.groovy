@@ -56,7 +56,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
             def tests = [:]
 
             tests["TiKV Test"] = {
-                node("test") {
+                node("test-large") {
                     deleteDir()
                     unstash 'tikv'
 
@@ -138,7 +138,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
             }
 
             tests["Integration Connection Test"] = {
-                node("test") {
+                node("test-large") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
