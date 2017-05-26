@@ -35,7 +35,7 @@ def call() {
                     unstash 'tidb-tools'
 
                     docker.withServer("tcp://${HOSTIP}:32376") {
-                        docker.image('mysql:5.6').withRun('-p 3306:3306', '-e MYSQL_ALLOW_EMPTY_PASSWORD=1') { c ->
+                        docker.image('mysql:5.6').withRun('-p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1') { c ->
                             dir("go/src/github.com/pingcap/tidb-tools") {
                                 sh "GOPATH=${ws}/go:$GOPATH MYSQL_HOST=${HOSTIP} make test"
                             }
