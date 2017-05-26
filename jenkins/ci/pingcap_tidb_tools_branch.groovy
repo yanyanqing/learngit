@@ -29,7 +29,7 @@ def call() {
             tests["Unit Test"] = {
                 node("test") {
                     def nodename = "${env.NODE_NAME}"
-                    def HOSTIP = nodename.getAt(7..(nodename.lastIndexOf('-') - 1))
+                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb-tools'
