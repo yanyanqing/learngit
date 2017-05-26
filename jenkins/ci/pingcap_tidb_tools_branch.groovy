@@ -34,14 +34,10 @@ def call() {
                     deleteDir()
                     unstash 'tidb-tools'
 
-                    def getHostIP = { c ->
-                        sh(returnStdout: true, script: "docker inspect -f {{.Node.Ip}} ${c.id}").trim()
-                    }
-
                     docker.withServer("tcp://${HOSTIP}:32376") {
                         docker.image('mysql:5.6').withRun('-p 3306:3306') { c ->
                             dir("go/src/github.com/pingcap/tidb-tools") {
-                                sh "GOPATH=${ws}/go:$GOPATH MYSQL_HOST=${getHostIP(c)} make test"
+                                sh "GOPATH=${ws}/go:$GOPATH MYSQL_HOST=${HOSTIP} make test"
                             }
                         }
                     }
