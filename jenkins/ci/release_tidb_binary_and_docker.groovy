@@ -228,7 +228,7 @@ __EOF__
         "tidb Docker Image: `pingcap/tidb:${RELEASE_TAG}`" + "\n" +
         "pd   Docker Image: `pingcap/pd:${RELEASE_TAG}`" + "\n" +
         "tikv Docker Image: `pingcap/tikv:${RELEASE_TAG}`" + "\n" +
-        "tikv Unportable Docker Image: `pingcap/tikv:${RELEASE_TAG}-unportable`" + "\n" +
+        "tikv Unportable Docker Image: `pingcap/tikv:${RELEASE_TAG}-unportable`"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#binary_publish', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
