@@ -38,8 +38,8 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
             }
 
             // tikv
-            def tikv_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tikv/${TIKV_BRANCH}/centos7/sha1").trim()
-            sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tikv/${tikv_sha1}/centos7/tikv-server.tar.gz | tar xz"
+            def tikv_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tikv/${TIKV_BRANCH}/unportable_centos7/sha1").trim()
+            sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tikv/${tikv_sha1}/unportable_centos7/tikv-server.tar.gz | tar xz"
 
             unstash 'pd'
             sh "cp go/src/github.com/pingcap/pd/bin/pd-server bin/pd-server && rm -rf go/src/github.com/pingcap/pd"
@@ -51,7 +51,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
             def tests = [:]
 
             tests["PD Test"] = {
-                node("test-large") {
+                node("test") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'pd'
@@ -216,7 +216,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
             }
 
             tests["Integration Go SQL Test"] = {
-                node("test-large") {
+                node("test") {
                     run_integration_other_test('gosqltest')
                 }
             }

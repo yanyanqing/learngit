@@ -19,7 +19,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     // build
                     sh """
                     rustup override set $RUST_TOOLCHAIN_BUILD
-                    CARGO_TARGET_DIR=/home/jenkins/.target make static_release
+                    CARGO_TARGET_DIR=/home/jenkins/.target make release
                     """
                 }
                 stash includes: "go/src/github.com/pingcap/tikv/**", name: "tikv"
@@ -56,7 +56,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
             def tests = [:]
 
             tests["TiKV Test"] = {
-                node("test-large") {
+                node("test") {
                     deleteDir()
                     unstash 'tikv'
 
@@ -138,7 +138,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
             }
 
             tests["Integration Connection Test"] = {
-                node("test-large") {
+                node("test") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'

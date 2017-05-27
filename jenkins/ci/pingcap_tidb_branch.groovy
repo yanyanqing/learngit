@@ -37,8 +37,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             stash includes: "mybatis3/**", name: "mybatis"
 
             // tikv
-            def tikv_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tikv/${TIKV_BRANCH}/centos7/sha1").trim()
-            sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tikv/${tikv_sha1}/centos7/tikv-server.tar.gz | tar xz"
+            def tikv_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tikv/${TIKV_BRANCH}/unportable_centos7/sha1").trim()
+            sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tikv/${tikv_sha1}/unportable_centos7/tikv-server.tar.gz | tar xz"
 
             // pd
             def pd_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/pd/${PD_BRANCH}/centos7/sha1").trim()
@@ -63,7 +63,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Race Test"] = {
-                node("test-large") {
+                node("test") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
@@ -123,7 +123,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Go SQL Test"] = {
-                node("test-large") {
+                node("test") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
@@ -489,7 +489,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Integration Connection Test"] = {
-                node("test-large") {
+                node("test") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
@@ -574,7 +574,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
             }
 
             tests["Integration Go SQL Test"] = {
-                node("test-large") {
+                node("test") {
                     run_integration_other_test('gosqltest')
                 }
             }
