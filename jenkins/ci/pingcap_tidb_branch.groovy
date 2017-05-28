@@ -168,23 +168,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/random/aggregates'
                     def parallelism = 12
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -193,23 +190,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/random/expr'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -218,23 +212,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/random/groupby'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -243,23 +234,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/random/select'
                     def parallelism = 10
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -268,23 +256,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/select'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -293,23 +278,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/between'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -318,24 +300,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/commute/10'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
-                    }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
-                }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
+                    }                }
             }
 
             tests["SQLLogic Index commute 100 Test"] = {
@@ -343,23 +321,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/commute/100'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -368,23 +343,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/commute/1000'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -393,23 +365,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/delete/1'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -418,23 +387,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/delete/10'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -443,23 +409,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/delete/100'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -468,23 +431,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/delete/1000'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -493,23 +453,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/delete/10000'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -518,23 +475,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/in/10'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -543,23 +497,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/in/100'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -568,23 +519,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/in/1000'
                     def parallelism = 8
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -593,23 +541,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/orderby/10'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -618,23 +563,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/orderby/100'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -643,23 +585,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/orderby/1000'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -668,23 +607,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/orderby_nosort/10'
                     def parallelism = 8
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -693,23 +629,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/orderby_nosort/100'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -718,23 +651,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/orderby_nosort/1000'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -743,23 +673,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/random/10'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -768,23 +695,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/random/100'
                     def parallelism = 4
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -793,23 +717,20 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/random/1000'
                     def parallelism = 8
-                    def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            SQLLOGIC_TEST_PATH=${sqllogictest} \
-                            TIDB_PARALLELISM=${parallelism} \
-                            TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                            GOPATH=${ws}/go:$GOPATH \
-                            make sqllogictest
-                            """
-                        }
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        SQLLOGIC_TEST_PATH=${sqllogictest} \
+                        TIDB_PARALLELISM=${parallelism} \
+                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                        GOPATH=${ws}/go:$GOPATH \
+                        make sqllogictest
+                        """
                     }
-                    run_sqllogic_test(ws, sqllogictest, parallelism)
                 }
             }
 
@@ -821,216 +742,206 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
             tests["Integration DDL Insert Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def ddltest = 'TestDDLSuite.TestSimple.*Insert'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
-                            sh """
-                            killall -9 ddltest_tidb-server || true
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                            sleep 40
-                            """
+                    try {
+                        sh """
+                        killall -9 ddltest_tidb-server || true
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
+                        sleep 40
+                        """
 
-                            timeout(10) {
-                                dir("go/src/github.com/pingcap/tidb-test") {
-                                    sh """
-                                    ln -s tidb/_vendor/src ../vendor
-                                    cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
-                                    cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
-                                    """
-                                }
+                        timeout(10) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
+                                """
                             }
-                        } catch (err) {
-                            sh "cat pd_ddl_test.log"
-                            sh "cat tikv_ddl_test.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 ddltest_tidb-server || true"
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_ddl_test.log"
+                        sh "cat tikv_ddl_test.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 ddltest_tidb-server || true"
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimple.*Insert')
                 }
             }
 
             tests["Integration DDL Update Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def ddltest = 'TestDDLSuite.TestSimple.*Update'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
-                            sh """
-                            killall -9 ddltest_tidb-server || true
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                            sleep 40
-                            """
+                    try {
+                        sh """
+                        killall -9 ddltest_tidb-server || true
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
+                        sleep 40
+                        """
 
-                            timeout(10) {
-                                dir("go/src/github.com/pingcap/tidb-test") {
-                                    sh """
-                                    ln -s tidb/_vendor/src ../vendor
-                                    cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
-                                    cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
-                                    """
-                                }
+                        timeout(10) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
+                                """
                             }
-                        } catch (err) {
-                            sh "cat pd_ddl_test.log"
-                            sh "cat tikv_ddl_test.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 ddltest_tidb-server || true"
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_ddl_test.log"
+                        sh "cat tikv_ddl_test.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 ddltest_tidb-server || true"
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimple.*Update')
                 }
             }
 
             tests["Integration DDL Delete Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def ddltest = 'TestDDLSuite.TestSimple.*Delete'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
-                            sh """
-                            killall -9 ddltest_tidb-server || true
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                            sleep 40
-                            """
+                    try {
+                        sh """
+                        killall -9 ddltest_tidb-server || true
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
+                        sleep 40
+                        """
 
-                            timeout(10) {
-                                dir("go/src/github.com/pingcap/tidb-test") {
-                                    sh """
-                                    ln -s tidb/_vendor/src ../vendor
-                                    cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
-                                    cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
-                                    """
-                                }
+                        timeout(10) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
+                                """
                             }
-                        } catch (err) {
-                            sh "cat pd_ddl_test.log"
-                            sh "cat tikv_ddl_test.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 ddltest_tidb-server || true"
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_ddl_test.log"
+                        sh "cat tikv_ddl_test.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 ddltest_tidb-server || true"
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimple.*Delete')
                 }
             }
 
             tests["Integration DDL Other Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def ddltest = 'TestDDLSuite.TestSimp(le\$|leMixed|leInc)'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
-                            sh """
-                            killall -9 ddltest_tidb-server || true
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                            sleep 40
-                            """
+                    try {
+                        sh """
+                        killall -9 ddltest_tidb-server || true
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
+                        sleep 40
+                        """
 
-                            timeout(10) {
-                                dir("go/src/github.com/pingcap/tidb-test") {
-                                    sh """
-                                    ln -s tidb/_vendor/src ../vendor
-                                    cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
-                                    cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
-                                    """
-                                }
+                        timeout(10) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
+                                """
                             }
-                        } catch (err) {
-                            sh "cat pd_ddl_test.log"
-                            sh "cat tikv_ddl_test.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 ddltest_tidb-server || true"
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_ddl_test.log"
+                        sh "cat tikv_ddl_test.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 ddltest_tidb-server || true"
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimp(le\$|leMixed|leInc)')
                 }
             }
 
             tests["Integration DDL Column and Index Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def ddltest = 'TestDDLSuite.Test(Column|Index)'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
-                            sh """
-                            killall -9 ddltest_tidb-server || true
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                            sleep 40
-                            """
+                    try {
+                        sh """
+                        killall -9 ddltest_tidb-server || true
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
+                        sleep 40
+                        """
 
-                            timeout(10) {
-                                dir("go/src/github.com/pingcap/tidb-test") {
-                                    sh """
-                                    ln -s tidb/_vendor/src ../vendor
-                                    cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
-                                    cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
-                                    """
-                                }
+                        timeout(10) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
+                                """
                             }
-                        } catch (err) {
-                            sh "cat pd_ddl_test.log"
-                            sh "cat tikv_ddl_test.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 ddltest_tidb-server || true"
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_ddl_test.log"
+                        sh "cat tikv_ddl_test.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 ddltest_tidb-server || true"
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_ddl_test('TestDDLSuite.Test(Column|Index)')
                 }
             }
 
@@ -1070,153 +981,145 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
             tests["Integration TiDB Test"] = {
                 node('test') {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'tidbtest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('tidbtest')
                 }
             }
 
             tests["Integration MySQL Test"] = {
                 node("test") {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'mysqltest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('mysqltest')
                 }
             }
 
             tests["Integration GORM Test"] = {
                 node("test") {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'gormtest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('gormtest')
                 }
             }
 
             tests["Integration Go SQL Test"] = {
                 node("test") {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'gosqltest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('gosqltest')
                 }
             }
 

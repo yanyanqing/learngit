@@ -310,153 +310,145 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
 
             tests["Integration TiDB Test"] = {
                 node('test') {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'tidbtest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('tidbtest')
                 }
             }
 
             tests["Integration MySQL Test"] = {
                 node("test") {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'mysqltest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('mysqltest')
                 }
             }
 
             tests["Integration GORM Test"] = {
                 node("test") {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'gormtest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('gormtest')
                 }
             }
 
             tests["Integration Go SQL Test"] = {
                 node("test") {
-                    def run_integration_other_test = { mytest ->
-                        def ws = pwd()
-                        deleteDir()
-                        unstash 'tidb'
-                        unstash 'tidb-test'
-                        unstash 'binaries'
+                    def mytest = 'gosqltest'
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+                    unstash 'binaries'
 
-                        try {
+                    try {
+                        sh """
+                        killall -9 tikv-server || true
+                        killall -9 pd-server || true
+                        bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
+                        sleep 20
+                        bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
+                        sleep 40
+                        """
+
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
-                            killall -9 tikv-server || true
-                            killall -9 pd-server || true
-                            bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                            sleep 20
-                            bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                            sleep 40
+                            ln -s tidb/_vendor/src ../vendor
+                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
                             """
-
-                            dir("go/src/github.com/pingcap/tidb-test") {
-                                sh """
-                                ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                                """
-                            }
-                        } catch (err) {
-                            sh "cat pd_${mytest}.log"
-                            sh "cat tikv_${mytest}.log"
-                            throw err
-                        } finally {
-                            sh "killall -9 tikv-server || true"
-                            sh "killall -9 pd-server || true"
                         }
+                    } catch (err) {
+                        sh "cat pd_${mytest}.log"
+                        sh "cat tikv_${mytest}.log"
+                        throw err
+                    } finally {
+                        sh "killall -9 tikv-server || true"
+                        sh "killall -9 pd-server || true"
                     }
-                    run_integration_other_test('gosqltest')
                 }
             }
 
