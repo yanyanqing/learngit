@@ -77,9 +77,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         timeout(10) {
@@ -118,9 +118,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         timeout(10) {
@@ -159,9 +159,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         timeout(10) {
@@ -200,9 +200,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         timeout(10) {
@@ -241,9 +241,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_ddl_test.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_ddl_test.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         timeout(10) {
@@ -280,9 +280,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_conntest.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_conntest.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         dir("go/src/github.com/pingcap/tidb") {
@@ -315,9 +315,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         dir("go/src/github.com/pingcap/tidb-test") {
@@ -351,9 +351,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         dir("go/src/github.com/pingcap/tidb-test") {
@@ -387,9 +387,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         dir("go/src/github.com/pingcap/tidb-test") {
@@ -423,9 +423,9 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_${mytest}.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_${mytest}.log &
-                        sleep 40
+                        sleep 10
                         """
 
                         dir("go/src/github.com/pingcap/tidb-test") {

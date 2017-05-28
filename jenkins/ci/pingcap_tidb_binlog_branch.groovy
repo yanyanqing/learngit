@@ -70,9 +70,9 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         killall -9 tikv-server || true
                         killall -9 pd-server || true
                         bin/pd-server --name=pd --data-dir=pd &>pd_binlog_test.log &
-                        sleep 20
+                        sleep 10
                         bin/tikv-server --pd=127.0.0.1:2379 -s tikv --addr=0.0.0.0:20160 --advertise-addr=127.0.0.1:20160 &>tikv_binlog_test.log &
-                        sleep 40
+                        sleep 10
                         go/src/github.com/pingcap/tidb-binlog/bin/pump --addr=127.0.0.1:8250 --socket=./pump.sock &>pump_binlog_test.log &
                         sleep 10
                         bin/tidb-server --store=tikv --path=127.0.0.1:2379 --binlog-socket=./pump.sock &>source_tidb_binlog_test.log &
