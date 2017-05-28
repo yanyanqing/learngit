@@ -32,6 +32,7 @@ def call(TIDB_TOOLS_BRANCH, RELEASE_TAG) {
                 """
 
                 sh """
+                export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-bundle.crt
                 upload.py ${target}.tar.gz ${target}.tar.gz
                 upload.py ${target}.sha256 ${target}.sha256
                 upload.py ${target}.md5 ${target}.md5
