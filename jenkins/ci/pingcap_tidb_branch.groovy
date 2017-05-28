@@ -163,21 +163,21 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 }
             }
 
-            def run_sqllogic_test = { ws, sqllogictest, parallelism ->
-                    deleteDir()
-                    unstash 'tidb'
-                    unstash 'tidb-test'
+            def run_sqllogic_test(ws, sqllogictest, parallelism) {
+                deleteDir()
+                unstash 'tidb'
+                unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        sh """
-                        ln -s tidb/_vendor/src ../vendor
-                        SQLLOGIC_TEST_PATH=${sqllogictest} \
-                        TIDB_PARALLELISM=${parallelism} \
-                        TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
-                        GOPATH=${ws}/go:$GOPATH \
-                        make sqllogictest
-                        """
-                    }
+                dir("go/src/github.com/pingcap/tidb-test") {
+                    sh """
+                    ln -s tidb/_vendor/src ../vendor
+                    SQLLOGIC_TEST_PATH=${sqllogictest} \
+                    TIDB_PARALLELISM=${parallelism} \
+                    TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
+                    GOPATH=${ws}/go:$GOPATH \
+                    make sqllogictest
+                    """
+                }
             }
 
             tests["SQLLogic Random Aggregates Test"] = {
@@ -420,7 +420,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
         stage('Integration Test') {
             def tests = [:]
 
-            def run_integration_ddl_test = { ddltest ->
+            def run_integration_ddl_test(ddltest) {
                 def ws = pwd()
                 deleteDir()
                 unstash 'tidb'
@@ -522,7 +522,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 }
             }
 
-            def run_integration_other_test = { mytest ->
+            def run_integration_other_test(mytest) {
                 def ws = pwd()
                 deleteDir()
                 unstash 'tidb'

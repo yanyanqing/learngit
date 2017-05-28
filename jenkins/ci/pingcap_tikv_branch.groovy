@@ -69,7 +69,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                 }
             }
 
-            def run_integration_ddl_test = { ddltest ->
+            def run_integration_ddl_test(ddltest) {
                 def ws = pwd()
                 deleteDir()
                 unstash 'tidb'
@@ -171,7 +171,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                 }
             }
 
-            def run_integration_other_test = { mytest ->
+            def run_integration_other_test(mytest) {
                 def ws = pwd()
                 deleteDir()
                 unstash 'tidb'
