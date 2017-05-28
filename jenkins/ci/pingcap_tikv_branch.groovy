@@ -71,7 +71,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
 
             tests["Integration DDL Insert Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
+                    def run_integration_ddl_test_1 = { ddltest ->
                         def ws = pwd()
                         deleteDir()
                         unstash 'tidb'
@@ -108,13 +108,13 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                             sh "killall -9 pd-server || true"
                         }
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimple.*Insert')
+                    run_integration_ddl_test_1('TestDDLSuite.TestSimple.*Insert')
                 }
             }
 
             tests["Integration DDL Update Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
+                    def run_integration_ddl_test_2 = { ddltest ->
                         def ws = pwd()
                         deleteDir()
                         unstash 'tidb'
@@ -151,13 +151,13 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                             sh "killall -9 pd-server || true"
                         }
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimple.*Update')
+                    run_integration_ddl_test_2('TestDDLSuite.TestSimple.*Update')
                 }
             }
 
             tests["Integration DDL Delete Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
+                    def run_integration_ddl_test_3 = { ddltest ->
                         def ws = pwd()
                         deleteDir()
                         unstash 'tidb'
@@ -194,13 +194,13 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                             sh "killall -9 pd-server || true"
                         }
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimple.*Delete')
+                    run_integration_ddl_test_3('TestDDLSuite.TestSimple.*Delete')
                 }
             }
 
             tests["Integration DDL Other Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
+                    def run_integration_ddl_test_4 = { ddltest ->
                         def ws = pwd()
                         deleteDir()
                         unstash 'tidb'
@@ -237,13 +237,13 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                             sh "killall -9 pd-server || true"
                         }
                     }
-                    run_integration_ddl_test('TestDDLSuite.TestSimp(le\$|leMixed|leInc)')
+                    run_integration_ddl_test_4('TestDDLSuite.TestSimp(le\$|leMixed|leInc)')
                 }
             }
 
             tests["Integration DDL Column and Index Test"] = {
                 node("test") {
-                    def run_integration_ddl_test = { ddltest ->
+                    def run_integration_ddl_test_5 = { ddltest ->
                         def ws = pwd()
                         deleteDir()
                         unstash 'tidb'
@@ -280,7 +280,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                             sh "killall -9 pd-server || true"
                         }
                     }
-                    run_integration_ddl_test('TestDDLSuite.Test(Column|Index)')
+                    run_integration_ddl_test_5('TestDDLSuite.Test(Column|Index)')
                 }
             }
 
