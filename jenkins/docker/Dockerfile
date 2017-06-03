@@ -10,7 +10,7 @@ RUN yum makecache \
 	&& yum update -y \
 	&& yum install -y tar wget git which file unzip python-pip \
 	&& yum install -y make cmake gcc gcc-c++ libstdc++-static pkg-config psmisc \
-	&& yum install -y lz4-devel zlib-devel bzip2-devel snappy-devel libdwarf-devel elfutils-libelf-devel elfutils-devel binutils-devel \
+	&& yum install -y libzstd-devel lz4-devel zlib-devel bzip2-devel snappy-devel libdwarf-devel elfutils-libelf-devel elfutils-devel binutils-devel \
 	&& yum install -y openssh-server openssl-devel \
 	&& yum install -y java-1.8.0-openjdk \
 	&& yum install -y apache-maven \

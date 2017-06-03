@@ -7,7 +7,7 @@
     </entry>
     <entry>
       <string>github-branch-source</string>
-      <string>2.0.5</string>
+      <string>2.0.6</string>
     </entry>
     <entry>
       <string>pipeline-github-lib</string>
@@ -19,7 +19,7 @@
     </entry>
     <entry>
       <string>workflow-multibranch</string>
-      <string>2.14</string>
+      <string>2.15</string>
     </entry>
     <entry>
       <string>docker-workflow</string>
@@ -99,15 +99,15 @@
     </entry>
     <entry>
       <string>metrics</string>
-      <string>3.1.2.9</string>
-    </entry>
-    <entry>
-      <string>favorite</string>
-      <string>2.0.4</string>
+      <string>3.1.2.10</string>
     </entry>
     <entry>
       <string>blueocean-i18n</string>
       <string>1.0.1</string>
+    </entry>
+    <entry>
+      <string>favorite</string>
+      <string>2.1.0</string>
     </entry>
     <entry>
       <string>momentjs</string>
@@ -175,15 +175,15 @@
     </entry>
     <entry>
       <string>workflow-basic-steps</string>
-      <string>2.4</string>
+      <string>2.5</string>
     </entry>
     <entry>
       <string>github-api</string>
-      <string>1.85</string>
+      <string>1.85.1</string>
     </entry>
     <entry>
       <string>workflow-cps</string>
-      <string>2.32</string>
+      <string>2.33</string>
     </entry>
     <entry>
       <string>matrix-auth</string>
@@ -391,7 +391,7 @@
     </entry>
     <entry>
       <string>workflow-api</string>
-      <string>2.15</string>
+      <string>2.16</string>
     </entry>
     <entry>
       <string>pubsub-light</string>
