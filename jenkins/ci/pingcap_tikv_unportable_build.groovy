@@ -2,6 +2,8 @@ def call(BUILD_BRANCH) {
 
     def BUILD_URL = 'git@github.com:pingcap/tikv.git'
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
+    env.GOROOT = "/usr/local/go"
+    env.GOPATH = "/go"
     env.PATH = "/home/jenkins/.cargo/bin:/home/jenkins/bin:/bin:${env.PATH}"
     def githash_centos7, githash_centos6
 
