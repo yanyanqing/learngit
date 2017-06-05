@@ -20,7 +20,7 @@ def call(BUILD_BRANCH) {
                         // build
                         sh """
                         rustup override set $RUST_TOOLCHAIN_BUILD
-                        make static_unportable_release
+                        GOPATH=${ws}/go:$GOPATH make static_unportable_release
                         """
 
                         // upload binary
@@ -51,7 +51,7 @@ def call(BUILD_BRANCH) {
                         // build
                         sh """
                         rustup override set $RUST_TOOLCHAIN_BUILD
-                        scl enable devtoolset-4 python27 "make static_unportable_release"
+                        scl enable devtoolset-4 python27 "GOPATH=${ws}/go:$GOPATH make static_unportable_release"
                         """
 
                         // upload binary
