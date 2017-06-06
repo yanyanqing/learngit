@@ -9,17 +9,15 @@ def call() {
             node('centos7_build') {
                 def ws = pwd()
 
-                // tidb-tools
-                dir("go/src/github.com/pingcap/tidb-tools") {
+                // tidb-enterprise-tools
+                dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
                     // checkout
                     checkout scm
                     // build
-                    sh "GOPATH=${ws}/go:$GOPATH make importer"
                     sh "GOPATH=${ws}/go:$GOPATH make syncer"
-                    sh "GOPATH=${ws}/go:$GOPATH make checker"
                     sh "GOPATH=${ws}/go:$GOPATH make loader"
                 }
-                stash includes: "go/src/github.com/pingcap/tidb-tools/**", name: "tidb-tools"
+                stash includes: "go/src/github.com/pingcap/tidb-enterprise-tools/**", name: "tidb-enterprise-tools"
             }
         }
 
@@ -32,11 +30,11 @@ def call() {
                     def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
                     def ws = pwd()
                     deleteDir()
-                    unstash 'tidb-tools'
+                    unstash 'tidb-enterprise-tools'
 
                     docker.withServer("tcp://${HOSTIP}:32376") {
                         docker.image('mysql:5.6').withRun('-p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
-                            dir("go/src/github.com/pingcap/tidb-tools") {
+                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
                                 sh "GOPATH=${ws}/go:$GOPATH MYSQL_HOST=${HOSTIP} make test"
                             }
                         }
