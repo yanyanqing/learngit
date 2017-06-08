@@ -552,9 +552,9 @@
         <string>build_pd_rc2.2</string>
         <string>build_tidb_binlog_master</string>
         <string>build_tidb_binlog_rc2.2</string>
+        <string>build_tidb_enterprise_tools_master</string>
         <string>build_tidb_master</string>
         <string>build_tidb_rc2.2</string>
-        <string>build_tidb_tools_master</string>
         <string>build_tikv_master</string>
         <string>build_tikv_rc2.2</string>
       </jobNames>
@@ -567,7 +567,7 @@
         <hudson.views.LastFailureColumn/>
         <hudson.views.LastDurationColumn/>
         <hudson.views.BuildButtonColumn/>
-        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.1.0"/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.0"/>
       </columns>
       <recurse>false</recurse>
     </listView>
@@ -591,7 +591,7 @@
         <hudson.views.LastFailureColumn/>
         <hudson.views.LastDurationColumn/>
         <hudson.views.BuildButtonColumn/>
-        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.1.0"/>
+        <hudson.plugins.favorite.column.FavoriteColumn plugin="favorite@2.3.0"/>
       </columns>
       <recurse>false</recurse>
     </listView>
