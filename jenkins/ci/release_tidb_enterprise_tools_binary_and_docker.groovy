@@ -2,6 +2,7 @@ def call(TIDB_ENTERPRISE_TOOLS_BRANCH, RELEASE_TAG) {
 
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
     env.PATH = "/home/jenkins/bin:/bin:${env.PATH}"
+    def tidb_tools_sha1
     def tidb_enterprise_tools_sha1
 
     catchError {
@@ -15,6 +16,8 @@ def call(TIDB_ENTERPRISE_TOOLS_BRANCH, RELEASE_TAG) {
                 dir ('centos7') {
                     tidb_enterprise_tools_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tidb-enterprise-tools/${TIDB_ENTERPRISE_TOOLS_BRANCH}/centos7/sha1").trim()
                     sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb-enterprise-tools/${tidb_enterprise_tools_sha1}/centos7/tidb-enterprise-tools.tar.gz | tar xz"
+                    tidb_tools_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tidb-tools/${TIDB_TOOLS_BRANCH}/centos7/sha1").trim()
+                    sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb-tools/${tidb_tools_sha1}/centos7/tidb-tools.tar.gz | tar xz"
                 }
             }
 
@@ -45,6 +48,10 @@ def call(TIDB_ENTERPRISE_TOOLS_BRANCH, RELEASE_TAG) {
                     cp ../centos7/bin/* ./
                     cat > Dockerfile << __EOF__
 FROM pingcap/alpine-glibc
+RUN apk add --no-cache mysql-client
+COPY importer /importer
+COPY checker /checker
+COPY dump_region /dump_region
 COPY loader /loader
 COPY syncer /syncer
 CMD ["/syncer"]
