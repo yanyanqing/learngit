@@ -163,6 +163,7 @@ __EOF__
                 }
             }
 
+/*
             stage('Push Unportable tikv Docker') {
                 dir('unportable_tikv_docker_build') {
                     sh """
@@ -181,6 +182,7 @@ __EOF__
                     docker.build("pingcap/tikv:${RELEASE_TAG}-unportable", "unportable_tikv_docker_build").push()
                 }
             }
+ */
 
             stage('Push pd Docker') {
                 dir('pd_docker_build') {
@@ -231,8 +233,9 @@ __EOF__
         "http://download.pingcap.org/tidb-${RELEASE_TAG}-linux-amd64-unportable-centos6.sha256" + "\n" +
         "tidb Docker Image: `pingcap/tidb:${RELEASE_TAG}`" + "\n" +
         "pd   Docker Image: `pingcap/pd:${RELEASE_TAG}`" + "\n" +
-        "tikv Docker Image: `pingcap/tikv:${RELEASE_TAG}`" + "\n" +
-        "tikv Unportable Docker Image: `pingcap/tikv:${RELEASE_TAG}-unportable`"
+        "tikv Docker Image: `pingcap/tikv:${RELEASE_TAG}`"
+//        "tikv Docker Image: `pingcap/tikv:${RELEASE_TAG}`" + "\n" +
+//        "tikv Unportable Docker Image: `pingcap/tikv:${RELEASE_TAG}-unportable`"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#binary_publish', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
