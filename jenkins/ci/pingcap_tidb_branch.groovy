@@ -760,7 +760,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        timeout(10) {
+                        timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
@@ -801,7 +801,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        timeout(10) {
+                        timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
@@ -842,7 +842,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        timeout(10) {
+                        timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
@@ -883,7 +883,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        timeout(10) {
+                        timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
@@ -924,7 +924,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        timeout(10) {
+                        timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
