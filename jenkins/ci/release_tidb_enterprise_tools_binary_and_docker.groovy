@@ -1,4 +1,4 @@
-def call(TIDB_ENTERPRISE_TOOLS_BRANCH, RELEASE_TAG) {
+def call(TIDB_ENTERPRISE_TOOLS_BRANCH, TIDB_TOOLS_BRANCH, RELEASE_TAG) {
 
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
     env.PATH = "/home/jenkins/bin:/bin:${env.PATH}"
