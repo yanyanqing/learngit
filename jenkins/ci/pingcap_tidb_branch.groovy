@@ -16,7 +16,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     // checkout
                     checkout scm
                     // build
-                    sh "GOPATH=${ws}/go:$GOPATH WITH_RACE=1 make"
+                    sh "GOPATH=${ws}/go:$GOPATH make"
                 }
                 stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
 
