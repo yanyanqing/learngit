@@ -313,7 +313,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         GOPATH=${ws}/go:$GOPATH \
                         make sqllogictest
                         """
-                    }                }
+                    }
+                }
             }
 
             tests["SQLLogic Index commute 100 Test"] = {
