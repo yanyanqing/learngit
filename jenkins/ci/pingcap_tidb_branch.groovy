@@ -74,6 +74,18 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 }
             }
 
+            test["Leak Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+
+                    dir("go/src/github.com/pingcap/tidb") {
+                        sh "GOPATH=${ws}/go:$GOPATH make leak"
+                    }
+                }
+            }
+
             tests["TiDB Test"] = {
                 node("test") {
                     def ws = pwd()
@@ -85,6 +97,22 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sh """
                         ln -s tidb/_vendor/src ../vendor
                         GOPATH=${ws}/go:$GOPATH make tidbtest
+                        """
+                    }
+                }
+            }
+
+            tests["DDL Etcd Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    deleteDir()
+                    unstash 'tidb'
+                    unstash 'tidb-test'
+
+                    dir("go/src/github.com/pingcap/tidb-test") {
+                        sh """
+                        ln -s tidb/_vendor/src ../vendor
+                        cd ddl_etcd_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh
                         """
                     }
                 }
