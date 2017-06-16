@@ -5,6 +5,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
     env.PATH = "${env.GOROOT}/bin:/home/jenkins/bin:/bin:${env.PATH}"
+    def branch_name
 
     catchError {
         stage('Prepare') {
@@ -15,6 +16,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 dir("go/src/github.com/pingcap/tidb") {
                     // checkout
                     checkout scm
+                    branch_name = sh(returnStdout: true, script: "git symbolic-ref --short -q HEAD").trim()
                     // build
                     sh "GOPATH=${ws}/go:$GOPATH WITH_RACE=1 make && mv bin/tidb-server bin/tidb-server-race"
                     sh "GOPATH=${ws}/go:$GOPATH make"
@@ -1161,7 +1163,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
         def changelog = getChangeLogText()
         def duration = ((System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60).setScale(2, BigDecimal.ROUND_HALF_UP)
         def slackmsg = "[${env.JOB_NAME}-${env.BUILD_NUMBER}] `${currentBuild.result}`" + "\n" +
-        "Branch Name: `${env.BRANCH_NAME}`" + "\n" +
+        "Branch Name: `${branch_name}`" + "\n" +
         "Elapsed Time: `${duration}` Mins" +
         "${changelog}" + "\n" +
         "${env.RUN_DISPLAY_URL}"
