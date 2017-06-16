@@ -16,7 +16,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     // checkout
                     checkout scm
                     // build
-                    sh "GOPATH=${ws}/go:$GOPATH WITH_RACE=1 make"
+                    sh "GOPATH=${ws}/go:$GOPATH WITH_RACE=1 make && mv bin/tidb-server bin/tidb-server-race"
+                    sh "GOPATH=${ws}/go:$GOPATH make"
                 }
                 stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
 
@@ -780,7 +781,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
-                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
                                 """
                             }
@@ -821,7 +822,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
-                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
                                 """
                             }
@@ -862,7 +863,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
-                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
                                 """
                             }
@@ -903,7 +904,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
-                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
                                 """
                             }
@@ -944,7 +945,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
-                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server ddl_test/ddltest_tidb-server
+                                cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}'
                                 """
                             }
