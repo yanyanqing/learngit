@@ -47,7 +47,7 @@ def call(BUILD_BRANCH) {
 
     stage('Summary') {
         def duration = ((System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60).setScale(2, BigDecimal.ROUND_HALF_UP)
-        def slackmsg = "[${env.JOB_NAME}-${env.BUILD_NUMBER}] `${currentBuild.result}`" + "\n" +
+        def slackmsg = "[${env.JOB_NAME.replaceAll('%2F','/')}-${env.BUILD_NUMBER}] `${currentBuild.result}`" + "\n" +
         "Elapsed Time: `${duration}` Mins" + "\n" +
         "Build Branch: `${BUILD_BRANCH}`, Githash: `${githash_centos7.take(7)}`" + "\n" +
         "Binary Download URL:" + "\n" +

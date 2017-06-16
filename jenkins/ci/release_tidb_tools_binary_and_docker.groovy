@@ -65,7 +65,7 @@ __EOF__
 
     stage('Summary') {
         def duration = ((System.currentTimeMillis() - currentBuild.startTimeInMillis) / 1000 / 60).setScale(2, BigDecimal.ROUND_HALF_UP)
-        def slackmsg = "[${env.JOB_NAME}-${env.BUILD_NUMBER}] `${currentBuild.result}`" + "\n" +
+        def slackmsg = "[${env.JOB_NAME.replaceAll('%2F','/')}-${env.BUILD_NUMBER}] `${currentBuild.result}`" + "\n" +
         "Elapsed Time: `${duration}` Mins" + "\n" +
         "tidb-tools Branch: `${TIDB_TOOLS_BRANCH}`, Githash: `${tidb_tools_sha1.take(7)}`" + "\n" +
         "tidb-tools Binary Download URL:" + "\n" +
