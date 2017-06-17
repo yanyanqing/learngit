@@ -980,10 +980,12 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        dir("go/src/github.com/pingcap/tidb") {
-                            sh """
-                            GOPATH=`pwd`/_vendor:${ws}/go:$GOPATH CGO_ENABLED=1 go test --args with-tikv store/tikv/*.go
-                            """
+                        timeout(20) {
+                            dir("go/src/github.com/pingcap/tidb") {
+                                sh """
+                                GOPATH=`pwd`/_vendor:${ws}/go:$GOPATH CGO_ENABLED=1 go test --args with-tikv store/tikv/*.go
+                                """
+                            }
                         }
                     } catch (err) {
                         sh "cat pd_conntest.log"
@@ -1015,11 +1017,13 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                            """
+                        timeout(20) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
+                                """
+                            }
                         }
                     } catch (err) {
                         sh "cat pd_${mytest}.log"
@@ -1051,11 +1055,13 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                            """
+                        timeout(20) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
+                                """
+                            }
                         }
                     } catch (err) {
                         sh "cat pd_${mytest}.log"
@@ -1087,11 +1093,13 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                            """
+                        timeout(20) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
+                                """
+                            }
                         }
                     } catch (err) {
                         sh "cat pd_${mytest}.log"
@@ -1123,11 +1131,13 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sleep 10
                         """
 
-                        dir("go/src/github.com/pingcap/tidb-test") {
-                            sh """
-                            ln -s tidb/_vendor/src ../vendor
-                            GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
-                            """
+                        timeout(20) {
+                            dir("go/src/github.com/pingcap/tidb-test") {
+                                sh """
+                                ln -s tidb/_vendor/src ../vendor
+                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
+                                """
+                            }
                         }
                     } catch (err) {
                         sh "cat pd_${mytest}.log"
