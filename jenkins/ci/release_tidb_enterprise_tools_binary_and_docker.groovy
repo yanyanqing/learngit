@@ -18,6 +18,7 @@ def call(TIDB_ENTERPRISE_TOOLS_BRANCH, TIDB_TOOLS_BRANCH, RELEASE_TAG) {
                     sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb-enterprise-tools/${tidb_enterprise_tools_sha1}/centos7/tidb-enterprise-tools.tar.gz | tar xz"
                     tidb_tools_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tidb-tools/${TIDB_TOOLS_BRANCH}/centos7/sha1").trim()
                     sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb-tools/${tidb_tools_sha1}/centos7/tidb-tools.tar.gz | tar xz"
+                    sh "curl ${UCLOUD_OSS_URL}/tools/mydumper-linux-amd64.tar.gz | tar xz && mv mydumper-linux-amd64/bin/mydumper bin/ && rm -rf mydumper-linux-amd64"
                 }
             }
 
@@ -49,6 +50,7 @@ def call(TIDB_ENTERPRISE_TOOLS_BRANCH, TIDB_TOOLS_BRANCH, RELEASE_TAG) {
                     cat > Dockerfile << __EOF__
 FROM pingcap/alpine-glibc
 RUN apk add --no-cache mysql-client
+COPY mydumper /mydumper
 COPY importer /importer
 COPY checker /checker
 COPY dump_region /dump_region
