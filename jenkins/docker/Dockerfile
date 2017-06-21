@@ -14,6 +14,7 @@ RUN yum makecache \
 	&& yum install -y openssh-server openssl-devel \
 	&& yum install -y java-1.8.0-openjdk \
 	&& yum install -y apache-maven \
+	&& yum install -y mysql \
 	&& yum clean all
 
 RUN curl -L https://github.com/gflags/gflags/archive/v2.1.2.tar.gz -o gflags.tar.gz \
