@@ -1,5 +1,5 @@
-def call() {
-
+def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
+    def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
     env.PATH = "${env.GOROOT}/bin:/home/jenkins/bin:/bin:${env.PATH}"
@@ -18,6 +18,39 @@ def call() {
                     sh "GOPATH=${ws}/go:$GOPATH make loader"
                 }
                 stash includes: "go/src/github.com/pingcap/tidb-enterprise-tools/**", name: "tidb-enterprise-tools"
+
+                // tidb-binlog 
+                dir("go/src/github.com/pingcap/tidb-binlog") {
+                    // checkout 
+                    git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-binlog.git', branch: "${TIDB_BINLOG_BRANCH}"
+                    sh "GOPATH=${ws}/go:$GOPATH make diff"
+                }
+                stash includes: "go/src/github.com/pingcap/tidb-binlog/**", name: "diff"
+
+                dir("importer") {
+                    // download importer
+                    tidb_tools_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tidb-tools/${TIDB_TOOLS_BRANCH}/centos7/sha1").trim()
+                    sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb-tools/${tidb_tools_sha1}/centos7/tidb-tools.tar.gz | tar xz"
+                }
+                // importer/bin/importer
+                stash includes: "importer/**", name: "importer"
+
+                dir("mydumper") {
+                    // download mydumper 
+                    sh "curl -L ${UCLOUD_OSS_URL}/tools/mydumper-linux-amd64.tar.gz -o mydumper.tar.gz && tar zxf mydumper.tar.gz && rm -f mydumper.tar.gz"
+                    sh "cp -R mydumper-linux-amd64/* . && rm -rf mydumper-linux-amd64"
+                }
+                // mydumper/bin/mydumper
+                stash includes: "mydumper/**", name: "mydumper"
+
+                dir("tidb") {
+                    // download tidb binary 
+                    def tidb_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tidb/${TIDB_BRANCH}/centos7/sha1").trim()
+                    sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb/${tidb_sha1}/centos7/tidb-server.tar.gz | tar xz"
+
+                }
+                // tidb/bin/tidb-server 
+                stash includes: "tidb/**", name: "tidb"
             }
         }
 
@@ -36,6 +69,179 @@ def call() {
                         docker.image('mysql:5.6').withRun('-p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
                             dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
                                 sh "GOPATH=${ws}/go:$GOPATH MYSQL_HOST=${HOSTIP} make test"
+                            }
+                        }
+                    }
+                }
+            }
+
+            tests["Loader Generic Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    def nodename = "${env.NODE_NAME}"
+                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+
+                    deleteDir()
+                    unstash "tidb-enterprise-tools"
+                    unstash "importer"
+                    unstash "mydumper"
+                    unstash "diff"
+                    unstash "tidb"
+                    
+                    // start mysql-server 
+                    docker.withServer("tcp://${HOSTIP}:32376") {
+                        docker.image("mysql:5.6").withRun('-p 3307:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
+                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
+                                sh """
+                                export MYSQL_HOST=${HOSTIP} 
+                                export MYSQL_PORT=3307 
+                                export ws=${ws} 
+                                export TIDB_DIR="${ws}/tidb" 
+                                export IMPORTER_DIR="${ws}/importer" 
+                                export MYDUMPER_DIR="${ws}/mydumper" 
+                                export LOADER_DIR="${ws}/go/src/github.com/pingcap/tidb-enterprise-tools" 
+                                export DIFF_DIR="${ws}/go/src/github.com/pingcap/tidb-binlog" 
+                                cd tests && sh -x ./loader_generic_test.sh 
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+
+            tests["Loader Sharding Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    def nodename = "${env.NODE_NAME}"
+                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+
+                    deleteDir()
+                    unstash "tidb-enterprise-tools"
+                    unstash "importer"
+                    unstash "mydumper"
+                    unstash "diff"
+                    unstash "tidb"
+
+                    // start mysql-server 
+                    docker.withServer("tcp://${HOSTIP}:32376") {
+                        docker.image("mysql:5.6").withRun('-p 3308:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
+                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
+                                sh """
+                                export MYSQL_HOST=${HOSTIP} 
+                                export MYSQL_PORT=3308 
+                                export ws=${ws} 
+                                export TIDB_DIR="${ws}/tidb" 
+                                export IMPORTER_DIR="${ws}/importer" 
+                                export MYDUMPER_DIR="${ws}/mydumper" 
+                                export LOADER_DIR="${ws}/go/src/github.com/pingcap/tidb-enterprise-tools" 
+                                export DIFF_DIR="${ws}/go/src/github.com/pingcap/tidb-binlog" 
+                                cd tests && sh -x ./loader_sharding_test.sh 
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+            
+            tests["Syncer Generic Test"] = {
+                 node("test") {
+                    def ws = pwd()
+                    def nodename = "${env.NODE_NAME}"
+                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+
+                    deleteDir()
+                    unstash "tidb-enterprise-tools"
+                    unstash "importer"
+                    unstash "mydumper"
+                    unstash "diff"
+                    unstash "tidb"
+
+                    // start mysql-server 
+                    docker.withServer("tcp://${HOSTIP}:32376") {
+                        docker.image("mysql:5.6").withRun('-p 3309:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
+                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
+                                sh """
+                                export MYSQL_HOST=${HOSTIP} 
+                                export MYSQL_PORT=3309 
+                                export ws=${ws} 
+                                export TIDB_DIR="${ws}/tidb" 
+                                export IMPORTER_DIR="${ws}/importer" 
+                                export MYDUMPER_DIR="${ws}/mydumper" 
+                                export SYNCER_DIR="${ws}/go/src/github.com/pingcap/tidb-enterprise-tools" 
+                                export DIFF_DIR="${ws}/go/src/github.com/pingcap/tidb-binlog" 
+                                export STATUS_PORT=10081  
+                                cd tests && sh -x ./syncer_generic_test.sh 
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+
+            tests["Syncer Sharding Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    def nodename = "${env.NODE_NAME}"
+                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+
+                    deleteDir()
+                    unstash "tidb-enterprise-tools"
+                    unstash "importer"
+                    unstash "mydumper"
+                    unstash "diff"
+                    unstash "tidb"
+
+                    // start mysql-server 
+                    docker.withServer("tcp://${HOSTIP}:32376") {
+                        docker.image("mysql:5.6").withRun('-p 3310:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
+                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
+                                sh """
+                                export MYSQL_HOST=${HOSTIP} 
+                                export MYSQL_PORT=3310 
+                                export ws=${ws} 
+                                export TIDB_DIR="${ws}/tidb" 
+                                export IMPORTER_DIR="${ws}/importer" 
+                                export MYDUMPER_DIR="${ws}/mydumper" 
+                                export SYNCER_DIR="${ws}/go/src/github.com/pingcap/tidb-enterprise-tools" 
+                                export DIFF_DIR="${ws}/go/src/github.com/pingcap/tidb-binlog" 
+                                export STATUS_PORT=10081  
+                                cd tests &&  sh -x ./syncer_sharding_test.sh 
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+
+            tests["Syncer GTID Test"] = {
+                node("test") {
+                    def ws = pwd()
+                    def nodename = "${env.NODE_NAME}"
+                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+
+                    deleteDir()
+                    unstash "tidb-enterprise-tools"
+                    unstash "importer"
+                    unstash "mydumper"
+                    unstash "diff"
+                    unstash "tidb"
+
+                    // start mysql-server 
+                    docker.withServer("tcp://${HOSTIP}:32376") {
+                        docker.image("mysql:5.6").withRun('-p 3311:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1 --gtid_mode=ON --enforce-gtid-consistency  --log-slave-updates') { c ->
+                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
+                                sh """
+                                export MYSQL_HOST=${HOSTIP} 
+                                export MYSQL_PORT=3311 
+                                export ws=${ws} 
+                                export TIDB_DIR="${ws}/tidb" 
+                                export IMPORTER_DIR="${ws}/importer" 
+                                export MYDUMPER_DIR="${ws}/mydumper" 
+                                export SYNCER_DIR="${ws}/go/src/github.com/pingcap/tidb-enterprise-tools" 
+                                export DIFF_DIR="${ws}/go/src/github.com/pingcap/tidb-binlog" 
+                                export STATUS_PORT=10081  
+                                cd tests && sh -x ./syncer_gtid_test.sh 
+                                """
                             }
                         }
                     }
@@ -70,6 +276,7 @@ def call() {
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#tidb-tools', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
         }
+        echo "summary finished"
     }
 }
 
