@@ -75,41 +75,7 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
                 }
             }
 
-            tests["Loader Generic Test"] = {
-                node("test") {
-                    def ws = pwd()
-                    def nodename = "${env.NODE_NAME}"
-                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
-
-                    deleteDir()
-                    unstash "tidb-enterprise-tools"
-                    unstash "importer"
-                    unstash "mydumper"
-                    unstash "diff"
-                    unstash "tidb"
-                    
-                    // start mysql-server 
-                    docker.withServer("tcp://${HOSTIP}:32376") {
-                        docker.image("mysql:5.6").withRun('-p 3307:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
-                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
-                                sh """
-                                export MYSQL_HOST=${HOSTIP} 
-                                export MYSQL_PORT=3307 
-                                export ws=${ws} 
-                                export TIDB_DIR="${ws}/tidb" 
-                                export IMPORTER_DIR="${ws}/importer" 
-                                export MYDUMPER_DIR="${ws}/mydumper" 
-                                export LOADER_DIR="${ws}/go/src/github.com/pingcap/tidb-enterprise-tools" 
-                                export DIFF_DIR="${ws}/go/src/github.com/pingcap/tidb-binlog" 
-                                cd tests && sh -x ./loader_generic_test.sh 
-                                """
-                            }
-                        }
-                    }
-                }
-            }
-
-            tests["Loader Sharding Test"] = {
+            tests["Loader Test"] = {
                 node("test") {
                     def ws = pwd()
                     def nodename = "${env.NODE_NAME}"
@@ -143,42 +109,7 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
                 }
             }
             
-            tests["Syncer Generic Test"] = {
-                 node("test") {
-                    def ws = pwd()
-                    def nodename = "${env.NODE_NAME}"
-                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
-
-                    deleteDir()
-                    unstash "tidb-enterprise-tools"
-                    unstash "importer"
-                    unstash "mydumper"
-                    unstash "diff"
-                    unstash "tidb"
-
-                    // start mysql-server 
-                    docker.withServer("tcp://${HOSTIP}:32376") {
-                        docker.image("mysql:5.6").withRun('-p 3309:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
-                            dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
-                                sh """
-                                export MYSQL_HOST=${HOSTIP} 
-                                export MYSQL_PORT=3309 
-                                export ws=${ws} 
-                                export TIDB_DIR="${ws}/tidb" 
-                                export IMPORTER_DIR="${ws}/importer" 
-                                export MYDUMPER_DIR="${ws}/mydumper" 
-                                export SYNCER_DIR="${ws}/go/src/github.com/pingcap/tidb-enterprise-tools" 
-                                export DIFF_DIR="${ws}/go/src/github.com/pingcap/tidb-binlog" 
-                                export STATUS_PORT=10081  
-                                cd tests && sh -x ./syncer_generic_test.sh 
-                                """
-                            }
-                        }
-                    }
-                }
-            }
-
-            tests["Syncer Sharding Test"] = {
+            tests["Syncer Test"] = {
                 node("test") {
                     def ws = pwd()
                     def nodename = "${env.NODE_NAME}"
