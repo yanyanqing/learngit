@@ -63,7 +63,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     dir("go/src/github.com/pingcap/tikv") {
                         sh """
                         rustup override set $RUST_TOOLCHAIN_TEST
-                        make test
+                        make trace_test
                         """
                     }
                 }
