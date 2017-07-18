@@ -25,11 +25,11 @@ RUN curl -L https://github.com/gflags/gflags/archive/v2.1.2.tar.gz -o gflags.tar
 	&& make install \
 	&& rm -rf /gflags.tar.gz /gflags-2.1.2
 
-RUN curl -L https://github.com/facebook/rocksdb/archive/v5.4.5.tar.gz -o rocksdb.tar.gz \
+RUN curl -L https://github.com/facebook/rocksdb/archive/v5.5.1.tar.gz -o rocksdb.tar.gz \
 	&& tar xf rocksdb.tar.gz \
-	&& cd rocksdb-5.4.5 \
-	&& make -j install-shared \
-	&& rm -rf /rocksdb.tar.gz /rocksdb-5.4.5
+	&& cd rocksdb-5.5.1 \
+	&& make -j 2 install-shared \
+	&& rm -rf /rocksdb.tar.gz /rocksdb-5.5.1
 
 ENV GOLANG_VERSION 1.8
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
@@ -47,7 +47,7 @@ ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
 RUN go get golang.org/x/tools/go/gcimporter15 \
 	&& go get github.com/golang/lint/golint
 
-RUN curl -fsSL https://get.docker.com/ | sh
+RUN curl -fsSL https://get.docker.com/ | sh || true
 
 RUN adduser jenkins --uid 1000 \
 	&& echo "jenkins:jenkins" | chpasswd \
