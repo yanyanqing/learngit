@@ -333,7 +333,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
                                 ln -s tidb/_vendor/src ../vendor
-                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest}
+                                GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest} 2>&1
                                 """
                             }
                         }
