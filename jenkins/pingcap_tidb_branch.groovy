@@ -12,8 +12,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 def ws = pwd()
 
                 // tidb
-                dir("go/src/github.com/pingcap/tidb") {
-                    container('centos7') {
+                container('centos7') {
+                    dir("go/src/github.com/pingcap/tidb") {
                         // checkout
                         checkout scm
 
@@ -21,27 +21,27 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         sh "GOPATH=${ws}/go:$GOPATH WITH_RACE=1 make && mv bin/tidb-server bin/tidb-server-race"
                         sh "GOPATH=${ws}/go:$GOPATH make"
                     }
+                    stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
                 }
-                stash includes: "go/src/github.com/pingcap/tidb/**", name: "tidb"
 
                 // tidb-test
-                dir("go/src/github.com/pingcap/tidb-test") {
-                    container('centos7') {
+                container('centos7') {
+                    dir("go/src/github.com/pingcap/tidb-test") {
                         // checkout
                         git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, url: 'git@github.com:pingcap/tidb-test.git', branch: "${TIDB_TEST_BRANCH}"
                     }
+                    stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
                 }
-                stash includes: "go/src/github.com/pingcap/tidb-test/**", name: "tidb-test"
 
                 // mybatis
-                dir("mybatis3") {
-                    container('centos7') {
+                container('centos7') {
+                    dir("mybatis3") {
                         //git changelog: false, credentialsId: 'github-iamxy-ssh', poll: false, branch: 'travis-tidb', url: 'git@github.com:pingcap/mybatis-3.git'
                         sh "curl -L ${MYBATIS3_URL} -o travis-tidb.zip && unzip travis-tidb.zip && rm -rf travis-tidb.zip"
                         sh "cp -R mybatis-3-travis-tidb/* . && rm -rf mybatis-3-travis-tidb"
                     }
+                    stash includes: "mybatis3/**", name: "mybatis"
                 }
-                stash includes: "mybatis3/**", name: "mybatis"
 
                 // tikv
                 def tikv_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tikv/${TIKV_BRANCH}/unportable_centos7/sha1").trim()
@@ -62,8 +62,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     deleteDir()
                     unstash 'tidb'
 
-                    dir("go/src/github.com/pingcap/tidb") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb") {
                             sh "GOPATH=${ws}/go:$GOPATH make test"
                         }
                     }
@@ -76,8 +76,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     deleteDir()
                     unstash 'tidb'
 
-                    dir("go/src/github.com/pingcap/tidb") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb") {
                             sh "GOPATH=${ws}/go:$GOPATH make race"
                         }
                     }
@@ -91,8 +91,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 GOPATH=${ws}/go:$GOPATH make tidbtest
@@ -109,14 +109,13 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
-                            container('centos7') {
-                                sh """
-                                    cd ddl_etcd_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh
-                                    """
-                            }
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
+                            sh """
+                                cd ddl_etcd_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh
+                                """
                         }
+                    }
                 }
             }
 
@@ -127,8 +126,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 GOPATH=${ws}/go:$GOPATH make mysqltest
@@ -145,8 +144,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 GOPATH=${ws}/go:$GOPATH make gormtest
@@ -163,8 +162,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 GOPATH=${ws}/go:$GOPATH make gosqltest
@@ -210,8 +209,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -234,8 +233,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -258,8 +257,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -282,8 +281,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -306,8 +305,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -330,8 +329,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -354,8 +353,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -378,8 +377,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -402,8 +401,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -426,8 +425,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -450,8 +449,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -474,8 +473,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -498,8 +497,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -522,8 +521,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -546,8 +545,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -570,8 +569,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -594,8 +593,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -618,8 +617,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -642,8 +641,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -666,8 +665,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -690,8 +689,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -714,8 +713,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -738,8 +737,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -762,8 +761,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -786,8 +785,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
@@ -810,8 +809,8 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     unstash 'tidb'
                     unstash 'tidb-test'
 
-                    dir("go/src/github.com/pingcap/tidb-test") {
-                        container('centos7') {
+                    container('centos7') {
+                        dir("go/src/github.com/pingcap/tidb-test") {
                             sh """
                                 ln -s tidb/_vendor/src ../vendor
                                 SQLLOGIC_TEST_PATH=${sqllogictest} \
