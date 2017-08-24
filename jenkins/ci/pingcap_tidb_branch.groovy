@@ -381,7 +381,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 node("test") {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/delete/1'
-                    def parallelism = 4
+                    def parallelism = 6
                     deleteDir()
                     unstash 'tidb'
                     unstash 'tidb-test'
@@ -403,7 +403,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 node("test") {
                     def ws = pwd()
                     def sqllogictest = '/home/pingcap/sqllogictest/test/index/delete/10'
-                    def parallelism = 4
+                    def parallelism = 6
                     deleteDir()
                     unstash 'tidb'
                     unstash 'tidb-test'
