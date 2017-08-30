@@ -481,7 +481,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, TIKV_BRANCH) {
         "${env.RUN_DISPLAY_URL}"
 
         if (currentBuild.result != "SUCCESS") {
-            slackSend channel: '#pd', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
+            slackSend channel: '#tikv-ci', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
         }
     }
 }

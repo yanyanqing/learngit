@@ -63,7 +63,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     dir("go/src/github.com/pingcap/tikv") {
                         sh """
                         rustup override set $RUST_TOOLCHAIN_TEST
-                        make trace_test
+                        make test
                         """
                     }
                 }
@@ -488,7 +488,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
         "${env.RUN_DISPLAY_URL}"
 
         if (currentBuild.result != "SUCCESS") {
-            slackSend channel: '#kv', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
+            slackSend channel: '#tikv-ci', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
         }
     }
 }
