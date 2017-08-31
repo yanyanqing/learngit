@@ -160,7 +160,6 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                     deleteDir()
                     unstash 'tidb'
                     unstash 'mybatis'
-                    sleep 600 // for debug
 
                     dir("go/src/github.com/pingcap/tidb") {
                         sh """
