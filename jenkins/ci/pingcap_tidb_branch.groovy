@@ -154,12 +154,13 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                 }
             }
 
-            tests["Mybaits Test"] = {
+            tests["Mybatis Test"] = {
                 node("test") {
                     def ws = pwd()
                     deleteDir()
                     unstash 'tidb'
                     unstash 'mybatis'
+                    sleep 600 // for debug
 
                     dir("go/src/github.com/pingcap/tidb") {
                         sh """
