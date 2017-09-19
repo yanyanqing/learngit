@@ -1,0 +1,10 @@
+---
+
+# This play book is intend for one pass execution
+- name: check node config
+  hosts: tobeuse_servers
+  gather_facts: false
+  roles:
+    - pre-ansible
+    - bootstrap
+    - static-ip
