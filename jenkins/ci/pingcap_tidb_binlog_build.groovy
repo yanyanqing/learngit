@@ -4,6 +4,7 @@ def call(BUILD_BRANCH) {
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
+    env.PATH = "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
     env.PATH = "${env.GOROOT}/bin:/home/jenkins/bin:/bin:${env.PATH}"
     def githash_centos7, githash_centos6
 

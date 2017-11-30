@@ -6,16 +6,28 @@ RUN yum install -y epel-release
 
 COPY epel-apache-maven.repo /etc/yum.repos.d/epel-apache-maven.repo
 
+RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
+
 RUN yum makecache \
 	&& yum update -y \
 	&& yum install -y tar wget git which file unzip python-pip \
-	&& yum install -y make cmake gcc gcc-c++ libstdc++-static pkg-config psmisc \
+	&& yum install -y make gcc gcc-c++ libstdc++-static pkg-config psmisc \
 	&& yum install -y libzstd-devel lz4-devel zlib-devel bzip2-devel snappy-devel libdwarf-devel elfutils-libelf-devel elfutils-devel binutils-devel \
 	&& yum install -y openssh-server openssl-devel \
 	&& yum install -y java-1.8.0-openjdk \
+	&& yum install -y nodejs \
 	&& yum install -y apache-maven \
 	&& yum install -y mysql \
 	&& yum clean all
+
+RUN curl -L https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz -o cmake-3.10.0.tar.gz \
+	&& tar xzf cmake-3.10.0.tar.gz \
+	&& cd cmake-3.10.0 \
+	&& ./bootstrap \
+	&& make \
+	&& make install \
+	&& cmake --version \
+	&& rm -rf /cmake-3.10.0.tar.gz /cmake-3.10.0
 
 RUN curl -L https://github.com/gflags/gflags/archive/v2.1.2.tar.gz -o gflags.tar.gz \
 	&& tar xf gflags.tar.gz \
@@ -25,15 +37,15 @@ RUN curl -L https://github.com/gflags/gflags/archive/v2.1.2.tar.gz -o gflags.tar
 	&& make install \
 	&& rm -rf /gflags.tar.gz /gflags-2.1.2
 
-RUN curl -L https://github.com/facebook/rocksdb/archive/v5.7.3.tar.gz -o rocksdb.tar.gz \
-	&& tar xf rocksdb.tar.gz \
-	&& cd rocksdb-5.7.3 \
-	&& make -j 2 install-shared \
-	&& rm -rf /rocksdb.tar.gz /rocksdb-5.7.3
+#RUN curl -L https://github.com/facebook/rocksdb/archive/v5.7.3.tar.gz -o rocksdb.tar.gz \
+#	&& tar xf rocksdb.tar.gz \
+#	&& cd rocksdb-5.7.3 \
+#	&& make -j 2 install-shared \
+#	&& rm -rf /rocksdb.tar.gz /rocksdb-5.7.3
 
-ENV GOLANG_VERSION 1.8
+ENV GOLANG_VERSION 1.9.2
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
-ENV GOLANG_DOWNLOAD_SHA256 53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca
+ENV GOLANG_DOWNLOAD_SHA256 de874549d9a8d8d8062be05808509c09a88a248e77ec14eb77453530829ac02b
 
 RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
 	&& echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
@@ -54,8 +66,8 @@ RUN adduser jenkins --uid 1000 \
 	&& usermod -aG docker jenkins \
 	&& usermod -aG input jenkins
 
-RUN su jenkins -c "curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2017-03-27 -y" \
-	&& su jenkins -c "/home/jenkins/.cargo/bin/rustup default nightly-2017-03-27"
+RUN su jenkins -c "curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2017-08-08 -y" \
+	&& su jenkins -c "/home/jenkins/.cargo/bin/rustup default nightly-2017-08-08"
 
 # cache dep package
 RUN su jenkins -c "curl -L https://github.com/pingcap/tikv/archive/master.tar.gz -o /home/jenkins/master.tar.gz" \

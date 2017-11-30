@@ -4,6 +4,7 @@ def call(BUILD_BRANCH) {
     def UCLOUD_OSS_URL = "http://pingcap-dev.hk.ufileos.com"
     env.GOROOT = "/usr/local/go"
     env.GOPATH = "/go"
+    env.PATH = "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
     env.PATH = "/home/jenkins/.cargo/bin:${env.GOROOT}/bin:/home/jenkins/bin:/bin:${env.PATH}"
     def githash_centos7, githash_centos6
 
@@ -22,7 +23,7 @@ def call(BUILD_BRANCH) {
                         // build
                         sh """
                         rustup override set $RUST_TOOLCHAIN_BUILD
-                        GOPATH=${ws}/go:$GOPATH make static_release
+                        GOPATH=${ws}/go:$GOPATH make release
                         """
 
                         // upload binary
@@ -53,7 +54,7 @@ def call(BUILD_BRANCH) {
                         // build
                         sh """
                         rustup override set $RUST_TOOLCHAIN_BUILD
-                        scl enable devtoolset-4 python27 "GOPATH=${ws}/go:$GOPATH make static_release"
+                        scl enable devtoolset-4 python27 "GOPATH=${ws}/go:$GOPATH make release"
                         """
 
                         // upload binary
