@@ -19,7 +19,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     // build
                     sh """
                     rustup override set $RUST_TOOLCHAIN_BUILD
-                    CARGO_TARGET_DIR=/home/jenkins/.target make release
+                    CARGO_TARGET_DIR=/home/jenkins/.target ROCKSDB_SYS_STATIC=1 make release
                     """
                 }
                 stash includes: "go/src/github.com/pingcap/tikv/**", name: "tikv"
@@ -63,7 +63,7 @@ def call(TIDB_TEST_BRANCH, TIDB_BRANCH, PD_BRANCH) {
                     dir("go/src/github.com/pingcap/tikv") {
                         sh """
                         rustup override set $RUST_TOOLCHAIN_TEST
-                        make test
+                        ROCKSDB_SYS_STATIC=1 make test
                         """
                     }
                 }

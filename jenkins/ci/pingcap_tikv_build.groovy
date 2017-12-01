@@ -23,7 +23,7 @@ def call(BUILD_BRANCH) {
                         // build
                         sh """
                         rustup override set $RUST_TOOLCHAIN_BUILD
-                        GOPATH=${ws}/go:$GOPATH make release
+                        GOPATH=${ws}/go:$GOPATH ROCKSDB_SYS_STATIC=1 make release
                         """
 
                         // upload binary
@@ -54,7 +54,7 @@ def call(BUILD_BRANCH) {
                         // build
                         sh """
                         rustup override set $RUST_TOOLCHAIN_BUILD
-                        scl enable devtoolset-4 python27 "GOPATH=${ws}/go:$GOPATH make release"
+                        scl enable devtoolset-4 python27 "GOPATH=${ws}/go:$GOPATH ROCKSDB_SYS_STATIC=1 make release"
                         """
 
                         // upload binary
