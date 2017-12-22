@@ -21,6 +21,9 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
 
                     pd_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/pd/${PD_BRANCH}/centos7/sha1").trim()
                     sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/pd/${pd_sha1}/centos7/pd-server.tar.gz | tar xz"
+                    
+                    tidb_ctl_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tidb-ctl/master/centos7/sha1").trim()
+                    sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tidb-ctl/${tidb_ctl_sha1}/centos7/tidb-ctl.tar.gz | tar xz"
                 }
 
                 dir ('centos6') {
