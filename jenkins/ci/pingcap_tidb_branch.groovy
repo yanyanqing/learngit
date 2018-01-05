@@ -84,7 +84,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         GOPATH=${ws}/go:$GOPATH make tidbtest
                         """
                     }
@@ -115,7 +115,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         GOPATH=${ws}/go:$GOPATH make mysqltest
                         """
                     }
@@ -131,7 +131,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         GOPATH=${ws}/go:$GOPATH make gormtest
                         """
                     }
@@ -147,7 +147,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         GOPATH=${ws}/go:$GOPATH make gosqltest
                         """
                     }
@@ -190,7 +190,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -212,7 +212,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -234,7 +234,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -256,7 +256,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -278,7 +278,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -300,7 +300,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -322,7 +322,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -344,7 +344,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -366,7 +366,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -388,7 +388,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -410,7 +410,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -432,7 +432,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -454,7 +454,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -476,7 +476,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -498,7 +498,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -520,7 +520,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -542,7 +542,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -564,7 +564,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -586,7 +586,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -608,7 +608,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -630,7 +630,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -652,7 +652,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -674,7 +674,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -696,7 +696,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -718,7 +718,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -740,7 +740,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
 
                     dir("go/src/github.com/pingcap/tidb-test") {
                         sh """
-                        ln -s tidb/_vendor/src ../vendor
+                        ln -s tidb/vendor ../vendor
                         SQLLOGIC_TEST_PATH=${sqllogictest} \
                         TIDB_PARALLELISM=${parallelism} \
                         TIDB_SERVER_PATH=${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server \
@@ -780,7 +780,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}' 2>&1
                                 """
@@ -821,7 +821,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}' 2>&1
                                 """
@@ -862,7 +862,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}' 2>&1
                                 """
@@ -903,7 +903,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}' 2>&1
                                 """
@@ -944,7 +944,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 cp ${ws}/go/src/github.com/pingcap/tidb/bin/tidb-server-race ddl_test/ddltest_tidb-server
                                 cd ddl_test && GOPATH=${ws}/go:$GOPATH ./run-tests.sh -check.f='${ddltest}' 2>&1
                                 """
@@ -1020,7 +1020,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest} 2>&1
                                 """
                             }
@@ -1058,7 +1058,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest} 2>&1
                                 """
                             }
@@ -1096,7 +1096,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest} 2>&1
                                 """
                             }
@@ -1134,7 +1134,7 @@ def call(TIDB_TEST_BRANCH, TIKV_BRANCH, PD_BRANCH) {
                         timeout(20) {
                             dir("go/src/github.com/pingcap/tidb-test") {
                                 sh """
-                                ln -s tidb/_vendor/src ../vendor
+                                ln -s tidb/vendor ../vendor
                                 GOPATH=${ws}/go:$GOPATH TIKV_PATH='127.0.0.1:2379' TIDB_TEST_STORE_NAME=tikv make ${mytest} 2>&1
                                 """
                             }
