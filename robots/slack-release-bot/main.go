@@ -14,8 +14,9 @@ var (
 	helpFlag              = flag.Bool("help", false, "show detailed help message")
 	portFlag              = flag.String("port", "6666", "server port to be listened")
 	botTokenFlag          = flag.String("bot-token", "", "bot user token to access to slack API")
+	botIDFlag             = flag.String("bot", "", "bot user ID")
 	verificationTokenFlag = flag.String("verify-token", "", "used to validate interactive message from slack")
-	channelIDFlag         = flag.String("channel", "release-version", "slack channel ID where bot is working")
+	channelIDFlag         = flag.String("channel", "", "slack channel ID where bot is working")
 )
 
 const usage = `slack-release-bot: the backend server of a slack app used for the tidb versioning.
@@ -25,6 +26,7 @@ Usage: slack-release-bot <args...>
 -help              show detailed help message.
 -port              server port to be listened.
 -bot-token         bot user token to access to slack API.
+-bot               bot user ID
 -verify-token      used to validate interactive message from slack.
 -channel           slack channel ID where bot is working.
 `
@@ -37,7 +39,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// Only log the warning severity or above
-	log.SetLevel(log.WarnLevel)
+	log.SetLevel(log.DebugLevel)
 }
 
 func main() {
@@ -67,7 +69,7 @@ func realMain() int {
 	client := slack.New(*botTokenFlag)
 	slackListener := &SlackListener{
 		client:    client,
-		botID:     "release-bot",
+		botID:     *botIDFlag,
 		channelID: *channelIDFlag,
 	}
 	go slackListener.ListenAndResponse()
@@ -78,7 +80,7 @@ func realMain() int {
 		verificationToken: *verificationTokenFlag,
 	})
 
-	log.Infof("Server listening on port[%s]", portFlag)
+	log.Infof("Server listening on port[%s]", *portFlag)
 	if err := http.ListenAndServe(":"+*portFlag, nil); err != nil {
 		log.Errorf("%s", err)
 		return 1

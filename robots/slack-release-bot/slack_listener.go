@@ -44,19 +44,19 @@ func (s *SlackListener) ListenAndResponse() {
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent) error {
 	// Only response in specific channel, ignore else
 	if ev.Channel != s.channelID {
-		log.Infof("%s: %s", ev.Channel, ev.Msg.Text)
+		log.Debugf("Ignore channel[%s] message: %s", ev.Channel, ev.Msg.Text)
 		return nil
 	}
 
 	if !strings.HasPrefix(ev.Msg.Text, fmt.Sprintf("<@%s> ", s.botID)) {
-		log.Infof("Ignore: %s", ev.Msg.Text)
+		log.Debugf("Ignore msg: %s", ev.Msg.Text)
 		return nil
 	}
 
 	// Parse message
 	m := strings.Split(strings.TrimSpace(ev.Msg.Text), " ")[1:]
-	if len(m) == 0 || m[0] != "come out" {
-		log.Infof("Ignore: %s", ev.Msg.Text)
+	if len(m) == 0 || m[0] != "hi" {
+		log.Debugf("Ignore msg: %s", ev.Msg.Text)
 		return nil
 	}
 
