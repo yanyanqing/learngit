@@ -613,9 +613,9 @@
           </default>
           <int>2</int>
           <string>RUST_TOOLCHAIN_BUILD</string>
-          <string>nightly-2017-03-28</string>
+          <string>nightly-2018-01-12</string>
           <string>RUST_TOOLCHAIN_TEST</string>
-          <string>nightly-2017-03-28</string>
+          <string>nightly-2018-01-12</string>
         </tree-map>
       </envVars>
     </hudson.slaves.EnvironmentVariablesNodeProperty>
