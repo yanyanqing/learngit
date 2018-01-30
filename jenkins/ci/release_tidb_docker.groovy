@@ -29,22 +29,9 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
                 dir('tidb_docker_build') {
                     sh  """
                     cp ../centos7/bin/tidb-server ./
-                    cat > entrypoint.sh << __EOF__
-#!/bin/sh
-source /etc/pod-labels/labels
-if [[ X$runmode == Xdebug ]];then
-  echo "enter debug mode."
-  exec sleep 100000
-else
-  echo "start tidb-server with params [$*]"
-  exec /tidb-server $*
-fi
-__EOF__
-                    chmod a+x ./entrypoint.sh
                     cat > Dockerfile << __EOF__
 FROM pingcap/alpine-glibc
 COPY tidb-server /tidb-server
-COPY entrypoint.sh /entrypoint.sh
 EXPOSE 4000
 ENTRYPOINT ["/tidb-server"]
 __EOF__
@@ -60,23 +47,10 @@ __EOF__
                 dir('tikv_docker_build') {
                     sh """
                     cp ../centos7/bin/tikv-server ./
-                    cat > entrypoint.sh << __EOF__
-#!/bin/sh
-source /etc/pod-labels/labels
-if [[ X$runmode == Xdebug ]];then
-  echo "enter debug mode."
-  exec sleep 100000
-else
-  echo "start tikv-server with params [$*]"
-  exec /tikv-server $*
-fi
-__EOF__
-                    chmod a+x ./entrypoint.sh
                     cat > Dockerfile << __EOF__
 FROM pingcap/alpine-glibc
 ENV TZ /etc/localtime
 COPY tikv-server /tikv-server
-COPY entrypoint.sh /entrypoint.sh
 EXPOSE 20160
 ENTRYPOINT ["/tikv-server"]
 __EOF__
@@ -93,23 +67,10 @@ __EOF__
                     sh """
                     cp ../centos7/bin/pd-server ./
                     cp ../centos7/bin/pd-ctl ./
-                    cat > entrypoint.sh << __EOF__
-#!/bin/sh
-source /etc/pod-labels/labels
-if [[ X$runmode == Xdebug ]];then
-  echo "enter debug mode."
-  exec sleep 100000
-else
-  echo "start pd-server with params [$*]"
-  exec /pd-server $*
-fi
-__EOF__
-                    chmod a+x ./entrypoint.sh
                     cat > Dockerfile << __EOF__
 FROM pingcap/alpine-glibc
 COPY pd-server /pd-server
 COPY pd-ctl /pd-ctl
-COPY entrypoint.sh /entrypoint.sh
 EXPOSE 2379 2380
 ENTRYPOINT ["/pd-server"]
 __EOF__
