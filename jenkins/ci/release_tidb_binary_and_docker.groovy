@@ -40,6 +40,10 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
                     def tikv_unportable_centos6_sha1 = sh(returnStdout: true, script: "curl ${UCLOUD_OSS_URL}/refs/pingcap/tikv/${TIKV_BRANCH}/unportable_centos6/sha1").trim()
                     sh "curl ${UCLOUD_OSS_URL}/builds/pingcap/tikv/${tikv_unportable_centos6_sha1}/unportable_centos6/tikv-server.tar.gz | tar xz"
                 }
+
+                dir ('tidb-operator') {
+                    git credentialsId: 'github-iamxy-ssh', url: 'git@github.com:pingcap/tidb-operator.git', branch: 'master', changelog: false, poll: false
+                }
             }
 
             stage('Push Centos7 Binary') {
@@ -133,12 +137,8 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
                 dir('tidb_docker_build') {
                     sh  """
                     cp ../centos7/bin/tidb-server ./
-                    cat > Dockerfile << __EOF__
-FROM pingcap/alpine-glibc
-COPY tidb-server /tidb-server
-EXPOSE 4000
-ENTRYPOINT ["/tidb-server"]
-__EOF__
+                    cp ../tidb-operator/hack/tidb/entrypoint.sh ./
+                    cp ../tidb-operator/hack/tidb/Dockerfile ./
                     """
                 }
 
@@ -151,13 +151,8 @@ __EOF__
                 dir('tikv_docker_build') {
                     sh """
                     cp ../centos7/bin/tikv-server ./
-                    cat > Dockerfile << __EOF__
-FROM pingcap/alpine-glibc
-ENV TZ /etc/localtime
-COPY tikv-server /tikv-server
-EXPOSE 20160
-ENTRYPOINT ["/tikv-server"]
-__EOF__
+                    cp ../tidb-operator/hack/tikv/entrypoint.sh ./
+                    cp ../tidb-operator/hack/tikv/Dockerfile ./
                     """
                 }
 
@@ -166,39 +161,13 @@ __EOF__
                 }
             }
 
-/*
-            stage('Push Unportable tikv Docker') {
-                dir('unportable_tikv_docker_build') {
-                    sh """
-                    cp ../unportable_centos7/bin/tikv-server ./
-                    cat > Dockerfile << __EOF__
-FROM pingcap/alpine-glibc
-ENV TZ /etc/localtime
-COPY tikv-server /tikv-server
-EXPOSE 20160
-ENTRYPOINT ["/tikv-server"]
-__EOF__
-                    """
-                }
-
-                withDockerServer([uri: "tcp://${HOSTIP}:32376"]) {
-                    docker.build("pingcap/tikv:${RELEASE_TAG}-unportable", "unportable_tikv_docker_build").push()
-                }
-            }
- */
-
             stage('Push pd Docker') {
                 dir('pd_docker_build') {
                     sh """
                     cp ../centos7/bin/pd-server ./
                     cp ../centos7/bin/pd-ctl ./
-                    cat > Dockerfile << __EOF__
-FROM pingcap/alpine-glibc
-COPY pd-server /pd-server
-COPY pd-ctl /pd-ctl
-EXPOSE 2379 2380
-ENTRYPOINT ["/pd-server"]
-__EOF__
+                    cp ../tidb-operator/hack/pd/entrypoint.sh ./
+                    cp ../tidb-operator/hack/pd/Dockerfile ./
                     """
                 }
 
@@ -237,8 +206,6 @@ __EOF__
         "tidb Docker Image: `pingcap/tidb:${RELEASE_TAG}`" + "\n" +
         "pd   Docker Image: `pingcap/pd:${RELEASE_TAG}`" + "\n" +
         "tikv Docker Image: `pingcap/tikv:${RELEASE_TAG}`"
-//        "tikv Docker Image: `pingcap/tikv:${RELEASE_TAG}`" + "\n" +
-//        "tikv Unportable Docker Image: `pingcap/tikv:${RELEASE_TAG}-unportable`"
 
         if (currentBuild.result != "SUCCESS") {
             slackSend channel: '#binary_publish', color: 'danger', teamDomain: 'pingcap', tokenCredentialId: 'slack-pingcap-token', message: "${slackmsg}"
