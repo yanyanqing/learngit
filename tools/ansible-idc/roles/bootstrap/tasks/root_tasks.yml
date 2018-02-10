@@ -121,6 +121,7 @@
     path: /data1
     src: /dev/vdb1
     fstype: ext4
+    opts: nodelalloc
     state: mounted
 
 - name: Change mount point privileges
