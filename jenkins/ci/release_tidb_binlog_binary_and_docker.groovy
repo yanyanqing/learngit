@@ -6,9 +6,6 @@ def call(TIDB_BINLOG_BRANCH, RELEASE_TAG) {
 
     catchError {
         node('delivery') {
-            def nodename = "${env.NODE_NAME}"
-            def HOSTIP = nodename.getAt(7..(nodename.lastIndexOf('-') - 1))
-
             stage('Prepare') {
                 deleteDir()
 
@@ -54,7 +51,7 @@ __EOF__
                     """
                 }
 
-                withDockerServer([uri: "tcp://${HOSTIP}:32376"]) {
+                withDockerServer([uri: "${env.DOCKER_HOST}"]) {
                     docker.build("pingcap/tidb-binlog:${RELEASE_TAG}", "tidb_binlog_docker_build").push()
                 }
             }

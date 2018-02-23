@@ -7,9 +7,6 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
 
     catchError {
         node('delivery') {
-            def nodename = "${env.NODE_NAME}"
-            def HOSTIP = nodename.getAt(7..(nodename.lastIndexOf('-') - 1))
-
             stage('Prepare') {
                 deleteDir()
 
@@ -38,7 +35,7 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
                     """
                 }
 
-                withDockerServer([uri: "tcp://${HOSTIP}:32376"]) {
+                withDockerServer([uri: "${env.DOCKER_HOST}"]) {
                     docker.build("${UCLOUD_REGISTRY}/pingcap/tidb:${RELEASE_TAG}", "tidb_docker_build").push()
                 }
             }
@@ -52,7 +49,7 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
                     """
                 }
 
-                withDockerServer([uri: "tcp://${HOSTIP}:32376"]) {
+                withDockerServer([uri: "${env.DOCKER_HOST}"]) {
                     docker.build("${UCLOUD_REGISTRY}/pingcap/tikv:${RELEASE_TAG}", "tikv_docker_build").push()
                 }
             }
@@ -66,7 +63,7 @@ def call(TIDB_BRANCH, TIKV_BRANCH, PD_BRANCH, RELEASE_TAG) {
                     cp ../tidb-operator/hack/pd/Dockerfile ./
                     """                }
 
-                withDockerServer([uri: "tcp://${HOSTIP}:32376"]) {
+                withDockerServer([uri: "${env.DOCKER_HOST}"]) {
                     docker.build("${UCLOUD_REGISTRY}/pingcap/pd:${RELEASE_TAG}", "pd_docker_build").push()
                 }
             }

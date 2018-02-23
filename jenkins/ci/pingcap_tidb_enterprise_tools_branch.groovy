@@ -59,13 +59,14 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
 
             tests["Unit Test"] = {
                 node("test") {
-                    def nodename = "${env.NODE_NAME}"
-                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
                     def ws = pwd()
+                    def nodename = "${env.DOCKER_HOST}"
+                    def HOSTIP = nodename.getAt(6..(nodename.lastIndexOf(':') - 1))
+
                     deleteDir()
                     unstash 'tidb-enterprise-tools'
 
-                    docker.withServer("tcp://${HOSTIP}:32376") {
+                    docker.withServer("${env.DOCKER_HOST}") {
                         docker.image('mysql:5.6').withRun('-p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
                             dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
                                 sh "GOPATH=${ws}/go:$GOPATH MYSQL_HOST=${HOSTIP} make test"
@@ -78,8 +79,8 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
             tests["Loader Test"] = {
                 node("test") {
                     def ws = pwd()
-                    def nodename = "${env.NODE_NAME}"
-                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+                    def nodename = "${env.DOCKER_HOST}"
+                    def HOSTIP = nodename.getAt(6..(nodename.lastIndexOf(':') - 1))
 
                     deleteDir()
                     unstash "tidb-enterprise-tools"
@@ -89,7 +90,7 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
                     unstash "tidb"
 
                     // start mysql-server 
-                    docker.withServer("tcp://${HOSTIP}:32376") {
+                    docker.withServer("${env.DOCKER_HOST}") {
                         docker.image("mysql:5.6").withRun('-p 3308:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
                             dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
                                 sh """
@@ -112,8 +113,8 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
             tests["Syncer Test"] = {
                 node("test") {
                     def ws = pwd()
-                    def nodename = "${env.NODE_NAME}"
-                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+                    def nodename = "${env.DOCKER_HOST}"
+                    def HOSTIP = nodename.getAt(6..(nodename.lastIndexOf(':') - 1))
 
                     deleteDir()
                     unstash "tidb-enterprise-tools"
@@ -123,7 +124,7 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
                     unstash "tidb"
 
                     // start mysql-server 
-                    docker.withServer("tcp://${HOSTIP}:32376") {
+                    docker.withServer("${env.DOCKER_HOST}") {
                         docker.image("mysql:5.6").withRun('-p 3310:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1') { c ->
                             dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
                                 sh """
@@ -147,8 +148,8 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
             tests["Syncer GTID Test"] = {
                 node("test") {
                     def ws = pwd()
-                    def nodename = "${env.NODE_NAME}"
-                    def HOSTIP = nodename.getAt(8..(nodename.lastIndexOf('-') - 1))
+                    def nodename = "${env.DOCKER_HOST}"
+                    def HOSTIP = nodename.getAt(6..(nodename.lastIndexOf(':') - 1))
 
                     deleteDir()
                     unstash "tidb-enterprise-tools"
@@ -158,7 +159,7 @@ def call(TIDB_BINLOG_BRANCH,TIDB_TOOLS_BRANCH,TIDB_BRANCH) {
                     unstash "tidb"
 
                     // start mysql-server 
-                    docker.withServer("tcp://${HOSTIP}:32376") {
+                    docker.withServer("${env.DOCKER_HOST}") {
                         docker.image("mysql:5.6").withRun('-p 3311:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=1', '--log-bin --binlog-format=ROW --server-id=1 --gtid_mode=ON --enforce-gtid-consistency  --log-slave-updates') { c ->
                             dir("go/src/github.com/pingcap/tidb-enterprise-tools") {
                                 sh """
