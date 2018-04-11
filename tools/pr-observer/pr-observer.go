@@ -18,7 +18,7 @@ const (
 	token            = "c2010a062a3d25ac93cfab8ff8c6838ea5bc03e2"
 	allowedAliveTime = time.Hour * 24
 	timeFormat       = "2006-01-02 15:04:05"
-	slackUrl         = "https://hooks.slack.com/services/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"
+	slackURL         = "https://hooks.slack.com/services/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"
 )
 
 func exitWithErr(err error) {
@@ -47,7 +47,7 @@ func alert(channel string, msg string) {
 	exitWithErr(err)
 	data = []byte(fmt.Sprintf("payload=%s", string(data)))
 
-	_, err = http.Post(slackUrl, "application/x-www-form-urlencoded", bytes.NewBuffer(data))
+	_, err = http.Post(slackURL, "application/x-www-form-urlencoded", bytes.NewBuffer(data))
 	exitWithErr(err)
 }
 

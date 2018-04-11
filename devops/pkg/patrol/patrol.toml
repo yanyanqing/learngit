@@ -1,0 +1,16 @@
+# patrol Configuration.
+
+# slack bot token for accessing
+botToken = "xoxb-338154149059-9cMfjOf8nQJeXNSa8FbLLJX2"
+
+# slack verificationToken for verification
+# verificationToken = ""
+
+# to send message to this channel
+channelID = "tidb_news"
+
+# url-query-identifier represents query condition of websites
+[[url-query-identifier]]
+url = "https://www.quora.com"
+query = "/search?q=tidb"
+identifier = "quora"
