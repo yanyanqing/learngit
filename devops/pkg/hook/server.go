@@ -3,13 +3,16 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
-	//	"github.com/andygrunwald/go-jira"
+	"github.com/andygrunwald/go-jira"
 	"github.com/google/go-github/github"
 	"github.com/juju/errors"
-	"github.com/ngaut/log"
+	"golang.org/x/net/context"
+	//"github.com/ngaut/log"
 	"github.com/sirupsen/logrus"
 
 	prowGH "k8s.io/test-infra/prow/github"
@@ -18,16 +21,27 @@ import (
 )
 
 //var idMap = make(map[int]string)
+var syncInterval = 1 * time.Minute
 
 type Server struct {
-	cfg     *Config
+	cfg *Config
+	mux sync.Mutex
+
+	ctx    context.Context
+	cancel context.CancelFunc
+
 	gHook   *hook.Server
 	gClient *GHClient
 	jClient *JIRAClient
 }
 
 func NewServer(cfg *Config) *Server {
-	return &Server{cfg: cfg}
+	ctx, cancel := context.WithCancel(context.Background())
+	return &Server{
+		cfg:    cfg,
+		ctx:    ctx,
+		cancel: cancel,
+	}
 }
 
 func (s *Server) init() error {
@@ -61,6 +75,7 @@ func (s *Server) init() error {
 
 // ServeHTTP validates an incoming webhook and puts it into the event channel.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log := s.cfg.GetLogger()
 	eventType, eventGUID, payload, ok := hook.ValidateWebhook(w, r, ([]byte)(s.cfg.WebhookSecret))
 	if !ok {
 		log.Errorf("validate webhook error ")
@@ -110,7 +125,7 @@ func (s *Server) demuxEvent(eventType, eventGUID string, payload []byte, h http.
 	//		go s.demuxExternal(eventType, l, external, payload)
 	//	}
 	go s.demuxExternal(eventType, l, s.gHook.Plugins.Config().ExternalPlugins[s.cfg.JConfig.Project], payload)
-	log.Infof("srcRepo %v", srcRepo)
+	l.Infof("srcRepo %v", srcRepo)
 	return nil
 }
 
@@ -174,21 +189,23 @@ func (s *Server) syncIssues(eventType string, l *logrus.Entry, payload []byte) e
 		if err := json.Unmarshal(payload, &i); err != nil {
 			return errors.Trace(err)
 		}
-		go s.handleIssues(l, i)
+		return errors.Trace(s.handleIssues(l, i))
 	case "issue_comment":
 		var ic github.IssueCommentEvent
 		if err := json.Unmarshal(payload, &ic); err != nil {
 			return errors.Trace(err)
 		}
-		go s.handleIssueComment(l, ic)
+		return errors.Trace(s.handleIssueComment(l, ic))
 	default:
 		l.Errorf("Unsupported type %v.", eventType)
 		return errors.New("Unsupported type")
 	}
-	return nil
 }
 
 func (s *Server) handleIssues(l *logrus.Entry, gIssue github.IssueEvent) error {
+	log := s.cfg.GetLogger()
+	s.mux.Lock()
+	defer s.mux.Unlock()
 	gid := gIssue.Issue.GetID()
 	var found bool
 	// var err error
@@ -206,29 +223,31 @@ func (s *Server) handleIssues(l *logrus.Entry, gIssue github.IssueEvent) error {
 	if len(jIssues) > 0 {
 		found = true
 	}
-
-	if !found {
-		time.Sleep(5 * time.Second)
-		jIssues, err = s.jClient.ListIssues([]int{int(gid)})
-		if err != nil {
-			l.Errorf("jClient listIssues error %v", err)
-			return errors.Trace(err)
+	/*
+		if !found {
+			time.Sleep(5 * time.Second)
+			jIssues, err = s.jClient.ListIssues([]int{int(gid)})
+			if err != nil {
+				l.Errorf("jClient listIssues error %v", err)
+				return errors.Trace(err)
+			}
+			// if len(jIssues) == 0 && idMap[gIssue.Issue.GetNumber()] == "" {
+			// 	found = false
+			// } else {
+			// 	found = true
+			// }
+			if len(jIssues) > 0 {
+				found = true
+			}
 		}
-		// if len(jIssues) == 0 && idMap[gIssue.Issue.GetNumber()] == "" {
-		// 	found = false
-		// } else {
-		// 	found = true
-		// }
-		if len(jIssues) > 0 {
-			found = true
-		}
-	}
-
+	*/
 	if !found {
+		log.Debugf("Creating JIRA issue based on GitHub issue #%d", *gIssue.Issue.Number)
 		if err = CreateIssue(s.cfg, gIssue.Issue, s.gClient, s.jClient); err != nil {
 			log.Errorf("Error creating issue Error: %v", err)
 		}
-	} else if len(jIssues) > 0 {
+	} else {
+		log.Debugf("Updating JIRA issue based on GitHub issue #%d", *gIssue.Issue.Number)
 		if err = UpdateIssue(s.cfg, gIssue.Issue, &jIssues[0], s.gClient, s.jClient); err != nil {
 			log.Errorf("Error updating issue error: %v", err)
 		}
@@ -238,58 +257,73 @@ func (s *Server) handleIssues(l *logrus.Entry, gIssue github.IssueEvent) error {
 }
 
 func (s *Server) handleIssueComment(l *logrus.Entry, gComment github.IssueCommentEvent) error {
+	log := s.cfg.GetLogger()
 	jIssues, err := s.jClient.ListIssues([]int{int(gComment.Issue.GetID())})
-	//	var jComments []jira.Comment
+	var jComments []jira.Comment
 	jIssue, _, err := s.jClient.client.Issue.Get(jIssues[0].ID, nil)
 	if err != nil {
 		log.Errorf("while meeting issue comments, list isssue error %v", err)
 		return errors.Trace(err)
 	}
 
-	err = CompareComments(s.cfg, gComment.Issue, jIssue, s.gClient, s.jClient)
-	if err != nil {
-		log.Errorf("while meeting issue comments, compare issue error %v", err)
-		return errors.Trace(err)
+	/*	err = CompareComments(s.cfg, gComment.Issue, jIssue, s.gClient, s.jClient, true)
+			if err != nil {
+				log.Errorf("while meeting issue comments, compare issue error %v", err)
+				return errors.Trace(err)
+			}
+			return nil
+		}
+	*/
+	if len(jIssues) > 0 && jIssue.Fields.Comments != nil {
+		commentPtrs := jIssue.Fields.Comments.Comments
+		jComments = make([]jira.Comment, len(commentPtrs))
+		for i, v := range commentPtrs {
+			jComments[i] = *v
+		}
+		log.Debugf("JIRA issue %s has %d comments", jIssue.Key, len(jComments))
+	}
+	var found bool
+	for _, jComment := range jComments {
+		if !jCommentIDRegex.MatchString(jComment.Body) {
+			continue
+		}
+		// matches[0] is the whole string, matches[1] is the ID
+		matches := jCommentIDRegex.FindStringSubmatch(jComment.Body)
+		id, _ := strconv.Atoi(matches[1])
+		if *gComment.Comment.ID != int64(id) {
+			continue
+		}
+		found = true
+
+		UpdateComment(s.cfg, gComment.Comment, &jComment, jIssue, s.gClient, s.jClient)
+		break
+	}
+
+	if !found {
+		_, err := s.jClient.CreateComment(jIssue, gComment.Comment, s.gClient)
+		if err != nil {
+			return errors.Trace(err)
+		}
 	}
 
 	return nil
 }
 
-// if len(jIssues) > 0 && jIssue.Fields.Comments != nil {
-// 	commentPtrs := jIssue.Fields.Comments.Comments
-// 	jComments = make([]jira.Comment, len(commentPtrs))
-// 	for i, v := range commentPtrs {
-// 		jComments[i] = *v
-// 	}
-// 	log.Debugf("JIRA issue %s has %d comments", jIssue.Key, len(jComments))
-// }
-// var found bool
-// for _, jComment := range jComments {
-// 	if !jCommentIDRegex.MatchString(jComment.Body) {
-// 		continue
-// 	}
-// 	log.Infof("update issuecomment %v", jIssues)
-// 	// matches[0] is the whole string, matches[1] is the ID
-// 	matches := jCommentIDRegex.FindStringSubmatch(jComment.Body)
-// 	id, _ := strconv.Atoi(matches[1])
-// 	if *gComment.Comment.ID != int64(id) {
-// 		continue
-// 	}
-// 	found = true
-
-// 	s.updateIssueComment(*gComment.Comment, jComment, jIssues[0], *s.gClient, *s.jClient)
-// 	break
-// }
-
-// if !found {
-// 	_, err := s.createIssueComment(jIssues[0], *gComment.Comment, *s.gClient)
-// 	if err != nil {
-// 		return errors.Trace(err)
-// 	}
-// }
-
-// return nil
-//}
+func (s *Server) intialSync() error {
+	log := s.cfg.GetLogger()
+	for {
+		select {
+		case <-s.ctx.Done():
+			log.Infof("intialSync Done!")
+			return nil
+		case <-time.After(syncInterval):
+			err := CompareIssues(s.cfg, s.gClient, s.jClient)
+			if err != nil {
+				return errors.Trace(err)
+			}
+		}
+	}
+}
 
 // UpdateComment compares the body of a GitHub comment with the body (minus header)
 // of the JIRA comment, and updates the JIRA comment if necessary.

@@ -16,15 +16,15 @@ const dateFormat = "2006-01-02T15:04:05-0700"
 func CompareIssues(config *Config, ghClient *GHClient, jiraClient *JIRAClient) error {
 	log := config.GetLogger()
 
-	log.Debug("Collecting issues")
+	log.Infof("Collecting issues")
 
 	ghIssues, err := ghClient.ListIssues()
 	if err != nil {
-		return err
+		return errors.Trace(err)
 	}
 
 	if len(ghIssues) == 0 {
-		log.Info("There are no GitHub issues; exiting")
+		log.Infof("There are no GitHub issues; exiting")
 		return nil
 	}
 
@@ -35,10 +35,10 @@ func CompareIssues(config *Config, ghClient *GHClient, jiraClient *JIRAClient) e
 
 	jiraIssues, err := jiraClient.ListIssues(ids)
 	if err != nil {
-		return err
+		return errors.Trace(err)
 	}
 
-	log.Debug("Collected all JIRA issues")
+	log.Infof("Collected all JIRA issues")
 
 	for _, ghIssue := range ghIssues {
 		found := false
@@ -46,14 +46,14 @@ func CompareIssues(config *Config, ghClient *GHClient, jiraClient *JIRAClient) e
 			id, _ := jIssue.Fields.Unknowns.Int(config.getFieldKey(GitHubID))
 			if int64(*ghIssue.ID) == id {
 				found = true
-				if err := UpdateIssue(config, &ghIssue, &jIssue, ghClient, jiraClient); err != nil {
+				if err := UpdateIssue(config, ghIssue, &jIssue, ghClient, jiraClient); err != nil {
 					log.Errorf("Error updating issue %s. Error: %v", jIssue.Key, err)
 				}
 				break
 			}
 		}
 		if !found {
-			if err := CreateIssue(config, &ghIssue, ghClient, jiraClient); err != nil {
+			if err := CreateIssue(config, ghIssue, ghClient, jiraClient); err != nil {
 				log.Errorf("Error creating issue for #%d. Error: %v", *ghIssue.Number, err)
 			}
 		}
@@ -67,7 +67,7 @@ func CompareIssues(config *Config, ghClient *GHClient, jiraClient *JIRAClient) e
 func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClient *JIRAClient) error {
 	log := config.GetLogger()
 
-	log.Debugf("Creating JIRA issue based on GitHub issue #%d", *gIssue.Number)
+	log.Infof("Creating JIRA issue based on GitHub issue #%d", *gIssue.Number)
 
 	compoName := config.getComponents()
 	components := make([]*jira.Component, len(compoName))
@@ -111,7 +111,7 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 		return errors.Trace(err)
 	}
 
-	log.Debugf("Created JIRA issue %s!", jIssue.Key)
+	log.Infof("Created JIRA issue %s!", jIssue.Key)
 
 	if err := CompareComments(config, gIssue, &jIssue, ghClient, jClient); err != nil {
 		return errors.Trace(err)
@@ -126,7 +126,7 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 func UpdateIssue(config *Config, ghIssue *github.Issue, jIssue *jira.Issue, ghClient *GHClient, jClient *JIRAClient) error {
 	log := config.GetLogger()
 
-	log.Debugf("Updating JIRA %s with GitHub #%d", jIssue.Key, *ghIssue.Number)
+	log.Infof("Updating JIRA %s with GitHub #%d", jIssue.Key, *ghIssue.Number)
 
 	var issue jira.Issue
 
@@ -157,14 +157,14 @@ func UpdateIssue(config *Config, ghIssue *github.Issue, jIssue *jira.Issue, ghCl
 			return errors.Trace(err)
 		}
 
-		log.Debugf("Successfully updated JIRA issue %s!", jIssue.Key)
+		log.Infof("Successfully updated JIRA issue %s!", jIssue.Key)
 	} else {
-		log.Debugf("JIRA issue %s is already up to date!", jIssue.Key)
+		log.Infof("JIRA issue %s is already up to date!", jIssue.Key)
 	}
 
 	issue, err := jClient.GetIssue(jIssue.Key)
 	if err != nil {
-		log.Debugf("Failed to retrieve JIRA issue %s!", jIssue.Key)
+		log.Infof("Failed to retrieve JIRA issue %s!", jIssue.Key)
 		return errors.Trace(err)
 	}
 

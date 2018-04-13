@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/go-github/github"
 	"github.com/juju/errors"
@@ -26,7 +27,7 @@ func NewGHClient(cfg *Config) *GHClient {
 }
 
 // ListIssues returns the list of GitHub issues since the last run of the tool.
-func (g *GHClient) ListIssues() ([]github.Issue, error) {
+func (g *GHClient) ListIssues() ([]*github.Issue, error) {
 	log := g.cfg.GetLogger()
 
 	ctx := context.Background()
@@ -35,13 +36,14 @@ func (g *GHClient) ListIssues() ([]github.Issue, error) {
 
 	// Set it so that it will run the loop once, and it'll be updated in the loop.
 	pages := 1
-	var issues []github.Issue
+	var issues []*github.Issue
 
+	log.Infof("user %v, repo %v, g.client %+v", user, repo, g.client)
 	for page := 0; page < pages; page++ {
-		_, _, err := g.client.Issues.ListByRepo(ctx, user, repo, &github.IssueListByRepoOptions{
-			State:     "all",
-			Sort:      "created",
+		var is []*github.Issue
+		is, res, err := g.client.Issues.ListByRepo(ctx, user, repo, &github.IssueListByRepoOptions{
 			Direction: "asc",
+			Since:     time.Now().Add(-3 * syncInterval),
 			ListOptions: github.ListOptions{
 				Page:    page,
 				PerPage: 100,
@@ -50,9 +52,12 @@ func (g *GHClient) ListIssues() ([]github.Issue, error) {
 		if err != nil {
 			return nil, errors.Trace(err)
 		}
+
+		pages = res.LastPage
+		issues = append(issues, is...)
 	}
 
-	log.Debug("Collected all GitHub issues")
+	log.Info("Collected all GitHub issues %v", issues)
 
 	return issues, nil
 }

@@ -8,9 +8,10 @@ import (
 
 	"github.com/juju/errors"
 	"github.com/ngaut/log"
-	"github.com/sirupsen/logrus"
+	//	"github.com/sirupsen/logrus"
 )
 
+/*
 func init() {
 	// Log as Text instead of the default ASCII formatter
 	logrus.SetFormatter(&logrus.JSONFormatter{})
@@ -19,9 +20,9 @@ func init() {
 	logrus.SetOutput(os.Stdout)
 
 	// Only log the warning severity or above
-	logrus.SetLevel(logrus.InfoLevel)
+	logrus.SetLevel(logrus.DebugLevel)
 }
-
+*/
 func main() {
 	cfg := NewConfig()
 	if err := cfg.Parse(os.Args[1:]); err != nil {
@@ -47,6 +48,8 @@ func main() {
 		log.Infof("got signal [%d] to exit.", sig)
 		os.Exit(0)
 	}()
+
+	go issServer.intialSync()
 
 	http.Handle("/", issServer)
 	log.Fatal(http.ListenAndServe(":32333", nil))
