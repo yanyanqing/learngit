@@ -1,0 +1,27 @@
+# issue-sync Configuration.
+
+# for validating webhook data
+webhook-secret = "abcd1234abcd"
+
+[github-config]
+github-repo = "yanyanqing/learngit"
+github-username="yanyanqing"
+
+github-password="abcd1234abcd"
+
+
+[jira-config]
+# for JIRA authentication
+jira-username = "yanyanqing@pingcap.com"
+
+# for JIRA authentication
+jira-password = "abcd1234abcd"
+
+# jira-endpoint where github issue syncs to 
+jira-endpoint = "http://107.150.119.233:8080/"
+
+# which jira project issue syncs to
+jira-project = "TEST"
+
+# which components issue belongs to
+jira-components = ["JIRA"]
