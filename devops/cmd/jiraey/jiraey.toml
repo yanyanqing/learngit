@@ -1,5 +1,7 @@
 # issue-sync Configuration.
 
+# port server listens to 
+port = "32333"
 
 [github-config]
 # github-repo which is synced to jira
@@ -16,10 +18,11 @@ webhook-secret = "111111"
 # jira-password = ""
 
 # jira-endpoint where github issue syncs to 
-# jira-endpoint = ""
+jira-endpoint = "https://internal.pingcap.net/jira/"
 
 # which jira project issue syncs to
 jira-project = "DEVOPS"
 
 # which components issue belongs to
 jira-components = ["JIRA"]
+

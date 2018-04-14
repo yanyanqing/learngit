@@ -16,6 +16,7 @@ func main() {
 	if err := cfg.Parse(os.Args[1:]); err != nil {
 		log.Fatalf("verifying flags error %s", errors.ErrorStack(err))
 	}
+	log.Infof("cfg %v", cfg.Port)
 
 	issServer := jiraey.NewServer(cfg)
 	err := issServer.init()
@@ -40,5 +41,5 @@ func main() {
 	go issServer.intialSync()
 
 	http.Handle("/", issServer)
-	log.Fatal(http.ListenAndServe(":32333", nil))
+	log.Fatal(http.ListenAndServe(":"+issServer.cfg.Port, nil))
 }

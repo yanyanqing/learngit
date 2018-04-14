@@ -51,9 +51,11 @@ type fields struct {
 
 type Config struct {
 	*flag.FlagSet
-
+	
+	Port    string   `toml:"port" json:"port"`
 	GConfig GHConfig   `toml:"github-config" json:"github-config"`
 	JConfig JIRAConfig `toml:"jira-config" json:"jira-config"`
+
 	// log is a logger set up with the configured log level, app name, etcfg.
 	log *logrus.Entry
 

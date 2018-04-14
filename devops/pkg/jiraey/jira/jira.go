@@ -287,7 +287,7 @@ type jiraField struct {
 // getFieldIDs requests the metadata of every issue field in the JIRA
 // project, and saves the IDs of the custom fields used by issue-sync.
 func (j *JIRAClient) getFieldIDs() (fields, error) {
-	req, err := j.client.NewRequest("GET", "/rest/api/2/field", nil)
+	req, err := j.client.NewRequest("GET", "rest/api/2/field", nil)
 	if err != nil {
 		return fields{}, errors.Trace(err)
 	}
@@ -319,17 +319,7 @@ func (j *JIRAClient) getFieldIDs() (fields, error) {
 
 	if fieldIDs.githubID == "" {
 		return fieldIDs, errors.New("could not find ID of 'GitHub ID' custom field; check that it is named correctly")
-	} else if fieldIDs.githubNumber == "" {
-		return fieldIDs, errors.New("could not find ID of 'GitHub Number' custom field; check that it is named correctly")
-	} else if fieldIDs.githubLabels == "" {
-		return fieldIDs, errors.New("could not find ID of 'Github Labels' custom field; check that it is named correctly")
-	} else if fieldIDs.githubStatus == "" {
-		return fieldIDs, errors.New("could not find ID of 'Github Status' custom field; check that it is named correctly")
-	} else if fieldIDs.githubReporter == "" {
-		return fieldIDs, errors.New("could not find ID of 'Github Reporter' custom field; check that it is named correctly")
-	} else if fieldIDs.lastUpdate == "" {
-		return fieldIDs, errors.New("could not find ID of 'Last Issue-Sync Update' custom field; check that it is named correctly")
-	}
+	} 
 
 	log.Debug("All fields have been checked.")
 
