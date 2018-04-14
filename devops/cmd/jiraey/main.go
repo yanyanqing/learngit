@@ -6,17 +6,18 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/pingcap/SRE/devops/pkg/jiraey"
 	"github.com/juju/errors"
 	"github.com/ngaut/log"
 )
 
 func main() {
-	cfg := NewConfig()
+	cfg := jiraey.NewConfig()
 	if err := cfg.Parse(os.Args[1:]); err != nil {
 		log.Fatalf("verifying flags error %s", errors.ErrorStack(err))
 	}
 
-	issServer := NewServer(cfg)
+	issServer := jiraey.NewServer(cfg)
 	err := issServer.init()
 	if err != nil {
 		log.Errorf("init issServer error %v", err)
