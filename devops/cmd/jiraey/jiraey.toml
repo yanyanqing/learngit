@@ -1,0 +1,25 @@
+# issue-sync Configuration.
+
+
+[github-config]
+# github-repo which is synced to jira
+github-repo = "pingcap/SRE"
+
+# for validating webhook data
+webhook-secret = "111111"
+
+[jira-config]
+# for JIRA authentication
+# jira-username = ""
+
+# for JIRA authentication
+# jira-password = ""
+
+# jira-endpoint where github issue syncs to 
+# jira-endpoint = ""
+
+# which jira project issue syncs to
+jira-project = "DEVOPS"
+
+# which components issue belongs to
+jira-components = ["JIRA"]

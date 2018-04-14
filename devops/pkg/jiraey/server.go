@@ -17,7 +17,7 @@ import (
 )
 
 // syncInterval represents full synchronization interval
-var syncInterval = 1 * time.Minute
+var syncInterval = 12 * time.Hour
 
 type Server struct {
 	cfg *Config

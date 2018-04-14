@@ -83,8 +83,8 @@ func NewConfig() *Config {
 	fs.StringVar(&cfg.GConfig.Username, "github-username", "sre-robot", "")
 	fs.StringVar(&cfg.GConfig.Password, "github-password", "N8^^y4#8Q0", "")
 	fs.StringVar(&cfg.GConfig.WebhookSecret, "webhook-secret", "", "for validating webhook message")
-	fs.StringVar(&cfg.JConfig.Username, "jira-username", "", "")
-	fs.StringVar(&cfg.JConfig.Password, "jira-password", "", "")
+	fs.StringVar(&cfg.JConfig.Username, "jira-username", "sre-robot", "")
+	fs.StringVar(&cfg.JConfig.Password, "jira-password", "N8^^y4#8Q0", "")
 	fs.StringVar(&cfg.JConfig.Endpoint, "jira-endpoint", "", "jira endpoint for dispatch issue")
 	fs.StringVar(&cfg.JConfig.Project, "jira-project", "", "jira project for syncing issue")
 	return cfg
