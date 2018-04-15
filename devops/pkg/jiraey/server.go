@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"sync"
@@ -10,10 +11,12 @@ import (
 	"github.com/andygrunwald/go-jira"
 	"github.com/google/go-github/github"
 	"github.com/juju/errors"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 
 	"k8s.io/test-infra/prow/hook"
 	"k8s.io/test-infra/prow/plugins"
+	//	prow "k8s.io/test-infra/prow/github"
 )
 
 // syncInterval represents full synchronization interval
@@ -50,16 +53,22 @@ func (s *Server) init() error {
 	s.gClient = NewGHClient(s.cfg)
 
 	pa := &plugins.PluginAgent{}
+
+	extern := make(map[string][]plugins.ExternalPlugin)
+
+	extPlugin := make([]plugins.ExternalPlugin, len(s.cfg.Rules))
+	for i := 0; i < len(s.cfg.Rules); i++ {
+		extPlugin[i] = plugins.ExternalPlugin{
+			Name:     s.cfg.Rules[i].Project,
+			Endpoint: s.cfg.JConfig.Endpoint,
+			Events:   []string{"issues", "issue_comment"},
+		}
+	}
+
+	extern["externPulgin"] = extPlugin
+
 	pa.Set(&plugins.Configuration{
-		ExternalPlugins: map[string][]plugins.ExternalPlugin{
-			s.cfg.JConfig.Project: {
-				{
-					Name:     s.cfg.JConfig.Project,
-					Endpoint: s.cfg.JConfig.Endpoint,
-					Events:   []string{"issues", "issue_comment"},
-				},
-			},
-		},
+		ExternalPlugins: extern,
 	})
 
 	s.gHook = &hook.Server{
@@ -71,19 +80,74 @@ func (s *Server) init() error {
 
 // ServeHTTP validates an incoming webhook and puts it into the event channel.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log := s.cfg.getLogger()
-	eventType, _, payload, ok := hook.ValidateWebhook(w, r, ([]byte)(s.cfg.GConfig.WebhookSecret))
+	log := s.cfg.GetLogger()
+	eventType, _, payload, ok := ValidateWebhook(w, r)
 	if !ok {
 		log.Errorf("validate webhook error ")
 		return
 	}
 
-	go s.demuxExternal(eventType, s.gHook.Plugins.Config().ExternalPlugins[s.cfg.JConfig.Project], payload)
+	go s.demuxExternal(eventType, s.gHook.Plugins.Config().ExternalPlugins["externPulgin"], payload)
+}
+
+func ValidateWebhook(w http.ResponseWriter, r *http.Request) (string, string, []byte, bool) {
+	defer r.Body.Close()
+
+	// Our health check uses GET, so just kick back a 200.
+	if r.Method == http.MethodGet {
+		return "", "", nil, false
+	}
+
+	// Header checks: It must be a POST with an event type and a signature.
+	if r.Method != http.MethodPost {
+		resp := "405 Method not allowed"
+		logrus.Debug(resp)
+		http.Error(w, resp, http.StatusMethodNotAllowed)
+		return "", "", nil, false
+	}
+	eventType := r.Header.Get("X-GitHub-Event")
+	if eventType == "" {
+		resp := "400 Bad Request: Missing X-GitHub-Event Header"
+		logrus.Debug(resp)
+		http.Error(w, resp, http.StatusBadRequest)
+		return "", "", nil, false
+	}
+	eventGUID := r.Header.Get("X-GitHub-Delivery")
+	if eventGUID == "" {
+		resp := "400 Bad Request: Missing X-GitHub-Delivery Header"
+		logrus.Debug(resp)
+		http.Error(w, resp, http.StatusBadRequest)
+		return "", "", nil, false
+	}
+	sig := r.Header.Get("X-Hub-Signature")
+	if sig == "" {
+		resp := "403 Forbidden: Missing X-Hub-Signature"
+		logrus.Debug(resp)
+		http.Error(w, resp, http.StatusForbidden)
+		return "", "", nil, false
+	}
+	contentType := r.Header.Get("content-type")
+	if contentType != "application/json" {
+		resp := "400 Bad Request: Hook only accepts content-type: application/json - please reconfigure this hook on GitHub"
+		logrus.Debug(resp)
+		http.Error(w, resp, http.StatusBadRequest)
+		return "", "", nil, false
+	}
+
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		resp := "500 Internal Server Error: Failed to read request body"
+		logrus.Debug(resp)
+		http.Error(w, resp, http.StatusInternalServerError)
+		return "", "", nil, false
+	}
+
+	return eventType, eventGUID, payload, true
 }
 
 // demuxExternal handles the provided payload to the external plugins.
 func (s *Server) demuxExternal(eventType string, externalPlugins []plugins.ExternalPlugin, payload []byte) {
-	log := s.cfg.getLogger()
+	log := s.cfg.GetLogger()
 	for _, p := range externalPlugins {
 		go func(p plugins.ExternalPlugin) {
 			if err := s.syncIssues(eventType, payload); err != nil {
@@ -96,7 +160,7 @@ func (s *Server) demuxExternal(eventType string, externalPlugins []plugins.Exter
 }
 
 func (s *Server) syncIssues(eventType string, payload []byte) error {
-	log := s.cfg.getLogger()
+	log := s.cfg.GetLogger()
 
 	switch eventType {
 	case "issues":
@@ -118,12 +182,13 @@ func (s *Server) syncIssues(eventType string, payload []byte) error {
 }
 
 func (s *Server) handleIssues(gIssue github.IssueEvent) error {
-	log := s.cfg.getLogger()
+	log := s.cfg.GetLogger()
 	s.mux.Lock()
 	defer s.mux.Unlock()
 	gid := gIssue.Issue.GetID()
 
-	jIssues, err := s.jClient.ListIssues([]int{int(gid)})
+	repo := *gIssue.Issue.Repository.FullName
+	jIssues, err := s.jClient.ListIssues(repo, []int{int(gid)})
 	if err != nil {
 		log.Errorf("jClient listIssues error %v", err)
 		return errors.Trace(err)
@@ -145,8 +210,11 @@ func (s *Server) handleIssues(gIssue github.IssueEvent) error {
 }
 
 func (s *Server) handleIssueComment(gComment github.IssueCommentEvent) error {
-	log := s.cfg.getLogger()
-	jIssues, err := s.jClient.ListIssues([]int{int(gComment.Issue.GetID())})
+	log := s.cfg.GetLogger()
+
+	repo := *gComment.Repo.FullName
+	jIssues, err := s.jClient.ListIssues(repo, []int{int(gComment.Issue.GetID())})
+
 	var jComments []jira.Comment
 	jIssue, _, err := s.jClient.client.Issue.Get(jIssues[0].ID, nil)
 	if err != nil {
@@ -190,7 +258,7 @@ func (s *Server) handleIssueComment(gComment github.IssueCommentEvent) error {
 }
 
 func (s *Server) intialSync() error {
-	log := s.cfg.getLogger()
+	log := s.cfg.GetLogger()
 	for {
 		select {
 		case <-s.ctx.Done():

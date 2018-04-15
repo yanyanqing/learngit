@@ -1,0 +1,27 @@
+# issue-sync Configuration.
+
+# which port server listens to 
+port = "32333"
+
+
+[[sync-config]]
+
+# github-repo which is synced to jira
+github-repo = "pingcap/SRE"
+
+# which jira project issue syncs to
+jira-project = "DEVOPS"
+
+# which components issue belongs to
+jira-components = ["TiKV"]
+
+
+[jira-config]
+# for JIRA authentication
+# jira-username = ""
+
+# for JIRA authentication
+# jira-password = ""
+
+# jira-endpoint where github issue syncs to 
+jira-endpoint = "https://internal.pingcap.net/jira/"

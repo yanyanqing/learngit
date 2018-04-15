@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
+	//	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -12,19 +12,21 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type SyncConfig struct {
+	Repo       string   `toml:"github-repo" json:"github-repo"`
+	Project    string   `toml:"jira-project" json:"jira-project"`
+	Components []string `toml:"jira-components" json:"jira-components"`
+}
+
 type GHConfig struct {
-	Repo          string `toml:"github-repo" json:"github-repo"`
-	WebhookSecret string `toml:"webhook-secret" json:"webhook-secret"`
-	Username      string `toml:"github-username" json:"github-username"`
-	Password      string `toml:"github-password" json:"github-password"`
+	Username string `toml:"github-username" json:"github-username"`
+	Password string `toml:"github-password" json:"github-password"`
 }
 
 type JIRAConfig struct {
-	Username   string   `toml:"jira-username" json:"jira-username"`
-	Password   string   `toml:"jira-password" json:"jira-password"`
-	Endpoint   string   `toml:"jira-endpoint" json:"jira-endpoint"`
-	Project    string   `toml:"jira-project" json:"jira-project"`
-	Components []string `toml:"jira-components" json:"jira-components"`
+	Username string `toml:"jira-username" json:"jira-username"`
+	Password string `toml:"jira-password" json:"jira-password"`
+	Endpoint string `toml:"jira-endpoint" json:"jira-endpoint"`
 }
 
 // fieldKey is an enum-like type to represent the customfield ID keys
@@ -51,11 +53,13 @@ type fields struct {
 
 type Config struct {
 	*flag.FlagSet
-	
-	Port    string   `toml:"port" json:"port"`
-	GConfig GHConfig   `toml:"github-config" json:"github-config"`
-	JConfig JIRAConfig `toml:"jira-config" json:"jira-config"`
 
+	Port string `toml:"port" json:"port"`
+
+	Rules   []*SyncConfig `toml:"sync-config" json:"sync-config"`
+	JConfig *JIRAConfig   `toml:"jira-config" json:"jira-config"`
+	GConfig *GHConfig     `toml:"github-config" json:"github-config"`
+	repoMap map[string]*SyncConfig
 	// log is a logger set up with the configured log level, app name, etcfg.
 	log *logrus.Entry
 
@@ -74,6 +78,9 @@ type Config struct {
 
 func NewConfig() *Config {
 	cfg := &Config{}
+	cfg.GConfig = &GHConfig{}
+	cfg.JConfig = &JIRAConfig{}
+	cfg.repoMap = make(map[string]*SyncConfig)
 	cfg.FlagSet = flag.NewFlagSet("jiraey", flag.ContinueOnError)
 	fs := cfg.FlagSet
 
@@ -84,11 +91,10 @@ func NewConfig() *Config {
 	fs.StringVar(&cfg.configFile, "config", "", "path to config file")
 	fs.StringVar(&cfg.GConfig.Username, "github-username", "sre-robot", "")
 	fs.StringVar(&cfg.GConfig.Password, "github-password", "N8^^y4#8Q0", "")
-	fs.StringVar(&cfg.GConfig.WebhookSecret, "webhook-secret", "", "for validating webhook message")
 	fs.StringVar(&cfg.JConfig.Username, "jira-username", "sre-robot", "")
 	fs.StringVar(&cfg.JConfig.Password, "jira-password", "N8^^y4#8Q0", "")
 	fs.StringVar(&cfg.JConfig.Endpoint, "jira-endpoint", "", "jira endpoint for dispatch issue")
-	fs.StringVar(&cfg.JConfig.Project, "jira-project", "", "jira project for syncing issue")
+
 	return cfg
 }
 
@@ -117,16 +123,19 @@ func (cfg *Config) Parse(args []string) error {
 		return errors.Trace(err)
 	}
 
-	return errors.Trace(validate(cfg))
-}
-
-func validate(cfg *Config) error {
-	if len(cfg.FlagSet.Args()) != 0 {
-		return errors.Errorf("'%s' is an invalid flag", cfg.FlagSet.Arg(0))
+	err = cfg.validate()
+	if err != nil {
+		return errors.Trace(err)
 	}
 
-	if cfg.GConfig.WebhookSecret == "" {
-		return errors.New("github webhookSecre should be given")
+	cfg.adjust()
+
+	return nil
+}
+
+func (cfg *Config) validate() error {
+	if len(cfg.FlagSet.Args()) != 0 {
+		return errors.Errorf("'%s' is an invalid flag", cfg.FlagSet.Arg(0))
 	}
 
 	if cfg.JConfig.Endpoint == "" {
@@ -136,13 +145,23 @@ func validate(cfg *Config) error {
 	return nil
 }
 
-// getSinceParam returns the `since` configuration parameter, parsed as a time.Time.
-func (cfg *Config) getSinceParam() time.Time {
-	return cfg.since
+func (cfg *Config) adjust() {
+	for i := 0; i < len(cfg.Rules); i++ {
+		key := cfg.Rules[i].Repo
+		cfg.repoMap[key] = cfg.Rules[i]
+	}
+}
+
+func (cfg *Config) GetRepoMap() map[string]*SyncConfig {
+	return cfg.repoMap
+}
+
+func (cfg *Config) GetRules() []*SyncConfig {
+	return cfg.Rules
 }
 
 // GetFieldID returns the customfield ID of a JIRA custom field.
-func (cfg *Config) getFieldID(key fieldKey) string {
+func (cfg *Config) GetFieldID(key fieldKey) string {
 	switch key {
 	case GitHubID:
 		return cfg.fieldIDs.githubID
@@ -162,17 +181,17 @@ func (cfg *Config) getFieldID(key fieldKey) string {
 }
 
 // getFieldKey returns customfield_XXXXX, where XXXXX is the custom field ID (see GetFieldID).
-func (cfg *Config) getFieldKey(key fieldKey) string {
-	return fmt.Sprintf("customfield_%s", cfg.getFieldID(key))
+func (cfg *Config) GetFieldKey(key fieldKey) string {
+	return fmt.Sprintf("customfield_%s", cfg.GetFieldID(key))
 }
 
-// GetProject returns the JIRA project the user has configured.
-func (cfg *Config) getProject() string {
-	return cfg.JConfig.Project
+// getProject returns the JIRA project the user has configured.
+func (cfg *Config) GetProject(repo string) string {
+	return cfg.repoMap[repo].Project
 }
 
-func (cfg *Config) getComponents() []string {
-	return cfg.JConfig.Components
+func (cfg *Config) GetComponents(repo string) []string {
+	return cfg.repoMap[repo].Components
 }
 func (cfg *Config) configFromFile(configFile string) error {
 	_, err := toml.DecodeFile(configFile, cfg)
@@ -180,13 +199,18 @@ func (cfg *Config) configFromFile(configFile string) error {
 }
 
 // getLogger returns the configured application logger.
-func (cfg *Config) getLogger() *logrus.Entry {
+func (cfg *Config) GetLogger() *logrus.Entry {
 	return cfg.log
 }
 
-// getRepo returns the user/org name and the repo name of the configured GitHub repository.
-func (cfg *Config) getRepo() (string, string) {
-	parts := strings.Split(cfg.GConfig.Repo, "/")
-	// We check that repo-name is two parts separated by a slash in NewConfig, so this is safe
-	return parts[0], parts[1]
-}
+// // getRepo returns the user/org name and the repo name of the configured GitHub repository.
+// func (cfg *Config) getRepo() (string, string) {
+// 	parts := strings.Split(cfg.GConfig.Repo, "/")
+// 	// We check that repo-name is two parts separated by a slash in NewConfig, so this is safe
+// 	return parts[0], parts[1]
+// }
+
+// // getSinceParam returns the `since` configuration parameter, parsed as a time.Time.
+// func (cfg *Config) getSinceParam() time.Time {
+// 	return cfg.since
+// }
