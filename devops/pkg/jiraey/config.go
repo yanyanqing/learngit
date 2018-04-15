@@ -91,7 +91,7 @@ func NewConfig() *Config {
 	fs.StringVar(&cfg.configFile, "config", "", "path to config file")
 	fs.StringVar(&cfg.GConfig.Username, "github-username", "sre-robot", "")
 	fs.StringVar(&cfg.GConfig.Password, "github-password", "N8^^y4#8Q0", "")
-	fs.StringVar(&cfg.JConfig.Username, "jira-username", "sre-robot", "")
+	fs.StringVar(&cfg.JConfig.Username, "jira-username", "sre-bot", "")
 	fs.StringVar(&cfg.JConfig.Password, "jira-password", "N8^^y4#8Q0", "")
 	fs.StringVar(&cfg.JConfig.Endpoint, "jira-endpoint", "", "jira endpoint for dispatch issue")
 
@@ -150,6 +150,7 @@ func (cfg *Config) adjust() {
 		key := cfg.Rules[i].Repo
 		cfg.repoMap[key] = cfg.Rules[i]
 	}
+	cfg.log.Infof("repoMap %v", cfg.repoMap)
 }
 
 func (cfg *Config) GetRepoMap() map[string]*SyncConfig {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/andygrunwald/go-jira"
 	"github.com/google/go-github/github"
 	"github.com/juju/errors"
@@ -68,10 +70,12 @@ func CompareIssues(config *Config, ghClient *GHClient, jiraClient *JIRAClient) e
 func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClient *JIRAClient) error {
 	log := config.GetLogger()
 
-	repo := *gIssue.Repository.FullName
+	repoURL := strings.Split(*gIssue.RepositoryURL, "/")
+	repo, user := repoURL[len(repoURL)-1], repoURL[len(repoURL)-2]
+	//repo := *gIssue.Repository.FullName
 	log.Infof("Creating JIRA issue based on GitHub issue #%d, SrcRepo %v", *gIssue.Number, repo)
 
-	compoName := config.GetComponents(repo)
+	compoName := config.GetComponents(user + "/" + repo)
 	components := make([]*jira.Component, len(compoName))
 	for i := 0; i < len(compoName); i++ {
 		components[i] = &jira.Component{}
@@ -83,7 +87,7 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 			Name: "Task", // TODO: Determine issue type
 		},
 		Project: jira.Project{
-			Key: config.GetProject(repo),
+			Key: config.GetProject(user + "/" + repo),
 		},
 		Components:  components,
 		Summary:     gIssue.GetTitle(),
@@ -98,7 +102,6 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 	// 	strs[i] = *v.Name
 	// }
 	// fields.Labels = strs
-
 	jIssue := jira.Issue{
 		Fields: &fields,
 	}

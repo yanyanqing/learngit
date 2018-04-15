@@ -42,6 +42,7 @@ func newJIRAClient(config *Config) (*JIRAClient, error) {
 		client: client,
 	}
 	jClient.config.fieldIDs, err = jClient.GetFieldIDs()
+	log.Infof("jira %v", err)
 	return jClient, errors.Trace(err)
 }
 
@@ -72,9 +73,9 @@ func (j *JIRAClient) ListIssues(project string, ids []int) ([]jira.Issue, error)
 	// we'll need to do the filtering ourselves.
 	if len(ids) < maxJQLIssueLength {
 		jql = fmt.Sprintf("project='%s' AND cf[%s] in (%s)",
-			j.config.GetProject(project), j.config.GetFieldID(GitHubID), strings.Join(idStrs, ","))
+			project, j.config.GetFieldID(GitHubID), strings.Join(idStrs, ","))
 	} else {
-		jql = fmt.Sprintf("project='%s'", j.config.GetProject(project))
+		jql = fmt.Sprintf("project='%s'", project)
 	}
 
 	jiraIssues, res, err := j.client.Issue.Search(jql, nil)
@@ -300,8 +301,10 @@ func (j *JIRAClient) GetFieldIDs() (fields, error) {
 	}
 	jFields := new([]jiraField)
 
-	_, err = j.client.Do(req, jFields)
+	resp, err := j.client.Do(req, jFields)
 	if err != nil {
+		data, _ := ioutil.ReadAll(resp.Body)
+		log.Errorf("request error %v", (string(data)))
 		return fields{}, errors.Trace(err)
 	}
 

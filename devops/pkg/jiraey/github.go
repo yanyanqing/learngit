@@ -68,7 +68,10 @@ func (g *GHClient) ListComments(issue *github.Issue) ([]*github.IssueComment, er
 	log := g.cfg.GetLogger()
 
 	ctx := context.Background()
-	user, repo := g.GetRepo(*issue.Repository.FullName)
+	repoURL := strings.Split(*issue.RepositoryURL, "/")
+	repo, user := repoURL[len(repoURL)-1], repoURL[len(repoURL)-2]
+
+	//user, repo := g.GetRepo(*issue.Rep)
 	comments, _, err := g.client.Issues.ListComments(ctx, user, repo, issue.GetNumber(), &github.IssueListCommentsOptions{})
 	if err != nil {
 		log.Errorf("Error retrieving GitHub comments for issue #%d. Error: %v.", issue.GetNumber(), err)

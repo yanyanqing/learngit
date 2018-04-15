@@ -16,7 +16,6 @@ func main() {
 	if err := cfg.Parse(os.Args[1:]); err != nil {
 		log.Fatalf("verifying flags error %s", errors.ErrorStack(err))
 	}
-	log.Infof("cfg %v", cfg.Port)
 
 	issServer := NewServer(cfg)
 	err := issServer.init()

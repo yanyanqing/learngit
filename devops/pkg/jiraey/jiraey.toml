@@ -8,12 +8,31 @@ port = "32333"
 
 # github-repo which is synced to jira
 github-repo = "pingcap/SRE"
+#github-repo = "yanyanqing/learngit"
 
 # which jira project issue syncs to
-jira-project = "DEVOPS"
+jira-project = "TIKV"
+#jira-project = "TEST"
+#jira-project = "ONCALL"
 
 # which components issue belongs to
 jira-components = ["TiKV"]
+#jira-components = ["PD"]
+
+
+#[[sync-config]]
+#github-repo = "yanyanqing/Tensorflow-exersice"
+#github-repo = "pingcap/pd"
+
+# which jira project issue syncs to
+#jira-project = "TIKV"
+#jira-project = "TEST"
+
+# which components issue belongs to
+#jira-components = ["TiKV"]
+#jira-components = ["PD"]
+
+
 
 
 [jira-config]
@@ -25,3 +44,4 @@ jira-components = ["TiKV"]
 
 # jira-endpoint where github issue syncs to 
 jira-endpoint = "https://internal.pingcap.net/jira/"
+#jira-endpoint = "http://107.150.119.233:8080/"

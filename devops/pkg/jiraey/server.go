@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -21,6 +22,8 @@ import (
 
 // syncInterval represents full synchronization interval
 var syncInterval = 12 * time.Hour
+
+//var syncInterval = 10 * time.Second
 
 type Server struct {
 	cfg *Config
@@ -119,13 +122,13 @@ func ValidateWebhook(w http.ResponseWriter, r *http.Request) (string, string, []
 		http.Error(w, resp, http.StatusBadRequest)
 		return "", "", nil, false
 	}
-	sig := r.Header.Get("X-Hub-Signature")
-	if sig == "" {
-		resp := "403 Forbidden: Missing X-Hub-Signature"
-		logrus.Debug(resp)
-		http.Error(w, resp, http.StatusForbidden)
-		return "", "", nil, false
-	}
+	/*	sig := r.Header.Get("X-Hub-Signature")
+		if sig == "" {
+			resp := "403 Forbidden: Missing X-Hub-Signature"
+			logrus.Debug(resp)
+			http.Error(w, resp, http.StatusForbidden)
+			return "", "", nil, false
+		}*/
 	contentType := r.Header.Get("content-type")
 	if contentType != "application/json" {
 		resp := "400 Bad Request: Hook only accepts content-type: application/json - please reconfigure this hook on GitHub"
@@ -175,6 +178,8 @@ func (s *Server) syncIssues(eventType string, payload []byte) error {
 			return errors.Trace(err)
 		}
 		return errors.Trace(s.handleIssueComment(ic))
+	case "push":
+		return nil
 	default:
 		log.Errorf("Unsupported type %v.", eventType)
 		return errors.New("Unsupported type")
@@ -187,8 +192,13 @@ func (s *Server) handleIssues(gIssue github.IssueEvent) error {
 	defer s.mux.Unlock()
 	gid := gIssue.Issue.GetID()
 
-	repo := *gIssue.Issue.Repository.FullName
-	jIssues, err := s.jClient.ListIssues(repo, []int{int(gid)})
+	log.Infof("srcRepo %v", *gIssue.Issue)
+	//repo := *gIssue.Issue.Repository.FullName
+	//log.Infof("srcRepo %v", repo)
+	repoURL := strings.Split(*gIssue.Issue.RepositoryURL, "/")
+	repo, user := repoURL[len(repoURL)-1], repoURL[len(repoURL)-2]
+	repoMap := s.cfg.GetRepoMap()
+	jIssues, err := s.jClient.ListIssues(repoMap[user+"/"+repo].Project, []int{int(gid)})
 	if err != nil {
 		log.Errorf("jClient listIssues error %v", err)
 		return errors.Trace(err)
@@ -212,8 +222,12 @@ func (s *Server) handleIssues(gIssue github.IssueEvent) error {
 func (s *Server) handleIssueComment(gComment github.IssueCommentEvent) error {
 	log := s.cfg.GetLogger()
 
-	repo := *gComment.Repo.FullName
-	jIssues, err := s.jClient.ListIssues(repo, []int{int(gComment.Issue.GetID())})
+	//	repo := *gComment.Repo.FullName
+	repoURL := strings.Split(*gComment.Issue.RepositoryURL, "/")
+	repo, user := repoURL[len(repoURL)-1], repoURL[len(repoURL)-2]
+	repoMap := s.cfg.GetRepoMap()
+
+	jIssues, err := s.jClient.ListIssues(repoMap[user+"/"+repo].Project, []int{int(gComment.Issue.GetID())})
 
 	var jComments []jira.Comment
 	jIssue, _, err := s.jClient.client.Issue.Get(jIssues[0].ID, nil)
