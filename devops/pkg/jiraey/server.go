@@ -171,19 +171,21 @@ func (s *Server) syncIssues(eventType string, payload []byte) error {
 		if err := json.Unmarshal(payload, &i); err != nil {
 			return errors.Trace(err)
 		}
-		return errors.Trace(s.handleIssues(i))
+		go s.handleIssues(i)
 	case "issue_comment":
 		var ic github.IssueCommentEvent
 		if err := json.Unmarshal(payload, &ic); err != nil {
 			return errors.Trace(err)
 		}
-		return errors.Trace(s.handleIssueComment(ic))
+		go s.handleIssueComment(ic)
 	case "push":
 		return nil
 	default:
 		log.Errorf("Unsupported type %v.", eventType)
 		return errors.New("Unsupported type")
 	}
+
+	return nil
 }
 
 func (s *Server) handleIssues(gIssue github.IssueEvent) error {
@@ -191,8 +193,7 @@ func (s *Server) handleIssues(gIssue github.IssueEvent) error {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 	gid := gIssue.Issue.GetID()
-
-	log.Infof("srcRepo %v", *gIssue.Issue)
+	//log.Infof("srcRepo %v", *gIssue.Issue)
 	//repo := *gIssue.Issue.Repository.FullName
 	//log.Infof("srcRepo %v", repo)
 	repoURL := strings.Split(*gIssue.Issue.RepositoryURL, "/")
@@ -205,14 +206,24 @@ func (s *Server) handleIssues(gIssue github.IssueEvent) error {
 	}
 
 	if len(jIssues) == 0 {
-		log.Infof("Creating JIRA issue based on GitHub issue #%d", *gIssue.Issue.Number)
-		if err = CreateIssue(s.cfg, gIssue.Issue, s.gClient, s.jClient); err != nil {
-			log.Errorf("Error creating issue Error: %v", err)
+		if *gIssue.Issue.State != "closed" {
+			log.Infof("Creating JIRA issue based on GitHub issue #%d", *gIssue.Issue.Number)
+			if err = CreateIssue(s.cfg, gIssue.Issue, s.gClient, s.jClient); err != nil {
+				log.Errorf("Error creating issue Error: %v", err)
+			}
 		}
 	} else {
-		log.Infof("Updating JIRA issue based on GitHub issue #%d", *gIssue.Issue.Number)
-		if err = UpdateIssue(s.cfg, gIssue.Issue, &jIssues[0], s.gClient, s.jClient); err != nil {
-			log.Errorf("Error updating issue error: %v", err)
+		if *gIssue.Issue.State == "closed" {
+			log.Infof("Deleting JIRA issue based on GitHub issue #%d", *gIssue.Issue.Number)
+			err := DeleteIssue(s.cfg, &jIssues[0], s.jClient)
+			if err != nil {
+				log.Errorf("Error deleting issue %v", err)
+			}
+		} else {
+			log.Infof("Updating JIRA issue based on GitHub issue #%d", *gIssue.Issue.Number)
+			if err = UpdateIssue(s.cfg, gIssue.Issue, &jIssues[0], s.gClient, s.jClient); err != nil {
+				log.Errorf("Error updating issue error: %v", err)
+			}
 		}
 	}
 
@@ -221,6 +232,8 @@ func (s *Server) handleIssues(gIssue github.IssueEvent) error {
 
 func (s *Server) handleIssueComment(gComment github.IssueCommentEvent) error {
 	log := s.cfg.GetLogger()
+	s.mux.Lock()
+	defer s.mux.Unlock()
 
 	//	repo := *gComment.Repo.FullName
 	repoURL := strings.Split(*gComment.Issue.RepositoryURL, "/")

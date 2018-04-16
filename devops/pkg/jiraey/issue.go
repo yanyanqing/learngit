@@ -65,6 +65,15 @@ func CompareIssues(config *Config, ghClient *GHClient, jiraClient *JIRAClient) e
 	return nil
 }
 
+func DeleteIssue(config *Config, issue *jira.Issue, jClient *JIRAClient) error {
+	res, err := jClient.client.Issue.Delete(issue.ID)
+	if err != nil {
+		return GetErrorBody(config, res)
+	}
+
+	return nil
+}
+
 // CreateIssue generates a JIRA issue from the various fields on the given GitHub issue, then
 // sends it to the JIRA API.
 func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClient *JIRAClient) error {
@@ -76,6 +85,7 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 	log.Infof("Creating JIRA issue based on GitHub issue #%d, SrcRepo %v", *gIssue.Number, repo)
 
 	compoName := config.GetComponents(user + "/" + repo)
+	strs := make([]string, len(compoName))
 	components := make([]*jira.Component, len(compoName))
 	for i := 0; i < len(compoName); i++ {
 		components[i] = &jira.Component{}
@@ -96,12 +106,25 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 	}
 
 	fields.Unknowns[config.GetFieldKey(GitHubID)] = gIssue.GetID()
+	//fields.Unknowns[config.GetFieldKey(GitHubNumber)] = gIssue.GetID()
+	//if len(gIssue.Labels) == 0{
+	//	return nil
+	//}
+	//log.Infof("*gIssue %v ass %v", *gIssue, fields.Assignee)
+	/*if gIssue.Assignee != nil{
+		fields.Assignee = &jira.User{
+			Name : *gIssue.Assignee.Login,
+		}
+	}
 
-	// strs := make([]string, len(gIssue.Labels))
-	// for i, v := range gIssue.Labels {
-	// 	strs[i] = *v.Name
-	// }
-	// fields.Labels = strs
+	fields.Assignee = &jira.User{
+		Name : "Zhang Bokang",
+	} */
+	/* strs := make([]string, len(gIssue.Labels))
+	for i, v := range gIssue.Labels {
+		strs[i] = *v.Name
+	}*/
+	fields.Labels = strs
 	jIssue := jira.Issue{
 		Fields: &fields,
 	}

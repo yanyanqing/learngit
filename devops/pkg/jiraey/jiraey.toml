@@ -7,7 +7,7 @@ port = "32333"
 [[sync-config]]
 
 # github-repo which is synced to jira
-github-repo = "pingcap/SRE"
+github-repo = "pingcap/tikv"
 #github-repo = "yanyanqing/learngit"
 
 # which jira project issue syncs to
@@ -20,17 +20,17 @@ jira-components = ["TiKV"]
 #jira-components = ["PD"]
 
 
-#[[sync-config]]
+[[sync-config]]
 #github-repo = "yanyanqing/Tensorflow-exersice"
-#github-repo = "pingcap/pd"
+github-repo = "pingcap/pd"
 
 # which jira project issue syncs to
-#jira-project = "TIKV"
+jira-project = "TIKV"
 #jira-project = "TEST"
 
 # which components issue belongs to
 #jira-components = ["TiKV"]
-#jira-components = ["PD"]
+jira-components = ["PD"]
 
 
 
