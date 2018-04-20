@@ -43,7 +43,7 @@ func (g *GHClient) ListIssues(repo string) ([]*github.Issue, error) {
 		var is []*github.Issue
 		is, res, err := g.client.Issues.ListByRepo(ctx, user, repo, &github.IssueListByRepoOptions{
 			Direction: "asc",
-			Since:     time.Now().Add(-3 * syncInterval),
+			Since:     time.Now().Add(-5 * syncInterval),
 			ListOptions: github.ListOptions{
 				Page:    page,
 				PerPage: 100,

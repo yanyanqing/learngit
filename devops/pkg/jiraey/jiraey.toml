@@ -32,7 +32,41 @@ jira-project = "TIKV"
 #jira-components = ["TiKV"]
 jira-components = ["PD"]
 
+[[sync-config]]
+github-repo = "pingcap/go-ycsb"
+jira-project = "TIKV"
+jira-components = ["YCSB"]
 
+[[sync-config]]
+github-repo = "pingcap/grpc-rs"
+jira-project = "TIKV"
+jira-components = ["gRPC"]
+
+
+[[sync-config]]
+github-repo = "pingcap/rust-prometheus"
+jira-project = "TIKV"
+jira-components = ["Prometheus"]
+
+[[sync-config]]
+github-repo = "pingcap/raft-rs"
+jira-project = "TIKV"
+jira-components = ["Raft"]
+
+[[sync-config]]
+github-repo = "pingcap/rust-rocksdb"
+jira-project = "TIKV"
+jira-components = ["RocksDB"]
+
+#[[sync-config]]
+#github-repo = "pingcap/wormhole"
+
+# which jira project issue syncs to
+#jira-project = "TOOL"
+#jira-project = "TEST"
+
+# which components issue belong to
+#jira-components = ["wormhole"]
 
 
 [jira-config]

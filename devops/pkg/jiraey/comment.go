@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -89,12 +90,30 @@ func CompareComments(config *Config, ghIssue *github.Issue, jIssue *jira.Issue, 
 func UpdateComment(config *Config, ghComment *github.IssueComment, jComment *jira.Comment, jIssue *jira.Issue, ghClient *GHClient, jClient *JIRAClient) error {
 	// fields[0] is the whole body, 1 is the ID, 2 is the username, 3 is the real name (or "" if none)
 	// 4 is the date, and 5 is the real body
+	//log:=config.GetLogger()
 	fields := jCommentRegex.FindStringSubmatch(jComment.Body)
 
+	if len(fields) == 0 {
+		return nil
+	}
 	if fields[5] == ghComment.GetBody() {
 		return nil
 	}
 
 	err := jClient.UpdateComment(jIssue, jComment.ID, ghComment, ghClient)
 	return errors.Trace(err)
+}
+
+func DeleteComment(config *Config, id string, issue *jira.Issue, jClient *JIRAClient) error {
+	log := config.GetLogger()
+	req, err := jClient.client.NewRequest("DELETE", fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issue.Key, id), nil)
+	if err != nil {
+		log.Errorf("Delete error %v", err)
+	}
+	resp, err := jClient.client.Do(req, nil)
+	if err != nil {
+		log.Errorf("DelteComment error %v", GetErrorBody(config, resp))
+		return errors.Trace(err)
+	}
+	return nil
 }

@@ -21,7 +21,7 @@ import (
 )
 
 // syncInterval represents full synchronization interval
-var syncInterval = 12 * time.Hour
+var syncInterval = 24 * time.Hour
 
 //var syncInterval = 10 * time.Second
 
@@ -236,12 +236,18 @@ func (s *Server) handleIssueComment(gComment github.IssueCommentEvent) error {
 	defer s.mux.Unlock()
 
 	//	repo := *gComment.Repo.FullName
+	if gComment.Issue.RepositoryURL == nil {
+		log.Errorf("Get RepositoryURL base on issue %v error", *gComment.Issue)
+	}
 	repoURL := strings.Split(*gComment.Issue.RepositoryURL, "/")
 	repo, user := repoURL[len(repoURL)-1], repoURL[len(repoURL)-2]
 	repoMap := s.cfg.GetRepoMap()
 
 	jIssues, err := s.jClient.ListIssues(repoMap[user+"/"+repo].Project, []int{int(gComment.Issue.GetID())})
-
+	if len(jIssues) == 0 {
+		log.Errorf("cannot find Jira Issue while meeting IssueComment, Github Issue : %v", gComment.Issue.GetID())
+		return nil
+	}
 	var jComments []jira.Comment
 	jIssue, _, err := s.jClient.client.Issue.Get(jIssues[0].ID, nil)
 	if err != nil {
@@ -268,9 +274,14 @@ func (s *Server) handleIssueComment(gComment github.IssueCommentEvent) error {
 		if *gComment.Comment.ID != int64(id) {
 			continue
 		}
+		log.Infof("action %v id %v ", gComment.GetAction(), *gComment.Comment.ID)
 		found = true
+		if gComment.GetAction() == "deleted" {
+			return DeleteComment(s.cfg, jComment.ID, jIssue, s.jClient)
 
-		UpdateComment(s.cfg, gComment.Comment, &jComment, jIssue, s.gClient, s.jClient)
+		} else {
+			UpdateComment(s.cfg, gComment.Comment, &jComment, jIssue, s.gClient, s.jClient)
+		}
 		break
 	}
 

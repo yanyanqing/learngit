@@ -42,7 +42,6 @@ func newJIRAClient(config *Config) (*JIRAClient, error) {
 		client: client,
 	}
 	jClient.config.fieldIDs, err = jClient.GetFieldIDs()
-	log.Infof("jira %v", err)
 	return jClient, errors.Trace(err)
 }
 
