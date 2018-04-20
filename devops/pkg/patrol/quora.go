@@ -1,4 +1,4 @@
-package main
+package patrol
 
 import (
 	"bytes"
@@ -101,7 +101,7 @@ func (qs *QuoraScraper) handlePost() error {
 			log.Infof("ctx cancel")
 			return nil
 		case postMsg := <-qs.postChan:
-			key := postMsg.URL + postMsg.Query + ":" + postMsg.Title
+			key := postMsg.URL + ":" + postMsg.Title
 			if qs.persistence.diff(key) == nil {
 				qs.persistence.Posts[key] = postMsg
 
@@ -132,6 +132,7 @@ func (qs *QuoraScraper) Scrape() error {
 		if qs.cfg.Page[i].Identifier == "quora" {
 			url = qs.cfg.Page[i].URL
 			querys = strings.Split(strings.Trim(qs.cfg.Page[i].Query, " "), ",")
+			log.Infof("querys %v", querys)
 			break
 		}
 	}

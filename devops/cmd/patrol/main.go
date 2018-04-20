@@ -7,16 +7,17 @@ import (
 
 	"github.com/juju/errors"
 	"github.com/ngaut/log"
+	"github.com/pingcap/SRE/devops/pkg/patrol"
 )
 
 func main() {
-	cfg := NewConfig()
+	cfg := patrol.NewConfig()
 	if err := cfg.Parse(os.Args[1:]); err != nil {
 		log.Fatalf("verifying flags error %s", errors.ErrorStack(err))
 	}
 
-	patrol := NewPatrol(cfg)
-	err := patrol.init()
+	patrol := patrol.NewPatrol(cfg)
+	err := patrol.Init()
 	if err != nil {
 		log.Errorf("init patrol error %v", err)
 		os.Exit(0)
@@ -35,5 +36,5 @@ func main() {
 		os.Exit(0)
 	}()
 
-	patrol.run()
+	patrol.Run()
 }

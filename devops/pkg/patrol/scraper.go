@@ -1,4 +1,4 @@
-package main
+package patrol
 
 import (
 	"github.com/juju/errors"

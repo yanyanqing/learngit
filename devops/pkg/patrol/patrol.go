@@ -1,4 +1,4 @@
-package main
+package patrol
 
 import (
 	"sync"
@@ -20,7 +20,7 @@ func NewPatrol(cfg *Config) *Patrol {
 	return &Patrol{cfg: cfg}
 }
 
-func (patrol *Patrol) init() error {
+func (patrol *Patrol) Init() error {
 	for i := 0; i < len(patrol.cfg.Page); i++ {
 		scraper, err := NewScraper(patrol.cfg.Page[i].Identifier, patrol.cfg)
 		if err != nil {
@@ -32,7 +32,7 @@ func (patrol *Patrol) init() error {
 	return nil
 }
 
-func (patrol *Patrol) run() {
+func (patrol *Patrol) Run() {
 	patrol.wg.Add(len(patrol.scrapers))
 
 	for i := 0; i < len(patrol.scrapers); i++ {
