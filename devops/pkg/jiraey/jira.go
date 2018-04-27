@@ -120,9 +120,10 @@ func (j *JIRAClient) UpdateComment(issue *jira.Issue, id string, comment *github
 		body = fmt.Sprintf("%s (%s)", body, user.GetName())
 	}
 	body = fmt.Sprintf(
-		"%s at %s:\n\n%s",
+		"%s at %s:\n%s\n\n%s",
 		body,
 		comment.CreatedAt.Format(commentDateFormat),
+		"----------------------------------",
 		comment.GetBody(),
 	)
 
@@ -165,9 +166,10 @@ func (j *JIRAClient) CreateComment(issue *jira.Issue, comment *github.IssueComme
 		body = fmt.Sprintf("%s (%s)", body, user.GetName())
 	}
 	body = fmt.Sprintf(
-		"%s at %s:\n\n%s",
+		"%s at %s:\n%s\n\n%s",
 		body,
 		comment.CreatedAt.Format(commentDateFormat),
+		"----------------------------------",
 		comment.GetBody(),
 	)
 

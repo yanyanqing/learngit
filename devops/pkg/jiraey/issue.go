@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/andygrunwald/go-jira"
@@ -92,6 +93,22 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 		components[i].Name = compoName[i]
 	}
 
+	username, err := ghClient.GetUser(gIssue.User.GetLogin())
+	if err != nil {
+		log.Errorf("get user info error %v", err)
+		return errors.Trace(err)
+	}
+	body := fmt.Sprintf("Create issue [(URL %s)|%s]", gIssue.GetURL(), gIssue.GetHTMLURL())
+	body = fmt.Sprintf("%s from GitHub user [%s|%s]", body, username.GetLogin(), username.GetHTMLURL())
+	if username.GetName() != "" {
+		body = fmt.Sprintf("%s (%s)", body, username.GetName())
+	}
+	body = fmt.Sprintf(
+		"%s at %s:\n\n",
+		body,
+		gIssue.CreatedAt.Format(commentDateFormat),
+	)
+
 	fields := jira.IssueFields{
 		Type: jira.IssueType{
 			Name: "Task", // TODO: Determine issue type
@@ -101,7 +118,7 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 		},
 		Components:  components,
 		Summary:     gIssue.GetTitle(),
-		Description: gIssue.GetBody(),
+		Description: gIssue.GetBody() + "\n\n----------------------------------\n" + body,
 		Unknowns:    map[string]interface{}{},
 	}
 
@@ -129,7 +146,7 @@ func CreateIssue(config *Config, gIssue *github.Issue, ghClient *GHClient, jClie
 		Fields: &fields,
 	}
 
-	jIssue, err := jClient.CreateIssue(jIssue)
+	jIssue, err = jClient.CreateIssue(jIssue)
 	if err != nil {
 		return errors.Trace(err)
 	}
@@ -172,6 +189,22 @@ func UpdateIssue(config *Config, ghIssue *github.Issue, jIssue *jira.Issue, ghCl
 
 		// fields.Type = jIssue.Fields.Type
 		// fields.Labels = labels
+		username, err := ghClient.GetUser(ghIssue.User.GetLogin())
+		if err != nil {
+			log.Errorf("get user info error %v", err)
+			return errors.Trace(err)
+		}
+		body := fmt.Sprintf("Create issue [(URL %s)|%s]", ghIssue.GetURL(), ghIssue.GetHTMLURL())
+		body = fmt.Sprintf("%s from GitHub user [%s|%s]", body, username.GetLogin(), username.GetHTMLURL())
+		if username.GetName() != "" {
+			body = fmt.Sprintf("%s (%s)", body, username.GetName())
+		}
+		body = fmt.Sprintf(
+			"%s at %s:\n\n",
+			body,
+			ghIssue.CreatedAt.Format(commentDateFormat),
+		)
+		fields.Description = ghIssue.GetBody() + "\n\n----------------------------------\n" + body
 
 		issue = jira.Issue{
 			Fields: &fields,
@@ -179,7 +212,6 @@ func UpdateIssue(config *Config, ghIssue *github.Issue, jIssue *jira.Issue, ghCl
 			ID:     jIssue.ID,
 		}
 
-		var err error
 		issue, err = jClient.UpdateIssue(issue)
 		if err != nil {
 			return errors.Trace(err)
