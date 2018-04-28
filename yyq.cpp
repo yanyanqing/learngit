@@ -1,5 +1,5 @@
 #include <iostram>
 
 int main*(
-    XXXXXXX
+    XXXXXXXasfdasfas
 )
