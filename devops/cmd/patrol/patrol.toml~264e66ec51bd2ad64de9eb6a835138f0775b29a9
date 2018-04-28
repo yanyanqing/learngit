@@ -12,5 +12,5 @@ channelID = "tidb_news"
 # url-query-identifier represents query condition of websites
 [[url-query-identifier]]
 url = "https://www.quora.com"
-query = "/search?q=tidb,/search?q=tikv,/search?q=NewSQL,/search?q=TiSpark,/search?q=Real-time Warehouse"
+query = "/search?q=tidb"
 identifier = "quora"
